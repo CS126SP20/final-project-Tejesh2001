@@ -4,9 +4,18 @@
 
 #include <Box2D/Box2D.h>
 #include <cinder/gl/gl.h>
-#include "Conversions.h"
+
+#include "CoordinateConversions.h"
 #include "ParticleController.h"
 #include "cinder/app/AppBase.h"
+
+//TODO RANDOMISE SPACING
+///ADD PLAYER
+///ADD BULLET TO GET RID OF STUFF
+///ADD GAME OVER WHEN IT PILES UP
+///ADD CLEAR SCREEN MECHANISM
+///TRY AND FIGURE OUT CARTESIAN SYSTEM ORIGIN
+
 
 namespace myapp {
 
@@ -18,21 +27,24 @@ void MyApp::setup() {
   is_mouse_pressed_ = false;
   // first define a ground box (no mass)
   // 1. define a body
-  b2BodyDef groundBodyDef;
+  //TODO VERTICAL FLOOR HAS BEEN REMOVED TEMPORARILY
+  /*b2BodyDef groundBodyDef;
   groundBodyDef.position.Set(
-      Conversions::toPhysics(cinder::app::getWindowWidth() / 2),
-      Conversions::toPhysics(cinder::app::getWindowHeight()));  // pos of ground
+      Conversions::toPhysics(cinder::app::getWindowWidth()),
+      Conversions::toPhysics(cinder::app::getWindowHeight()/2));// pos of
+      // ground
 
   // 2. use world to create body
   b2Body* groundBody = world_.CreateBody(&groundBodyDef);
 
   // 3. define fixture
   b2PolygonShape groundBox;
-  groundBox.SetAsBox(Conversions::toPhysics(cinder::app::getWindowWidth() / 2),
-                     Conversions::toPhysics(1.0f));  // size the ground
+  groundBox.SetAsBox( Conversions::toPhysics(1.0f), Conversions::toPhysics
+  (getWindowHeight()/2));
+  // size the ground
 
   // 4. create fixture on body
-  groundBody->CreateFixture(&groundBox, 0.0f);
+  groundBody->CreateFixture(&groundBox, 0.0f);*/
 
   // pass world to ParticleController
   timer_.start(0);
