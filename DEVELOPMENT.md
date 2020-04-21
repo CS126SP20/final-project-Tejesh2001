@@ -13,3 +13,13 @@ Commit 2 :
 
 1) Added moving particles as enemies
 2) Added mouse functionality
+
+Commit 3 :
+
+1) Added Box2D graphics for enemies
+2) Implemented firing system
+Week 1 deliverables completed
+
+Commit 4 :
+
+1) Committed unversioned files
