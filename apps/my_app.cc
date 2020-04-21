@@ -3,66 +3,79 @@
 #include "my_app.h"
 
 #include <Box2D/Box2D.h>
-#include <cinder/Rand.h>
-#include <cinder/app/App.h>
 #include <cinder/gl/gl.h>
-
-#include "Box.hpp"
+#include "Conversions.h"
+#include "ParticleController.h"
+#include "cinder/app/AppBase.h"
 
 namespace myapp {
 
 using cinder::app::KeyEvent;
-
-MyApp::MyApp() { }
-
-
+b2Vec2 gravity(1.0f, 0.0f);
+b2World world_(gravity);
+particles::ParticleController particleController;
 void MyApp::setup() {
-  b2Vec2 gravity(0, -10);
-  my_world = new b2World(gravity);
-  //Definitions are not pointers
-  b2BodyDef ground_body_def;
-  ground_body_def.position.Set(0.0, -10.0f);
-  //Making the ground body
-  b2Body* ground_body =  my_world->CreateBody(&ground_body_def);
-  b2PolygonShape ground_box;
-  ground_box.SetAsBox(50.0f,10.0f);
-  ground_body -> CreateFixture(&ground_box, 0.0f);
-  box_controller.addBoxes(50);
+  is_mouse_pressed_ = false;
+  // first define a ground box (no mass)
+  // 1. define a body
+  b2BodyDef groundBodyDef;
+  groundBodyDef.position.Set(
+      Conversions::toPhysics(cinder::app::getWindowWidth() / 2),
+      Conversions::toPhysics(cinder::app::getWindowHeight()));  // pos of ground
+
+  // 2. use world to create body
+  b2Body* groundBody = world_.CreateBody(&groundBodyDef);
+
+  // 3. define fixture
+  b2PolygonShape groundBox;
+  groundBox.SetAsBox(Conversions::toPhysics(cinder::app::getWindowWidth() / 2),
+                     Conversions::toPhysics(1.0f));  // size the ground
+
+  // 4. create fixture on body
+  groundBody->CreateFixture(&groundBox, 0.0f);
+
+  // pass world to ParticleController
+  timer_.start(0);
+  particleController.setup(world_);
 }
 
 void MyApp::update() {
 
+  if (is_mouse_pressed_)
+    particleController.addParticle(mouse_position_);
+
+  if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
+    particleController.addParticles(5);
+    particleController.update();
+    timer_.start(0.0);
+  }
+
+  // step physics world
+  float time_step = 1.0f / 60.0f;
   int velocity_iterations = 6;
   int position_iterations = 2;
-  float timeStep = 1.0/60.0;
-  my_world->Step(timeStep, velocity_iterations, position_iterations);
-  box_controller.update();
+  world_.Step(time_step, velocity_iterations, position_iterations);
 }
 
 void MyApp::draw() {
- cinder::gl::clear(cinder::Color( 0, 0, 0 ));
- cinder::gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
- box_controller.draw();
+  cinder::gl::clear(cinder::Color( 0, 0, 0 ));
+  cinder::gl::enableAlphaBlending();
+  particleController.draw();
 }
 
-void MyApp::keyDown(KeyEvent event) { }
+void MyApp::keyDown(KeyEvent event) {
+  return;
+
+}
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
-  if (event.isRightDown()) {
-    box_controller.addBoxes(50);
-    Box box(cinder::vec2(0,0));
-    cinder::vec2 location(cinder::Rand::randVec2().x,
-                 cinder::Rand::randVec2().y);
-    cinder::vec2 dimensions(10, 10);
-    box.CreateBody(my_world, location, dimensions);
+    is_mouse_pressed_ = true;
+}
+  void MyApp::mouseMove(cinder::app::MouseEvent event) {
+    mouse_position_ = event.getPos();
+    //This is for implementing player shooting speed later on
+    mouse_velocity_ = ( event.getPos() - mouse_position_);
   }
-}
-void MyApp::mouseMove(cinder::app::MouseEvent event ) {
-  mouse_location = event.getPos();
-}
-void MyApp::mouseDrag(cinder::app::MouseEvent event) {
-  mouseMove(event);
-}
+  void MyApp::mouseDrag(cinder::app::MouseEvent event) { mouseMove(event); }
+  void MyApp::mouseUp(MouseEvent event) { is_mouse_pressed_ = false; }
 
-
-
-}  // namespace myapp
+  }  // namespace myapp

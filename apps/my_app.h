@@ -2,27 +2,33 @@
 
 #ifndef FINALPROJECT_APPS_MYAPP_H_
 #define FINALPROJECT_APPS_MYAPP_H_
-
+#include "my_app.h"
 #include <Box2D/Box2D.h>
+#include <cinder/Rand.h>
 #include <cinder/app/App.h>
-
-#include "BoxController.hpp"
-
+#include <cinder/gl/gl.h>
 namespace myapp {
-
+using namespace cinder::app;
 class MyApp : public cinder::app::App {
  public:
-  b2World* my_world;
-  BoxController box_controller;
-  cinder::vec2  mouse_location;
-  MyApp();
-  void setup() override;
-  void update() override;
-  void draw() override;
-  void keyDown(cinder::app::KeyEvent) override;
-  void mouseDown(cinder::app::MouseEvent) override;
-  void mouseMove(cinder::app::MouseEvent) override;
-  void mouseDrag(cinder::app::MouseEvent event ) override;
+  void setup();
+  void mouseDown(MouseEvent event);
+  void mouseUp(MouseEvent event);
+  void mouseMove(MouseEvent event);
+  void mouseDrag(MouseEvent event);
+  void keyDown(KeyEvent event);
+  void update();
+  void draw();
+
+ private:
+  float width_;
+  float height_;
+  bool is_mouse_pressed_;
+  cinder::ivec2 mouse_position_;
+  cinder::Timer timer_;
+  cinder:: ivec2 mouse_velocity_;
+  const int kTimeChange = 2;
+  const double kDoubleEqualityChecker = 0.001;
 };
 
 }  // namespace myapp
