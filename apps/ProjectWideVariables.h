@@ -6,6 +6,7 @@
 #include "ParticleController.h"
 #include "cinder/app/AppBase.h"
 #include "my_app.h"
+#include "player.h"
 
 namespace global {
 const float kBoxXMin = 10.0f;

@@ -29,6 +29,7 @@ class MyApp : public cinder::app::App {
   cinder:: ivec2 mouse_velocity_;
   const int kTimeChange = 2;
   const double kDoubleEqualityChecker = 0.001;
+
 };
 
 }  // namespace myapp

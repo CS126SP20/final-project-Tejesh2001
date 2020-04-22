@@ -32,7 +32,7 @@ void ParticleController::update()
 
 void ParticleController::draw()
 {
-  for(auto & particle : particles){
+  for(auto particle : particles){
     particle.draw();
   }
 }
