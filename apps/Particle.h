@@ -18,6 +18,9 @@ namespace particles {
 		b2Body* body;
 		ci::Color color;
 		ci::vec2 size;
+		int age_;
+		const int kLifespan = 5;
+		bool is_dead_ = false;
     };
 	
 }

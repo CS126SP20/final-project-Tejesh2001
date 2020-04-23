@@ -22,17 +22,23 @@ void ParticleController::setup(b2World &my_world)
 
 void ParticleController::update()
 {
-  /*for( list<Particle>::iterator p = particles.begin();
-  p != particles.end(); p++) {
-          p->update();
-  }*/
+  for (auto p = particles.begin();
+  p != particles.end();) {
+    if (p->is_dead_ && !particles.empty()) {
+      world_->DestroyBody(p->body);
+      particles.erase(p);
+    } else {
+      p->update();
+      ++p;
+    }
+  }
   //Used for enemies later on
   wave_controller++;
 }
 
 void ParticleController::draw()
 {
-  for(auto particle : particles){
+  for(auto &particle : particles){
     particle.draw();
   }
 }
@@ -63,18 +69,16 @@ void ParticleController::removeAll()
 
 
 void ParticleController::addParticles(int amount) {
-  float world_y_height =
+  float world_width =
       (conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()));
-  float enemy_spacing = world_y_height / amount;
-  float y_index = 0.0f;
+  float enemy_spacing = world_width / amount;
+  float x_index = 0.0f;
   for (int i = 0; i < amount; i++) {
-    float world_y_height =
-        (conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()));
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    y_index += enemy_spacing;
-    bodyDef.position.Set(0.0f, y_index);
-    if (enemy_spacing > world_y_height) {
+    x_index += enemy_spacing;
+    bodyDef.position.Set(randFloat(world_width), 0.0f);
+    if (x_index > world_width) {
       break;
     }
     // corresponding particle
@@ -82,7 +86,7 @@ void ParticleController::addParticles(int amount) {
   }
 }
 b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
-  Particle enemy = Particle();
+  Particle enemy;
   bodyDef.userData = &enemy;
   enemy.body = world_->CreateBody(&bodyDef);
   b2PolygonShape dynamic_box;
@@ -100,5 +104,9 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
   particles.push_back(enemy);
   return bodyDef;
 }
+const std::list<Particle> &ParticleController::GetParticles() {
+  return particles;
+}
+
 
 }  // namespace particles

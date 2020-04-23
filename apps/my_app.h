@@ -20,6 +20,8 @@ class MyApp : public cinder::app::App {
   void update();
   void draw();
 
+  void DrawPlayer();
+
  private:
   float width_;
   float height_;

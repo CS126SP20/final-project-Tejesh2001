@@ -6,10 +6,11 @@
 #include <cinder/gl/gl.h>
 
 #include "CoordinateConversions.h"
-#include "Engine.hpp"
+
 #include "ParticleController.h"
 #include "cinder/app/AppBase.h"
 #include "direction.h"
+#include "engine.h"
 
 // TODO RANDOMISE SPACING
 ///ADD PLAYER
@@ -18,16 +19,28 @@
 ///ADD CLEAR SCREEN MECHANISM
 ///TRY AND FIGURE OUT CARTESIAN SYSTEM ORIGIN
 ///HAVE TO DO PLAYER.SETLOCATION FOR BEGINING
+///Crop sprite picture for aesthetitcs
+///ADD WAVE INCOMING SIGNS AND THEN USE REMOVE ALL. PAUSE THE GAME FIRST
+///USE A TIMER
+
+
+///Immediate stuff
+///Add location check for game End with player location (Implemented. Figure
+// out print text now
+///Add a bullet class
+///Tie it the player position as a starting position
 
 
 namespace myapp {
 
 using cinder::app::KeyEvent;
-b2Vec2 gravity(1.0f, 0.0f);
+b2Vec2 gravity(0, 100.0f);
 b2World world_(gravity);
 particles::ParticleController particleController;
-Engine engine_;
-Player player_;
+myapp::Location loc1(5,5);
+Player player_(loc1);
+myapp::Engine engine_(player_);
+cinder::Timer timer_enemy;
 void MyApp::setup() {
   is_mouse_pressed_ = false;
   // first define a ground box (no mass)
@@ -35,8 +48,8 @@ void MyApp::setup() {
   //TODO VERTICAL FLOOR HAS BEEN REMOVED TEMPORARILY
   b2BodyDef groundBodyDef;
   groundBodyDef.position.Set(
-      conversions::ToBox2DCoordinates(cinder::app::getWindowWidth()),
-      conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()/2));
+      conversions::ToBox2DCoordinates(cinder::app::getWindowWidth()/2),
+      conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()));
   // pos of ground
 
   // 2. use world to create body
@@ -46,8 +59,11 @@ void MyApp::setup() {
   b2PolygonShape groundBox;
   groundBox.SetAsBox(conversions::ToBox2DCoordinates(1.0f),
       conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()/2));
-  player_.SetLoc(getWindowCenter());
-  engine_.SetInitialPosition(getWindowCenter());
+
+  groundBox.SetAsBox(conversions::ToBox2DCoordinates
+  (cinder::app::getWindowHeight()/2),
+                     conversions::ToBox2DCoordinates(1.0f));
+  //engine_.SetInitialPosition(getWindowCenter());
   // size the ground
 
   // 4. create fixture on body
@@ -55,10 +71,11 @@ void MyApp::setup() {
 
   // pass world to ParticleController
   timer_.start(0);
+  timer_enemy.start(0);
   particleController.setup(world_);
 
-  player_.SetLoc(getWindowCenter());
-  engine_.SetInitialPosition(getWindowCenter());
+ // player_.SetLoc(getWindowCenter());
+  //engine_.SetInitialPosition(getWindowCenter());
 }
 
 void MyApp::update() {
@@ -68,7 +85,6 @@ void MyApp::update() {
 
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
     particleController.addParticles(5);
-    particleController.update();
     timer_.start(0.0);
   }
 
@@ -76,14 +92,32 @@ void MyApp::update() {
   float time_step = 1.0f / 60.0f;
   int velocity_iterations = 6;
   int position_iterations = 2;
- world_.Step(time_step, velocity_iterations, position_iterations);
+  world_.Step(time_step, velocity_iterations, position_iterations);
+  std::list<particles::Particle> particle_list = particleController
+      .GetParticles();
+  /*printf("Float value first is %d %d\n", engine_.GetPlayer().GetLoc().Row(),
+         engine_.GetPlayer().GetLoc().Col());*/
+  for (auto particle : particle_list) {
+    vec2 screen_position = vec2(particle.body->GetPosition().x, particle
+    .body->GetPosition().y);
+    printf("Float value is %d %d\n", engine_.GetPlayer().GetLoc().Row(),
+        engine_.GetPlayer().GetLoc().Col());
+    printf("vec2 value is %d %d\n", (int) screen_position.x, (int)
+    screen_position.y);
+    if ((int)screen_position.x == engine_.GetPlayer().GetLoc().Row()
+    && (int)screen_position.y == engine_.GetPlayer().GetLoc().Col()) {
+     // cinder::gl::drawSolidCircle(getWindowCenter(), 20);
+     _exit(0);
+    }
+  }
+
 }
 
 void MyApp::draw() {
   cinder::gl::clear(cinder::Color( 0, 0, 0 ));
   cinder::gl::enableAlphaBlending();
-  player_.draw();
- // particleController.draw();
+  DrawPlayer();
+  particleController.draw();
 }
 
 void MyApp::keyDown(KeyEvent event) {
@@ -91,36 +125,33 @@ void MyApp::keyDown(KeyEvent event) {
     case KeyEvent::KEY_UP:
     case KeyEvent::KEY_k:
     case KeyEvent::KEY_w: {
-      engine_.DirectionToMove(Direction::kUp);
-      engine_.Move();
+      engine_.SetDirection(Direction::kUp);
+      engine_.Step();
       break;
     }
     case KeyEvent::KEY_DOWN:
     case KeyEvent::KEY_j:
     case KeyEvent::KEY_s: {
-      engine_.DirectionToMove(Direction::kDown);
-      engine_.Move();
+      engine_.SetDirection(Direction::kDown);
+      engine_.Step();
       break;
     }
     case KeyEvent::KEY_LEFT:
     case KeyEvent::KEY_h:
     case KeyEvent::KEY_a: {
-      engine_.DirectionToMove(Direction::kLeft);
-      engine_.Move();
+      engine_.SetDirection(Direction::kLeft);
+      engine_.Step();
       break;
     }
     case KeyEvent::KEY_RIGHT:
     case KeyEvent::KEY_l:
     case KeyEvent::KEY_d: {
-      engine_.DirectionToMove(Direction::kRight);
-      engine_.Move();
-      break;
-    }
-    case KeyEvent::KEY_r: {
-      //ResetGame();
+      engine_.SetDirection(Direction::kRight);
+      engine_.Step();
       break;
     }
   }
+
 }
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
     is_mouse_pressed_ = true;
@@ -132,5 +163,20 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
   }
   void MyApp::mouseDrag(cinder::app::MouseEvent event) { mouseMove(event); }
   void MyApp::mouseUp(MouseEvent event) { is_mouse_pressed_ = false; }
+  void MyApp::DrawPlayer() {
+    int tile_size_ = 50;
+    int num_visible = 0;
+    const myapp::Location loc = engine_.GetPlayer().GetLoc();
+    cinder::fs::path path = cinder::fs::path("T.jpg");
+    cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
+        loadImage(cinder::app::loadAsset(path)));
+    cinder::gl::draw(texture, Rectf(tile_size_ * loc.Row(),
+                                    tile_size_ * loc.Col(),
+                                    tile_size_ * loc.Row() +
+                                    tile_size_,
+                                    tile_size_ * loc.Col() +
+                                    tile_size_));
+    const cinder::vec2 center = cinder::app::getWindowCenter();
+}
 
-  }  // namespace myapp
+}  // namespace myapp
