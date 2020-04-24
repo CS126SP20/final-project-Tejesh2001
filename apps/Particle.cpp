@@ -8,7 +8,9 @@
 #include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 
-namespace particles {
+int age_ = 0;
+int check_ = 0;
+//bool is_dead_ = false;
 	
 	Particle::Particle() {
 	}
@@ -16,24 +18,26 @@ namespace particles {
 	
 	void Particle::setup(vec2 boxSize) {
 		size = boxSize;
-		if (global::color_change == 0)
-			color = ci::ColorA(1, ci::Rand::randFloat(0,.5), 0, 1);
-
-		else
-			color = ci::ColorA(ci::Rand::randFloat(0,.5), 0, 1, 1);
 	}
 
+bool is_dead_ = false;
 	void Particle::update() {
 	    age_++;
+         // printf("vec2 value is %d%d\n", age_, is_dead_);
 	    if (age_ > kLifespan) {
-	      is_dead_ = true;
-	      age_ = 0;
+	     is_dead_ = true;
+              check_ = 1;
+              //printf("vec2 value is %d%d\n", age_, check_);
+             // exit(0);
 	    }
 	}
 
 	void Particle::draw() {
 		//cinder::gl::color(color);
-		vec2 pos = conversions::ToScreen( body->GetPosition() );
+                if (check_ == 1) {
+                  return;
+                }
+                vec2 pos = conversions::ToScreen( body->GetPosition() );
 		float t = conversions::RadiansToDegrees( body->GetAngle() );
 		gl::pushMatrices();
 		gl::translate( pos );
@@ -45,5 +49,5 @@ namespace particles {
 		cinder::gl::draw(image, rect);
 		gl::popMatrices();
 	}
-}
+
 

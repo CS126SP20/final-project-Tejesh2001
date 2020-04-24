@@ -23,10 +23,10 @@ namespace particles {
                private:
 		// store a pointer to the physics world fro the main app
 		b2World *world_;
-                std::list<Particle> particles;
+                std::vector<Particle> particles;
 
                public:
-                const std::list<Particle> &GetParticles();
+                std::vector<Particle> &GetParticles();
                private:
                 b2BodyDef &CreateBody(b2BodyDef &bodyDef);
         };

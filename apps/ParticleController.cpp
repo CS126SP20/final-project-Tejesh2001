@@ -5,6 +5,7 @@
 
 #include "CoordinateConversions.h"
 #include "ProjectWideVariables.h"
+#include "Particle.h"
 #include "cinder/Rand.h"
 #include "cinder/Vector.h"
 
@@ -22,7 +23,7 @@ void ParticleController::setup(b2World &my_world)
 
 void ParticleController::update()
 {
-  for (auto p = particles.begin();
+ /* for (auto p = particles.begin();
   p != particles.end();) {
     if (p->is_dead_ && !particles.empty()) {
       world_->DestroyBody(p->body);
@@ -31,8 +32,23 @@ void ParticleController::update()
       p->update();
       ++p;
     }
-  }
+  }*/
+/* if (particles.size() > 5) {
+   // particles.erase(particles.begin() + 2);
+   particles.erase(particles.begin() + 1);
+ }*/
   //Used for enemies later on
+ for (Particle particle : particles) {
+
+   printf("particel check %d\n", particle.check_);
+   if (particle.check_ == 1) {
+    // printf("particel check %d\n", particle.check_);
+     world_->DestroyBody(particle.body);
+   }
+   particle.update();
+ }
+
+
   wave_controller++;
 }
 
@@ -56,7 +72,7 @@ void ParticleController::addParticle(const ivec2 &mouse_pos) {
 }
 
 void ParticleController::removeAll()
-{
+{/*
   for(auto & particle : particles) {
     world_->DestroyBody(particle.body);
   }
@@ -65,6 +81,7 @@ void ParticleController::removeAll()
     global::color_change++;
   else
     global::color_change--;
+    */
 }
 
 
@@ -104,7 +121,7 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
   particles.push_back(enemy);
   return bodyDef;
 }
-const std::list<Particle> &ParticleController::GetParticles() {
+ std::vector<Particle> &ParticleController::GetParticles() {
   return particles;
 }
 

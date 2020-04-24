@@ -30,14 +30,14 @@
 ///Add a bullet class
 ///Tie it the player position as a starting position
 
-
+int number_of_particles_ = 5;
 namespace myapp {
 
 using cinder::app::KeyEvent;
 b2Vec2 gravity(0, 100.0f);
 b2World world_(gravity);
 particles::ParticleController particleController;
-myapp::Location loc1(5,5);
+myapp::Location loc1(10,10);
 Player player_(loc1);
 myapp::Engine engine_(player_);
 cinder::Timer timer_enemy;
@@ -73,45 +73,25 @@ void MyApp::setup() {
   timer_.start(0);
   timer_enemy.start(0);
   particleController.setup(world_);
+  particleController.addParticles(1);
 
  // player_.SetLoc(getWindowCenter());
   //engine_.SetInitialPosition(getWindowCenter());
 }
 
 void MyApp::update() {
-
-  if (is_mouse_pressed_)
-    particleController.addParticle(mouse_position_);
+  if (is_mouse_pressed_) particleController.addParticle(mouse_position_);
 
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
-    particleController.addParticles(5);
+    number_of_particles_ += 1;
+    particleController.addParticles(number_of_particles_);
+   // particleController.addParticles(1);
     timer_.start(0.0);
   }
-
-  // Move physics world
-  float time_step = 1.0f / 60.0f;
-  int velocity_iterations = 6;
-  int position_iterations = 2;
-  world_.Step(time_step, velocity_iterations, position_iterations);
-  std::list<particles::Particle> particle_list = particleController
-      .GetParticles();
-  /*printf("Float value first is %d %d\n", engine_.GetPlayer().GetLoc().Row(),
-         engine_.GetPlayer().GetLoc().Col());*/
-  for (auto particle : particle_list) {
-    vec2 screen_position = vec2(particle.body->GetPosition().x, particle
-    .body->GetPosition().y);
-    printf("Float value is %d %d\n", engine_.GetPlayer().GetLoc().Row(),
-        engine_.GetPlayer().GetLoc().Col());
-    printf("vec2 value is %d %d\n", (int) screen_position.x, (int)
-    screen_position.y);
-    if ((int)screen_position.x == engine_.GetPlayer().GetLoc().Row()
-    && (int)screen_position.y == engine_.GetPlayer().GetLoc().Col()) {
-     // cinder::gl::drawSolidCircle(getWindowCenter(), 20);
-     _exit(0);
-    }
-  }
-
+  engine_.Step(world_, particleController, number_of_particles_);
+  particleController.update();
 }
+
 
 void MyApp::draw() {
   cinder::gl::clear(cinder::Color( 0, 0, 0 ));
@@ -126,28 +106,28 @@ void MyApp::keyDown(KeyEvent event) {
     case KeyEvent::KEY_k:
     case KeyEvent::KEY_w: {
       engine_.SetDirection(Direction::kUp);
-      engine_.Step();
+      engine_.SetLocation();
       break;
     }
     case KeyEvent::KEY_DOWN:
     case KeyEvent::KEY_j:
     case KeyEvent::KEY_s: {
       engine_.SetDirection(Direction::kDown);
-      engine_.Step();
+      engine_.SetLocation();
       break;
     }
     case KeyEvent::KEY_LEFT:
     case KeyEvent::KEY_h:
     case KeyEvent::KEY_a: {
       engine_.SetDirection(Direction::kLeft);
-      engine_.Step();
+      engine_.SetLocation();
       break;
     }
     case KeyEvent::KEY_RIGHT:
     case KeyEvent::KEY_l:
     case KeyEvent::KEY_d: {
       engine_.SetDirection(Direction::kRight);
-      engine_.Step();
+      engine_.SetLocation();
       break;
     }
   }
@@ -176,7 +156,6 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
                                     tile_size_,
                                     tile_size_ * loc.Col() +
                                     tile_size_));
-    const cinder::vec2 center = cinder::app::getWindowCenter();
 }
 
 }  // namespace myapp
