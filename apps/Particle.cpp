@@ -9,13 +9,11 @@
 #include "cinder/gl/gl.h"
 
 int age_ = 0;
-int check_ = 0;
 //bool is_dead_ = false;
-	
-	Particle::Particle() {
+        Particle::Particle() {
+
 	}
 
-	
 	void Particle::setup(vec2 boxSize) {
 		size = boxSize;
 	}

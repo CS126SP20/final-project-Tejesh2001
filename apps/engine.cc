@@ -46,7 +46,7 @@ Engine::Engine(Player player) : player_(player) {
   player_.SetLoc(player.GetLoc());
 }
 
-void Engine::Step(b2World& world, particles::ParticleController&
+void Engine::Step(b2World& world, ParticleController&
 particle_controller, int number_of_particles) {
   // Move physics world
   float time_step = 1.0f / 60.0f;
@@ -55,7 +55,7 @@ particle_controller, int number_of_particles) {
   world.Step(time_step, velocity_iterations, position_iterations);
   /*std::list<particles::Particle> particle_list = particle_controller
       .GetParticles();*/
-  std::vector<Particle> particle_list = particle_controller
+  std::list<Particle> particle_list = particle_controller
       .GetParticles();
   for (Particle particle : particle_list) {
     cinder::vec2 screen_position = cinder::vec2(particle.body->GetPosition().x,

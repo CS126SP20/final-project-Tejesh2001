@@ -6,8 +6,7 @@
 
 #include "Particle.h"
 
-namespace particles {
-	
+
 	class ParticleController {
 	  int wave_controller{};
 	public:
@@ -23,12 +22,10 @@ namespace particles {
                private:
 		// store a pointer to the physics world fro the main app
 		b2World *world_;
-                std::vector<Particle> particles;
+                std::list<Particle> particles;
 
                public:
-                std::vector<Particle> &GetParticles();
+                std::list<Particle> &GetParticles();
                private:
                 b2BodyDef &CreateBody(b2BodyDef &bodyDef);
         };
-
-}

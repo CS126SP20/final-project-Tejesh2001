@@ -41,7 +41,7 @@ class Engine {
 
   Player GetPlayer() const;
   void SetLocation();
-  void Step(b2World& world, particles::ParticleController& particle_controller,
+  void Step(b2World& world, ParticleController& particle_controller,
             int number_of_particles);
  private:
   Location GetRandomLocation();

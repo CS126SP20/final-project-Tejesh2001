@@ -12,8 +12,6 @@
 using namespace ci;
 using std::list;
 
-namespace particles {
-
 
 ParticleController::ParticleController(){};
 void ParticleController::setup(b2World &my_world)
@@ -23,32 +21,23 @@ void ParticleController::setup(b2World &my_world)
 
 void ParticleController::update()
 {
- /* for (auto p = particles.begin();
-  p != particles.end();) {
-    if (p->is_dead_ && !particles.empty()) {
-      world_->DestroyBody(p->body);
-      particles.erase(p);
-    } else {
-      p->update();
-      ++p;
-    }
-  }*/
-/* if (particles.size() > 5) {
-   // particles.erase(particles.begin() + 2);
-   particles.erase(particles.begin() + 1);
- }*/
+  /*for (auto p = particles.begin();
+  p != particles.end();++p) {
+   // if (!particles.empty()) {
+    // world_->DestroyBody(p->body);
+     particles.erase(*p);
+   // } else {
+     //p->update();
+    //
+    }*/
+  if (particles.size() > 20) {
+    for (int i = 0; i < 10; i++) {
+    world_->DestroyBody(particles.begin()->body);
+    particles.pop_front();
+  }
+  }
+
   //Used for enemies later on
- for (Particle particle : particles) {
-
-   printf("particel check %d\n", particle.check_);
-   if (particle.check_ == 1) {
-    // printf("particel check %d\n", particle.check_);
-     world_->DestroyBody(particle.body);
-   }
-   particle.update();
- }
-
-
   wave_controller++;
 }
 
@@ -121,9 +110,7 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
   particles.push_back(enemy);
   return bodyDef;
 }
- std::vector<Particle> &ParticleController::GetParticles() {
+ std::list<Particle> &ParticleController::GetParticles() {
   return particles;
 }
 
-
-}  // namespace particles

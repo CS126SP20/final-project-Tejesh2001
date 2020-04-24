@@ -29,14 +29,14 @@
 // out print text now
 ///Add a bullet class
 ///Tie it the player position as a starting position
-
+///Commit 4 - add description = remove block from screen in development md
 int number_of_particles_ = 5;
 namespace myapp {
 
 using cinder::app::KeyEvent;
 b2Vec2 gravity(0, 100.0f);
 b2World world_(gravity);
-particles::ParticleController particleController;
+ParticleController particleController;
 myapp::Location loc1(10,10);
 Player player_(loc1);
 myapp::Engine engine_(player_);
