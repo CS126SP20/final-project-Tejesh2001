@@ -18,7 +18,7 @@ class Particle {
 		ci::Color color;
 		ci::vec2 size;
 		//const int kLifespan = 50;
-                int lifespan_ = 70;
+                int lifespan_ = 150;
                 bool is_dead_;
                 int age_;
                 cinder::Timer timer;

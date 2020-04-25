@@ -33,7 +33,7 @@ int number_of_particles_ = 5;
 namespace myapp {
 
 using cinder::app::KeyEvent;
-b2Vec2 gravity(0, 100.0f);
+b2Vec2 gravity(0, 1000.0f);
 cinder::Timer timer_enemy;
 b2World world_(gravity);
 Player player_(b2Vec2(400, 400));
@@ -48,7 +48,7 @@ void MyApp::setup() {
   // first define a ground box (no mass)
   // 1. define a body
   //TODO VERTICAL FLOOR HAS BEEN REMOVED TEMPORARILY
-  b2BodyDef groundBodyDef;
+ /* b2BodyDef groundBodyDef;
   groundBodyDef.position.Set(
       conversions::ToBox2DCoordinates(cinder::app::getWindowWidth()/2),
       conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()));
@@ -62,7 +62,7 @@ void MyApp::setup() {
   groundBox.SetAsBox(conversions::ToBox2DCoordinates(1.0f),
       conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()/2));
 
-  printf("No of bullets %f \n", b->getBody()->GetPosition().y);
+//  printf("No of bullets %f \n", b->getBody()->GetPosition().y);
 
   groundBox.SetAsBox(conversions::ToBox2DCoordinates
   (cinder::app::getWindowHeight()/2),
@@ -71,7 +71,7 @@ void MyApp::setup() {
   // size the ground
 
   // 4. create fixture on body
-  groundBody->CreateFixture(&groundBox, 0.0f);
+  groundBody->CreateFixture(&groundBox, 0.0f);*/
 
   // pass world to ParticleController
   timer_.start(0);
@@ -92,17 +92,13 @@ void MyApp::update() {
   }*/
 
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
-    number_of_particles_ += 1;
-   // particleController.addParticles(number_of_particles_);
+  //  number_of_particles_ += 1;
+    particleController.addParticles(number_of_particles_);
    // particleController.addParticles(1);
     timer_.start(0.0);
   }
   // Move physics world
  // bullets.clear();
-  float time_step = 1.0f / 60.0f;
-  int velocity_iterations = 6;
-  int position_iterations = 2;
-  world_.Step(time_step, velocity_iterations, position_iterations);
   if (is_mouse_pressed_) {
     // particleController.addParticle(mouse_position_);
     const b2Vec2 loc = engine_.GetPlayer().GetLoc();
@@ -110,7 +106,8 @@ void MyApp::update() {
     bullet.CreateBody(world_);
     bullets.push_back(bullet);
   }
-  for (auto b = bullets.begin();
+  engine_.Step(world_, particleController, number_of_particles_);
+ /* for (auto b = bullets.begin();
           b != bullets.end();) {
     if (!bullets.empty() &&
         b->getBody()->GetPosition().y >=
@@ -121,6 +118,11 @@ void MyApp::update() {
     } else {
       ++b;
     }
+  }*/
+  if (!bullets.empty()) {
+    for (Bullet bullet : bullets) {
+      bullet.update(bullets);
+    }
   }
 
     /* if (!bullets.empty()) {
@@ -129,8 +131,8 @@ void MyApp::update() {
            ->GetPosition().y);
      }*/
   //printf("No of bullets outside the conditoion %d \n", bullets.size());
- // engine_.Step(world_, particleController, number_of_particles_);
- // particleController.update();
+ //engine_.Step(world_, particleController, number_of_particles_);
+  particleController.update();
 }
 
 void MyApp::draw() {
@@ -147,7 +149,7 @@ void MyApp::draw() {
   bullets[bullets.size() - 1].draw();*/
 
  // printf("No of bullets %i \n", bullets.size());
-  //particleController.draw();
+  particleController.draw();
 }
 
 void MyApp::keyDown(KeyEvent event) {
@@ -186,9 +188,6 @@ void MyApp::keyDown(KeyEvent event) {
 
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
     is_mouse_pressed_ = true;
-
-
-
 }
   void MyApp::mouseMove(cinder::app::MouseEvent event) {
     mouse_position_ = event.getPos();

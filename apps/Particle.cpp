@@ -26,7 +26,7 @@
               lifespan_ -= 20;
             }
 
-	    if (age_ > lifespan_) {
+	    if (age_ > lifespan_ || body->GetPosition().y > 15) {
 	     is_dead_ = true;
              // check_ = 1;
               //printf("vec2 value is %d%d\n", age_, check_);

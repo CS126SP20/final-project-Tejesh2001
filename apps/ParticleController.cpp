@@ -97,17 +97,17 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
   bodyDef.userData = &enemy;
   enemy.body = world_->CreateBody(&bodyDef);
   b2PolygonShape dynamic_box;
-  float box_size_x = Rand::randFloat(global::kBoxXMin, global::kBoxXMax);
-  float box_size_y = Rand::randFloat(global::kBoxYMin, global::kBoxYMax);
-  dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(box_size_x),
-                      conversions::ToBox2DCoordinates(box_size_y));
+  dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(global::kBoxDimensions
+                                                           .x),
+                      conversions::ToBox2DCoordinates(global::kBoxDimensions
+                                                           .y));
   b2FixtureDef fixture_def;
   fixture_def.shape = &dynamic_box;
-  fixture_def.density = 1.0f;
+  fixture_def.density = 100.0f;
   fixture_def.friction = 0.3f;
   fixture_def.restitution = 0.5f;  // bounce
   enemy.body->CreateFixture(&fixture_def);
-  enemy.setup(vec2(box_size_x, box_size_y));
+  enemy.setup(global::kBoxDimensions);
   particles.push_back(enemy);
   return bodyDef;
 }

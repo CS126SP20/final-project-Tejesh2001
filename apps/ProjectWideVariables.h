@@ -15,6 +15,7 @@ const float kBoxYMax = 20.0f;
 const int kPlayerHeight = 15;
 const int kPlayerWidth = 15;
 const float kScalingFactor = 50;
+const vec2 kBoxDimensions = vec2(20, 20);
 //TODO NAMING CONVENTION
 static int color_change = 0;
 }
