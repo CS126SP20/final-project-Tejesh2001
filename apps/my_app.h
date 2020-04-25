@@ -33,6 +33,7 @@ class MyApp : public cinder::app::App {
   const double kDoubleEqualityChecker = 0.001;
   int number_of_particles_ = 5;
 
+  void DrawBackground();
 };
 
 }  // namespace myapp

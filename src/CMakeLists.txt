@@ -20,9 +20,8 @@ ci_make_library(
         SOURCES      ${SOURCE_LIST}
         INCLUDES     "${FinalProject_SOURCE_DIR}/include"
         LIBRARIES
-        BLOCKS Box2D
+        BLOCKS Box2D 
 )
-
 # All users of this library will need at least C++14
 target_compile_features(mylibrary PUBLIC cxx_std_14)
 

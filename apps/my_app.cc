@@ -11,15 +11,14 @@
 #include "cinder/app/AppBase.h"
 #include "direction.h"
 #include "engine.h"
+#include <ciAnimatedGif.h>
 
 // TODO RANDOMISE SPACING
-///ADD PLAYER
 ///ADD BULLET TO GET RID OF STUFF
 ///ADD GAME OVER WHEN IT PILES UP
 ///ADD CLEAR SCREEN MECHANISM
 ///TRY AND FIGURE OUT CARTESIAN SYSTEM ORIGIN
-///HAVE TO DO PLAYER.SETLOCATION FOR BEGINING
-///Crop sprite picture for aesthetitcs
+///Crop sprite picture for aesthetitcs // Kinda got it?
 ///ADD WAVE INCOMING SIGNS AND THEN USE REMOVE ALL. PAUSE THE GAME FIRST
 ///USE A TIMER
 
@@ -96,6 +95,7 @@ void MyApp::update() {
 void MyApp::draw() {
   cinder::gl::clear(cinder::Color( 0, 0, 0 ));
   cinder::gl::enableAlphaBlending();
+  DrawBackground();
   DrawPlayer();
   particleController.draw();
 }
@@ -145,17 +145,22 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
   void MyApp::mouseUp(MouseEvent event) { is_mouse_pressed_ = false; }
   void MyApp::DrawPlayer() {
     int tile_size_ = 50;
-    int num_visible = 0;
     const myapp::Location loc = engine_.GetPlayer().GetLoc();
-    cinder::fs::path path = cinder::fs::path("T.jpg");
+    cinder::fs::path path = cinder::fs::path("avatar.gif");
     cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
         loadImage(cinder::app::loadAsset(path)));
     cinder::gl::draw(texture, Rectf(tile_size_ * loc.Row(),
                                     tile_size_ * loc.Col(),
                                     tile_size_ * loc.Row() +
-                                    tile_size_,
+                                    2*tile_size_,
                                     tile_size_ * loc.Col() +
-                                    tile_size_));
+                                    2*tile_size_));
 }
+  void MyApp::DrawBackground() {
+    cinder::fs::path path = cinder::fs::path("background.jpg");
+    cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
+        loadImage(cinder::app::loadAsset(path)));
+    cinder::gl::draw(texture, Rectf(getWindowBounds()));
+  }
 
-}  // namespace myapp
+  }  // namespace myapp

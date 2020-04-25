@@ -18,24 +18,25 @@ void ParticleController::setup(b2World &my_world)
 {
   world_ = &my_world;
 }
-
 void ParticleController::update()
 {
-  /*for (auto p = particles.begin();
-  p != particles.end();++p) {
-   // if (!particles.empty()) {
-    // world_->DestroyBody(p->body);
-     particles.erase(*p);
-   // } else {
-     //p->update();
-    //
-    }*/
-  if (particles.size() > 20) {
-    for (int i = 0; i < 10; i++) {
+  for (auto p = particles.begin();
+  p != particles.end();) {
+    if (!particles.empty() && p->is_dead_) {
+     world_->DestroyBody(p->body);
+     p = particles.erase(p);
+    } else {
+      p->update();
+      ++p;
+    }
+
+    }
+  /*if (particles.size() > 20) {
+    for (int i = 0; i < 5; i++) {
     world_->DestroyBody(particles.begin()->body);
     particles.pop_front();
-  }
-  }
+    }
+  }*/
 
   //Used for enemies later on
   wave_controller++;
