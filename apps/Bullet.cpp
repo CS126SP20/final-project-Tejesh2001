@@ -23,9 +23,9 @@ conversions::ToBox2DCoordinates(position_.y + global::kScalingFactor));
   fixture_def.shape = &dynamic_box;
   fixture_def.density = 0.2f;
   fixture_def.friction = 0.3f;
-  fixture_def.restitution = 0.5f;  // bounce
+  fixture_def.restitution = 100.0f;  // bounce
   //fixture_def.isSensor = true;
-  body_->SetLinearVelocity(b2Vec2(0, -1));
+  body_->SetLinearVelocity(b2Vec2(0, -50));
   body_->CreateFixture(&fixture_def);
 
   //enemy.setup(vec2(box_size_x, box_size_y));

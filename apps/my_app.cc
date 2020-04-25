@@ -33,7 +33,7 @@ int number_of_particles_ = 5;
 namespace myapp {
 
 using cinder::app::KeyEvent;
-b2Vec2 gravity(0, 1000.0f);
+b2Vec2 gravity(0, 100.0f);
 cinder::Timer timer_enemy;
 b2World world_(gravity);
 Player player_(b2Vec2(400, 400));
@@ -48,10 +48,10 @@ void MyApp::setup() {
   // first define a ground box (no mass)
   // 1. define a body
   //TODO VERTICAL FLOOR HAS BEEN REMOVED TEMPORARILY
- /* b2BodyDef groundBodyDef;
+ b2BodyDef groundBodyDef;
   groundBodyDef.position.Set(
       conversions::ToBox2DCoordinates(cinder::app::getWindowWidth()/2),
-      conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()));
+     0.0);
   // pos of ground
 
   // 2. use world to create body
@@ -59,19 +59,16 @@ void MyApp::setup() {
 
   // 3. define fixture
   b2PolygonShape groundBox;
-  groundBox.SetAsBox(conversions::ToBox2DCoordinates(1.0f),
-      conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()/2));
 
 //  printf("No of bullets %f \n", b->getBody()->GetPosition().y);
 
   groundBox.SetAsBox(conversions::ToBox2DCoordinates
-  (cinder::app::getWindowHeight()/2),
-                     conversions::ToBox2DCoordinates(1.0f));
+  (cinder::app::getWindowWidth()), 1);
   //engine_.SetInitialPosition(getWindowCenter());
   // size the ground
-
   // 4. create fixture on body
-  groundBody->CreateFixture(&groundBox, 0.0f);*/
+  b2FixtureDef fixture_def;
+  groundBody->CreateFixture(&groundBox, 0.0);
 
   // pass world to ParticleController
   timer_.start(0);
@@ -92,7 +89,7 @@ void MyApp::update() {
   }*/
 
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
-  //  number_of_particles_ += 1;
+    number_of_particles_ += 1;
     particleController.addParticles(number_of_particles_);
    // particleController.addParticles(1);
     timer_.start(0.0);
@@ -106,6 +103,9 @@ void MyApp::update() {
     bullet.CreateBody(world_);
     bullets.push_back(bullet);
   }
+  if (!bullets.empty())
+  printf("bullet location %f \n", (bullets[0].getBody()
+                                     ->GetPosition()).y);
   engine_.Step(world_, particleController, number_of_particles_);
  /* for (auto b = bullets.begin();
           b != bullets.end();) {
@@ -187,7 +187,14 @@ void MyApp::keyDown(KeyEvent event) {
 }
 
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
-    is_mouse_pressed_ = true;
+  if (event.isRightDown()) {
+    // particleController.addParticle(mouse_position_);
+    const b2Vec2 loc = engine_.GetPlayer().GetLoc();
+    Bullet bullet(world_, loc);
+    bullet.CreateBody(world_);
+    bullets.push_back(bullet);
+  //  is_mouse_pressed_ = true;
+  }
 }
   void MyApp::mouseMove(cinder::app::MouseEvent event) {
     mouse_position_ = event.getPos();
