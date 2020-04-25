@@ -50,7 +50,7 @@
 		cinder::gl::Texture2dRef image =
                     cinder::gl::Texture2d::create(load);
 		cinder::gl::draw(image, rect);
-          gl::popMatrices();
+              gl::popMatrices();
 	}
 
 

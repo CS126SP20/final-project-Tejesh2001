@@ -17,18 +17,18 @@
 #include "location.h"
 
 namespace myapp {
-
+using namespace global;
 // Converts a direction into a delta location.
-Location FromDirection(const Direction direction) {
+b2Vec2 FromDirection(const Direction direction) {
   switch (direction) {
     case Direction::kUp:
-      return {0, -1};
+      return {0, -kScalingFactor};
     case Direction::kDown:
-      return {0, 1};
+      return {0, kScalingFactor};
     case Direction::kLeft:
-      return {-1, 0};
+      return {-kScalingFactor, 0};
     case Direction::kRight:
-      return {+1, 0};
+      return {kScalingFactor, 0};
   }
   throw std::out_of_range("switch statement not matched");
 }
@@ -39,7 +39,7 @@ Player Engine::GetPlayer() const { return player_; }
 void Engine::Reset() {
   Location location(cinder::app::getWindowCenter().x,
       cinder::app::getWindowHeight());
-  player_.SetLoc(location);
+//  player_.SetLoc(location);
 }
 
 Engine::Engine(Player player) : player_(player) {
@@ -61,24 +61,20 @@ particle_controller, int number_of_particles) {
     cinder::vec2 screen_position = cinder::vec2(particle.body->GetPosition().x,
         particle
         .body->GetPosition().y);
-  /*  printf("Float value is %d %d\n", GetPlayer().GetLoc().Row(),
-           GetPlayer().GetLoc().Col());
-    printf("vec2 value is %d %d\n", (int) screen_position.x, (int)
-        screen_position.y);*/
-    if ((int)screen_position.x == GetPlayer().GetLoc().Row()
-        && (int)screen_position.y == GetPlayer().GetLoc().Col()) {
+    printf("Float value is %f %f \n", GetPlayer().GetLoc().x/kScalingFactor,
+           GetPlayer().GetLoc().y/kScalingFactor);
+    printf("vec2 value is %d %d\n", static_cast<int>(screen_position.x),
+           static_cast<int>(screen_position.y));
+    if (static_cast<int>(screen_position.x) ==
+        static_cast<int>(GetPlayer().GetLoc().x/kScalingFactor)
+        && static_cast<int>(screen_position.y) ==
+               static_cast<int>(GetPlayer().GetLoc().y
+        /kScalingFactor)) {
+      
       // cinder::gl::drawSolidCircle(getWindowCenter(), 20);
       _exit(0);
     }
   }
-  /*for (int i = 0; i < number_of_particles; i++) {
-   // particles::Particle particle = particle_list.back();
-   // particle_list.pop_front();
-  //  world.DestroyBody(particle.body);
-  }
-  for (particles::Particle particle : particle_list) {
-    particle_list.pop_front();
-  }*/
 
 }
 void Engine::SetDirection(const Direction direction) {
@@ -86,12 +82,10 @@ void Engine::SetDirection(const Direction direction) {
 }
 
 void Engine::SetLocation() {
-  Location d_loc = FromDirection(direction_);
-  Location new_head_loc =
-      (player_.GetLoc() + d_loc) % Location(global::kPlayerHeight,
-          global::kPlayerWidth);
-  Location leader = new_head_loc;
-  player_.SetLoc(leader);
+  b2Vec2 d_loc = FromDirection(direction_);
+  b2Vec2 loc =
+      (player_.GetLoc() + d_loc);
+  player_.SetLoc(loc);
 }
 
 }  // namespace snake

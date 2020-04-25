@@ -3,15 +3,15 @@
 #include "my_app.h"
 
 #include <Box2D/Box2D.h>
+#include <ciAnimatedGif.h>
 #include <cinder/gl/gl.h>
 
+#include "Bullet.hpp"
 #include "CoordinateConversions.h"
-
 #include "ParticleController.h"
 #include "cinder/app/AppBase.h"
 #include "direction.h"
 #include "engine.h"
-#include <ciAnimatedGif.h>
 
 // TODO RANDOMISE SPACING
 ///ADD BULLET TO GET RID OF STUFF
@@ -34,12 +34,15 @@ namespace myapp {
 
 using cinder::app::KeyEvent;
 b2Vec2 gravity(0, 100.0f);
-b2World world_(gravity);
-ParticleController particleController;
-myapp::Location loc1(10,10);
-Player player_(loc1);
-myapp::Engine engine_(player_);
 cinder::Timer timer_enemy;
+b2World world_(gravity);
+Player player_(b2Vec2(400, 400));
+Engine engine_(player_);
+ParticleController particleController;
+std::vector <Bullet> bullets;
+MyApp::MyApp() {
+}
+
 void MyApp::setup() {
   is_mouse_pressed_ = false;
   // first define a ground box (no mass)
@@ -59,6 +62,8 @@ void MyApp::setup() {
   groundBox.SetAsBox(conversions::ToBox2DCoordinates(1.0f),
       conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()/2));
 
+  printf("No of bullets %f \n", b->getBody()->GetPosition().y);
+
   groundBox.SetAsBox(conversions::ToBox2DCoordinates
   (cinder::app::getWindowHeight()/2),
                      conversions::ToBox2DCoordinates(1.0f));
@@ -72,32 +77,77 @@ void MyApp::setup() {
   timer_.start(0);
   timer_enemy.start(0);
   particleController.setup(world_);
-  particleController.addParticles(1);
+//  particleController.addParticles(1);
 
  // player_.SetLoc(getWindowCenter());
   //engine_.SetInitialPosition(getWindowCenter());
 }
-
+int c = 0;
 void MyApp::update() {
-  if (is_mouse_pressed_) particleController.addParticle(mouse_position_);
+  /*if (is_mouse_pressed_) {
+   // particleController.addParticle(mouse_position_);
+   const b2Vec2 loc = engine_.GetPlayer().GetLoc();
+   Bullet bullet(world_, loc);
+   bullet.CreateBody(world_);
+  }*/
 
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
     number_of_particles_ += 1;
-    particleController.addParticles(number_of_particles_);
+   // particleController.addParticles(number_of_particles_);
    // particleController.addParticles(1);
     timer_.start(0.0);
   }
-  engine_.Step(world_, particleController, number_of_particles_);
-  particleController.update();
-}
+  // Move physics world
+ // bullets.clear();
+  float time_step = 1.0f / 60.0f;
+  int velocity_iterations = 6;
+  int position_iterations = 2;
+  world_.Step(time_step, velocity_iterations, position_iterations);
+  if (is_mouse_pressed_) {
+    // particleController.addParticle(mouse_position_);
+    const b2Vec2 loc = engine_.GetPlayer().GetLoc();
+    Bullet bullet(world_, loc);
+    bullet.CreateBody(world_);
+    bullets.push_back(bullet);
+  }
+  for (auto b = bullets.begin();
+          b != bullets.end();) {
+    if (!bullets.empty() &&
+        b->getBody()->GetPosition().y >=
+            conversions::ToBox2DCoordinates(getWindowHeight() - 1)) {
+      printf("No of bullets %f \n", b->getBody()->GetPosition().y);
+      world_.DestroyBody(b->getBody());
+      b = bullets.erase(b);
+    } else {
+      ++b;
+    }
+  }
 
+    /* if (!bullets.empty()) {
+       printf("bullet location x and y %f %f \n", bullets[0].getBody()
+   ->GetPosition().x, bullets[0].getBody()
+           ->GetPosition().y);
+     }*/
+  //printf("No of bullets outside the conditoion %d \n", bullets.size());
+ // engine_.Step(world_, particleController, number_of_particles_);
+ // particleController.update();
+}
 
 void MyApp::draw() {
   cinder::gl::clear(cinder::Color( 0, 0, 0 ));
   cinder::gl::enableAlphaBlending();
   DrawBackground();
   DrawPlayer();
-  particleController.draw();
+  for (Bullet bullet : bullets) {
+    bullet.draw();
+  }
+
+ // printf("No of bullets %d \n", bullets.size());
+  /*if (!bullets.empty())
+  bullets[bullets.size() - 1].draw();*/
+
+ // printf("No of bullets %i \n", bullets.size());
+  //particleController.draw();
 }
 
 void MyApp::keyDown(KeyEvent event) {
@@ -133,8 +183,12 @@ void MyApp::keyDown(KeyEvent event) {
   }
 
 }
+
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
     is_mouse_pressed_ = true;
+
+
+
 }
   void MyApp::mouseMove(cinder::app::MouseEvent event) {
     mouse_position_ = event.getPos();
@@ -145,15 +199,13 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
   void MyApp::mouseUp(MouseEvent event) { is_mouse_pressed_ = false; }
   void MyApp::DrawPlayer() {
     int tile_size_ = 50;
-    const myapp::Location loc = engine_.GetPlayer().GetLoc();
+    const b2Vec2 loc = engine_.GetPlayer().GetLoc();
     cinder::fs::path path = cinder::fs::path("avatar.gif");
+   // printf ("location current %f %f\n", loc.x, loc.y);
     cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
         loadImage(cinder::app::loadAsset(path)));
-    cinder::gl::draw(texture, Rectf(tile_size_ * loc.Row(),
-                                    tile_size_ * loc.Col(),
-                                    tile_size_ * loc.Row() +
-                                    2*tile_size_,
-                                    tile_size_ * loc.Col() +
+    cinder::gl::draw(texture, Rectf( loc.x,
+                                    loc.y, loc.x + 2 * tile_size_, loc.y +
                                     2*tile_size_));
 }
   void MyApp::DrawBackground() {
@@ -162,5 +214,4 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
         loadImage(cinder::app::loadAsset(path)));
     cinder::gl::draw(texture, Rectf(getWindowBounds()));
   }
-
   }  // namespace myapp

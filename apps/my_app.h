@@ -11,6 +11,7 @@ namespace myapp {
 using namespace cinder::app;
 class MyApp : public cinder::app::App {
  public:
+  MyApp();
   void setup();
   void mouseDown(MouseEvent event);
   void mouseUp(MouseEvent event);
@@ -32,7 +33,6 @@ class MyApp : public cinder::app::App {
   const int kTimeChange = 2;
   const double kDoubleEqualityChecker = 0.001;
   int number_of_particles_ = 5;
-
   void DrawBackground();
 };
 

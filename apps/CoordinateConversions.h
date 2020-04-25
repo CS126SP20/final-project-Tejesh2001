@@ -12,8 +12,8 @@ using namespace ci;
 namespace conversions {
 			
 static float GetScaling() {
-  static float scaling = 50.0f;
-  return scaling;
+  const static float kScaling = 50.0f;
+  return kScaling;
 }
 			
 static vec2 ToScreen( b2Vec2 fin )

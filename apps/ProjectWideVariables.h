@@ -14,6 +14,7 @@ const float kBoxYMin = 10.0f;
 const float kBoxYMax = 20.0f;
 const int kPlayerHeight = 15;
 const int kPlayerWidth = 15;
+const float kScalingFactor = 50;
 //TODO NAMING CONVENTION
 static int color_change = 0;
 }
