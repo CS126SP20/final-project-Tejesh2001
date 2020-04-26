@@ -10,7 +10,7 @@
 
 #include "ParticleController.h"
 #include "direction.h"
-#include "player.h"
+#include "mylibrary/player.h"
 
 namespace myapp {
 
@@ -44,9 +44,6 @@ class Engine {
   void Step(b2World& world, ParticleController& particle_controller,
             int number_of_particles);
  private:
-  Location GetRandomLocation();
-  std::set<Location> GetOccupiedTiles();
-
  private:
   Direction direction_;
   std::uniform_real_distribution<double> uniform_;

@@ -12,18 +12,13 @@
 #include <vector>
 class Bullet {
  public:
+  Bullet();
   b2Body* getBody() const;
-
+  void SetBody(b2Body* body);
  public:
-  Bullet(b2World &world, b2Vec2 position);
-  void CreateBody(b2World &world);
   void draw();
-  void update(std::vector<Bullet> &bullets);
-
 
  private:
-  b2World* world_;
-  b2Vec2 position_;
   b2Body* body_;
 };
 

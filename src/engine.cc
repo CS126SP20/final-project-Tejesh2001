@@ -1,6 +1,6 @@
 // Copyright (c) 2020 CS126SP20. All rights reserved.
 
-#include "engine.h"
+#include "mylibrary/engine.h"
 
 #include <Box2D/Dynamics/b2World.h>
 #include <cinder/app/AppBase.h>
@@ -10,11 +10,9 @@
 #include <random>
 #include <set>
 #include <stdexcept>
-
-#include "ParticleController.h"
-#include "ProjectWideVariables.h"
-#include "direction.h"
-#include "location.h"
+#include "mylibrary/ParticleController.h"
+#include "mylibrary/ProjectWideVariables.h"
+#include "mylibrary/direction.h"
 
 namespace myapp {
 using namespace global;
@@ -37,7 +35,7 @@ b2Vec2 FromDirection(const Direction direction) {
 Player Engine::GetPlayer() const { return player_; }
 
 void Engine::Reset() {
-  Location location(cinder::app::getWindowCenter().x,
+   b2Vec2 location(cinder::app::getWindowCenter().x,
       cinder::app::getWindowHeight());
 //  player_.SetLoc(location);
 }
@@ -58,9 +56,9 @@ particle_controller, int number_of_particles) {
   std::list<Particle> particle_list = particle_controller
       .GetParticles();
   for (Particle particle : particle_list) {
-    cinder::vec2 screen_position = cinder::vec2(particle.body->GetPosition().x,
+    cinder::vec2 screen_position = cinder::vec2(particle.GetBody()->GetPosition().x,
         particle
-        .body->GetPosition().y);
+        .GetBody()->GetPosition().y);
     printf("Float value is %f %f \n", GetPlayer().GetLoc().x/kScalingFactor,
            GetPlayer().GetLoc().y/kScalingFactor);
     printf("vec2 value is %d %d\n", static_cast<int>(screen_position.x),
@@ -70,7 +68,6 @@ particle_controller, int number_of_particles) {
         && static_cast<int>(screen_position.y) ==
                static_cast<int>(GetPlayer().GetLoc().y
         /kScalingFactor)) {
-      
       // cinder::gl::drawSolidCircle(getWindowCenter(), 20);
       _exit(0);
     }

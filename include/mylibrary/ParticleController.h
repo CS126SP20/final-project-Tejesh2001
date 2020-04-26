@@ -1,13 +1,12 @@
 #pragma once
-#include <Box2D/Box2d.h>
+#include <Box2D/Box2D.h>
 
 #include <list>
 #include <vector>
 
-#include "Particle.h"
+#include "mylibrary/Particle.h"
 
-
-	class ParticleController {
+class ParticleController {
 	  int wave_controller{};
 	public:
 		ParticleController();

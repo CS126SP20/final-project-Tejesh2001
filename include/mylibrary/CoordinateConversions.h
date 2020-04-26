@@ -1,12 +1,12 @@
 #pragma once
 #include <cinder/gl/gl.h>
 
+#include "../../apps/my_app.h"
 #include "Box2D/Box2D.h"
 #include "CoordinateConversions.h"
-#include "ParticleController.h"
 #include "cinder/Vector.h"
 #include "cinder/app/AppBase.h"
-#include "my_app.h"
+#include "mylibrary/ParticleController.h"
 //Code derived from https://box2d.org/posts/2011/12/pixels/
 using namespace ci;
 namespace conversions {

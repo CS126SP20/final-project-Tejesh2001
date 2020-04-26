@@ -1,5 +1,5 @@
 #pragma once
-#include <Box2D/Box2d.h>
+#include <Box2D/Box2D.h>
 #include <cinder/Timer.h>
 
 #include "cinder/Color.h"
@@ -14,16 +14,20 @@ class Particle {
 
 		// store a pointer to the particle
 		// in the physics world from the main app
-		b2Body* body;
-		ci::Color color;
+               private:
+		b2Body* body_;
 		ci::vec2 size;
 		//const int kLifespan = 50;
-                int lifespan_ = 150;
+                int lifespan_ = 50;
+
+               public:
+                b2Body* GetBody() const;
+                void SetBody(b2Body* body);
+                bool IsDead() const;
+
+               private:
                 bool is_dead_;
                 int age_;
                 cinder::Timer timer;
 
     };
-	
-
-

@@ -2,10 +2,10 @@
 #include <Box2D/Box2D.h>
 #include <cinder/gl/gl.h>
 
+#include "../../apps/my_app.h"
 #include "CoordinateConversions.h"
 #include "ParticleController.h"
 #include "cinder/app/AppBase.h"
-#include "my_app.h"
 
 namespace global {
 const float kBoxXMin = 10.0f;

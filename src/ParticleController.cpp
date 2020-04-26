@@ -1,19 +1,19 @@
 #pragma once
-#include "ParticleController.h"
+#include "mylibrary/ParticleController.h"
 
 #include <cinder/app/AppBase.h>
 
-#include "CoordinateConversions.h"
-#include "ProjectWideVariables.h"
-#include "Particle.h"
 #include "cinder/Rand.h"
 #include "cinder/Vector.h"
+#include "mylibrary/CoordinateConversions.h"
+#include "mylibrary/Particle.h"
+#include "mylibrary/ProjectWideVariables.h"
 
 using namespace ci;
 using std::list;
 
 
-ParticleController::ParticleController(){};
+ParticleController::ParticleController()= default;;
 void ParticleController::setup(b2World &my_world)
 {
   world_ = &my_world;
@@ -22,8 +22,8 @@ void ParticleController::update()
 {
   for (auto p = particles.begin();
   p != particles.end();) {
-    if (!particles.empty() && p->is_dead_) {
-     world_->DestroyBody(p->body);
+    if (!particles.empty() && p->IsDead()) {
+     world_->DestroyBody(p->GetBody());
      p = particles.erase(p);
     } else {
       p->update();
@@ -95,7 +95,7 @@ void ParticleController::addParticles(int amount) {
 b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
   Particle enemy;
   bodyDef.userData = &enemy;
-  enemy.body = world_->CreateBody(&bodyDef);
+  enemy.SetBody(world_->CreateBody(&bodyDef));
   b2PolygonShape dynamic_box;
   dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(global::kBoxDimensions
                                                            .x),
@@ -103,10 +103,10 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
                                                            .y));
   b2FixtureDef fixture_def;
   fixture_def.shape = &dynamic_box;
-  fixture_def.density = 100.0f;
+  fixture_def.density = 0.3f;
   fixture_def.friction = 0.3f;
   fixture_def.restitution = 0.5f;  // bounce
-  enemy.body->CreateFixture(&fixture_def);
+  enemy.GetBody()->CreateFixture(&fixture_def);
   enemy.setup(global::kBoxDimensions);
   particles.push_back(enemy);
   return bodyDef;
