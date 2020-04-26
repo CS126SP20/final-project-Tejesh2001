@@ -143,8 +143,8 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
       break;
       exit(6);
     } else {
-      //  particle->update();
+       particle->update();
       ++particle;
     }
-  }*/
-}
+  }
+}*/

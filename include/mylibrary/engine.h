@@ -42,7 +42,7 @@ class Engine {
 
   Player GetPlayer() const;
   void SetLocation();
-  void Step(b2World& world, ParticleController& particle_controller,
+  bool Step(b2World& world, ParticleController& particle_controller,
             std::vector<Bullet>& bullets);
  private:
  private:

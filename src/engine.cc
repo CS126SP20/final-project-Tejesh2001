@@ -46,7 +46,7 @@ Engine::Engine(Player player) : player_(player) {
   player_.SetLoc(player.GetLoc());
 }
 
-void Engine::Step(b2World& world, ParticleController&
+bool Engine::Step(b2World& world, ParticleController&
 particle_controller, std::vector<Bullet>& bullets) {
   // Move physics world
   float time_step = 1.0f / 60.0f;
@@ -70,15 +70,17 @@ particle_controller, std::vector<Bullet>& bullets) {
         static_cast<int>(screen_position.y) ==
             static_cast<int>(GetPlayer().GetLoc().y / kScalingFactor)) {
       // cinder::gl::drawSolidCircle(getWindowCenter(), 20);
-      _exit(0);
+      return true;
+    //  _exit(0);
     }
   }
-    for (Bullet bullet : bullets) {
+  return false;
+   /*for (Bullet bullet : bullets) {
       if (particle_list.empty()) {
         break;
       }
       particle_controller.CheckForCollisionWithBullet(bullet);
-    }
+    }*/
 }
 
 

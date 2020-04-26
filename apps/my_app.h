@@ -34,6 +34,12 @@ class MyApp : public cinder::app::App {
   const double kDoubleEqualityChecker = 0.001;
   int number_of_particles_ = 5;
   void DrawBackground();
+  template <typename C>
+  void PrintText(const std::string& text, const C& color,
+                 const glm::ivec2& size, const glm::vec2& loc);
+  void CreateCeiling() const;
+  void CreateLeftWall() const;
+  void CreateRightWall() const;
 };
 
 }  // namespace myapp
