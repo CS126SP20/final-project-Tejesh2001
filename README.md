@@ -31,7 +31,7 @@ WEEK | Game Engine | UI | Graphics
 -----|--------|----|--------
 1    |Implement tracking of incoming enemies.Implement shooting bullets for player |Game Screen displays moving circles for enemies|No interaction available                 
 2    |Implement different types of enemies with differences in skill level. Implement player movement| Game screen displays  circles for enemies and a movable player | The player can be moved using WASD keys.  
-3    |Implement richocheting of bullets on colliding with the enemy once and then vanishing if it hits the walls | Game screen displayes player, enemies and bullets | The player can be moved using WASD keys and bullets can be fired using the Enter key/Right mouse button
+3    |Implement richocheting of bullets on colliding with the enemy once and then vanishing if it hits the walls. Implenment game timer which tracks the amount of time you played the game, adn displays it on the screen in the end | Game screen displayes player, enemies and bullets | The player can be moved using WASD keys and bullets can be fired using the Enter key/Right mouse button
 
 I will be following graybox testing throughout this project.
 
