@@ -8,13 +8,13 @@
 #include "mylibrary/Particle.h"
 
 class ParticleController {
-	  int wave_controller{};
+	  int game_score_;
 	public:
 		ParticleController();
 		// pass the physics world from the main app by reference
 		void setup(b2World &my_world);
 		void update();
-                void CheckForCollisionWithBullet(Bullet bullet);
+                void CheckForCollisionWithBullet(b2ContactEdge* edge);
 
 
 		void draw();

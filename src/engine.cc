@@ -74,13 +74,19 @@ particle_controller, std::vector<Bullet>& bullets) {
     //  _exit(0);
     }
   }
+   for (Bullet bullet : bullets) {
+    if (particle_controller.GetParticles().empty()) {
+      break;
+    }
+    for (b2ContactEdge* edge = bullet.getBody()->GetContactList(); edge;
+         edge = edge->next)
+
+    {
+      particle_controller.CheckForCollisionWithBullet(edge);
+    }
+  }
+
   return false;
-   /*for (Bullet bullet : bullets) {
-      if (particle_list.empty()) {
-        break;
-      }
-      particle_controller.CheckForCollisionWithBullet(bullet);
-    }*/
 }
 
 

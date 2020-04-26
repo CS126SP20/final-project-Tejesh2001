@@ -13,7 +13,9 @@ using namespace ci;
 using std::list;
 
 
-ParticleController::ParticleController()= default;;
+ParticleController::ParticleController(){
+  game_score_ = 0;
+}
 void ParticleController::setup(b2World &my_world)
 {
   world_ = &my_world;
@@ -39,7 +41,6 @@ void ParticleController::update()
   }*/
 
   //Used for enemies later on
-  wave_controller++;
 }
 
 void ParticleController::draw()
@@ -115,36 +116,23 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
  std::list<Particle> &ParticleController::GetParticles() {
   return particles;
 }
-/*void ParticleController::CheckForCollisionWithBullet(Bullet bullet) {
+void ParticleController::CheckForCollisionWithBullet(b2ContactEdge* edge) {
 
+  printf("game score now is %u \n", game_score_);
   for (auto particle = particles.begin();
        particle != particles.end();) {
-    printf("bullet location %d \n",
-           static_cast<int>(bullet.getBody()->GetPosition().y));
-    printf("particle location %d \n",
-           static_cast<int>((particle->GetBody()
-               ->GetPosition().y)));
-    if (static_cast<int>(bullet.getBody()->GetPosition().x) ==
-        static_cast<int>((particle->GetBody()->GetPosition().x))
-        &&
-        static_cast<int>(bullet.getBody()->GetPosition().y) ==
-        static_cast<int>((particle->GetBody()->GetPosition().y))) {
-
-      printf("bullet location %d \n",
-             static_cast<int>(bullet.getBody()->GetPosition().y));
-      printf("particle location %d \n",
-             static_cast<int>((particle->GetBody()
-                 ->GetPosition().y)));
-      world_->DestroyBody(particle->GetBody());
-      particle = particles.erase(particle);
-     // exit(6);
+    if (edge->other == particle->GetBody() && edge->contact->IsTouching())
+    {
+      // Do what you want here
+    //     world_->DestroyBody(particle->GetBody());
+   //   particle = particles.erase(particle);
+      //exit(6);
+      game_score_++;
+      printf("game score now is %u \n", game_score_);
       break;
-      // particle_controller.update();
-      break;
-      exit(6);
     } else {
-       particle->update();
+      // particle->update();
       ++particle;
     }
   }
-}*/
+}
