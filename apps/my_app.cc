@@ -40,7 +40,7 @@ cinder::Timer timer_enemy;
 b2World world_(gravity);
 Player player_(b2Vec2(400, 400));
 Engine engine_(player_);
-ParticleController particleController;
+ParticleController particle_controller_;
 BulletController bullet_controller_;
 std::vector <Bullet> bullets;
 MyApp::MyApp() {
@@ -73,12 +73,12 @@ void MyApp::setup() {
   b2FixtureDef fixture_def;
   groundBody->CreateFixture(&groundBox, 0.0);
 
-  // pass world to ParticleController
+  // pass world to particle_controller_
   timer_.start(0);
   timer_enemy.start(0);
-  particleController.setup(world_);
+  particle_controller_.setup(world_);
   bullet_controller_.setup(world_);
-//  particleController.addParticles(1);
+//  particle_controller_.addParticles(1);
 
  // player_.SetLoc(getWindowCenter());
   //engine_.SetInitialPosition(getWindowCenter());
@@ -86,7 +86,7 @@ void MyApp::setup() {
 int c = 0;
 void MyApp::update() {
   /*if (is_mouse_pressed_) {
-   // particleController.addParticle(mouse_position_);
+   // particle_controller_.addParticle(mouse_position_);
    const b2Vec2 loc = engine_.GetPlayer().GetLoc();
    Bullet bullet(world_, loc);
    bullet.CreateBody(world_);
@@ -94,32 +94,29 @@ void MyApp::update() {
 
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
     number_of_particles_ += 1;
-    particleController.addParticles(number_of_particles_);
-   // particleController.addParticles(1);
+    particle_controller_.addParticles(number_of_particles_);
+   // particle_controller_.addParticles(1);
     timer_.start(0.0);
   }
   // Move physics world
  // bullets.clear();
   if (is_mouse_pressed_) {
-    // particleController.addParticle(mouse_position_);
+    // particle_controller_.addParticle(mouse_position_);
     const b2Vec2 loc = engine_.GetPlayer().GetLoc();
     bullet_controller_.addBullet(loc);
     //Bullet bullet(world_, loc);
   //  bullet.CreateBody(world_);
    // bullets.push_back(bullet);
   }
-  if (!bullet_controller_.GetBullets().empty()) {
-    printf("bullet location %f \n", (bullet_controller_.GetBullets()
-                                         [0].getBody()
-        ->GetPosition()).y);
-  }
   bullet_controller_.update(); //LOOK AT WHAT UPDATE FUNCTION DOES
   /*if (!bullets.empty()) {
   printf("bullet location %f \n", (bullets[0].getBody()
                                          ->GetPosition()).y);
  }*/
-  particleController.update();
-  engine_.Step(world_, particleController, number_of_particles_);
+  engine_.Step(world_, particle_controller_, bullet_controller_.GetBullets());
+
+  bullet_controller_.update();
+  particle_controller_.update();
  /* for (auto b = bullets.begin();
           b != bullets.end();) {
     if (!bullets.empty() &&
@@ -144,7 +141,7 @@ void MyApp::update() {
            ->GetPosition().y);
      }*/
   //printf("No of bullets outside the conditoion %d \n", bullets.size());
- //engine_.Step(world_, particleController, number_of_particles_);
+ //engine_.Step(world_, particle_controller_, number_of_particles_);
 }
 
 void MyApp::draw() {
@@ -163,7 +160,7 @@ void MyApp::draw() {
 
  // printf("No of bullets %i \n", bullets.size());
   bullet_controller_.draw();
-  particleController.draw();
+  particle_controller_.draw();
 }
 
 void MyApp::keyDown(KeyEvent event) {
@@ -202,7 +199,7 @@ void MyApp::keyDown(KeyEvent event) {
 
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
   if (event.isRightDown()) {
-    // particleController.addParticle(mouse_position_);
+    // particle_controller_.addParticle(mouse_position_);
     const b2Vec2 loc = engine_.GetPlayer().GetLoc();
     /*Bullet bullet(world_, loc);
     bullet.CreateBody(world_);

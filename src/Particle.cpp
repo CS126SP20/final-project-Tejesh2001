@@ -10,23 +10,16 @@
 
 //bool is_dead_ = false;
         Particle::Particle() {
-          age_ = 0;
           is_dead_ = false;
-          timer.start(0);
         }
 
 	void Particle::setup(vec2 boxSize) {
 		size = boxSize;
 	}
 	void Particle::update() {
-	    age_++;
-         // printf("vec2 value is %d%d\n", age_, is_dead_);
-            if (timer.getSeconds() > 10 && lifespan_ > 30) {
-              lifespan_ -= 20;
-            }
-
-	    if (age_ > lifespan_ || body_->GetPosition().y > 15
-              || body_->GetPosition().x >15 || body_->GetPosition().x < 0) {
+	    if (body_->GetPosition().y > 15
+              || body_->GetPosition().x >= 16 || body_->GetPosition().x <= 0.5)
+          {
 	     is_dead_ = true;
             // exit(3);
              // check_ = 1;
@@ -42,10 +35,6 @@
 		gl::pushMatrices();
 		gl::translate( pos );
 		gl::rotate(t);
-                //ciAnimatedGifRef  mGif;
-               // mGif = ciAnimatedGif::create(cinder::app::loadAsset
-               //                              ("ezgif.com-crop.gif") );
-               // mGif->draw();
 		Rectf rect(-size.x, -size.y, size.x, size.y);
 		auto load = loadImage(cinder::app::loadAsset("fire.png"));
 		cinder::gl::Texture2dRef image =
@@ -64,3 +53,6 @@
           return is_dead_;
         }
 
+        void Particle::SetIsDead(bool is_dead) {
+          is_dead_ = is_dead;
+        }

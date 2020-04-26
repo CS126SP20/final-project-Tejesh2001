@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 
+#include "Bullet.hpp"
 #include "mylibrary/Particle.h"
 
 class ParticleController {
@@ -13,6 +14,9 @@ class ParticleController {
 		// pass the physics world from the main app by reference
 		void setup(b2World &my_world);
 		void update();
+                void CheckForCollisionWithBullet(Bullet bullet);
+
+
 		void draw();
 		void removeAll();
                 void addParticles(int amount);
@@ -27,4 +31,6 @@ class ParticleController {
                 std::list<Particle> &GetParticles();
                private:
                 b2BodyDef &CreateBody(b2BodyDef &bodyDef);
-        };
+
+                void CheckForCollisionWithBullet();
+};

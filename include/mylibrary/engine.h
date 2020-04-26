@@ -8,6 +8,7 @@
 #include <random>
 #include <set>
 
+#include "Bullet.hpp"
 #include "ParticleController.h"
 #include "direction.h"
 #include "mylibrary/player.h"
@@ -42,7 +43,7 @@ class Engine {
   Player GetPlayer() const;
   void SetLocation();
   void Step(b2World& world, ParticleController& particle_controller,
-            int number_of_particles);
+            std::vector<Bullet>& bullets);
  private:
  private:
   Direction direction_;

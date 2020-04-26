@@ -95,6 +95,7 @@ void ParticleController::addParticles(int amount) {
 b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
   Particle enemy;
   bodyDef.userData = &enemy;
+  bodyDef.bullet = true;
   enemy.SetBody(world_->CreateBody(&bodyDef));
   b2PolygonShape dynamic_box;
   dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(global::kBoxDimensions
@@ -114,4 +115,36 @@ b2BodyDef &ParticleController::CreateBody(b2BodyDef &bodyDef) {
  std::list<Particle> &ParticleController::GetParticles() {
   return particles;
 }
+/*void ParticleController::CheckForCollisionWithBullet(Bullet bullet) {
 
+  for (auto particle = particles.begin();
+       particle != particles.end();) {
+    printf("bullet location %d \n",
+           static_cast<int>(bullet.getBody()->GetPosition().y));
+    printf("particle location %d \n",
+           static_cast<int>((particle->GetBody()
+               ->GetPosition().y)));
+    if (static_cast<int>(bullet.getBody()->GetPosition().x) ==
+        static_cast<int>((particle->GetBody()->GetPosition().x))
+        &&
+        static_cast<int>(bullet.getBody()->GetPosition().y) ==
+        static_cast<int>((particle->GetBody()->GetPosition().y))) {
+
+      printf("bullet location %d \n",
+             static_cast<int>(bullet.getBody()->GetPosition().y));
+      printf("particle location %d \n",
+             static_cast<int>((particle->GetBody()
+                 ->GetPosition().y)));
+      world_->DestroyBody(particle->GetBody());
+      particle = particles.erase(particle);
+     // exit(6);
+      break;
+      // particle_controller.update();
+      break;
+      exit(6);
+    } else {
+      //  particle->update();
+      ++particle;
+    }
+  }*/
+}

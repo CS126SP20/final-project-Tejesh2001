@@ -24,8 +24,8 @@ void BulletController::update() {
   for (auto b = bullets.begin();
        b != bullets.end();) {
     if (!bullets.empty() &&
-        b->getBody()->GetPosition().y <= 0) {
-      printf("No of bullets %f \n", b->getBody()->GetPosition().y);
+        b->getBody()->GetPosition().y >= 15) {
+      //printf("No of bullets %f \n", b->getBody()->GetPosition().y);
       world_->DestroyBody(b->getBody());
       b = bullets.erase(b);
     } else {
@@ -62,8 +62,8 @@ b2BodyDef &BulletController::CreateBody(b2BodyDef &bodyDef) {
   bullet.SetBody(world_->CreateBody(&bodyDef));
   bullet.getBody()->SetBullet(true);
   b2PolygonShape dynamic_box;
-  float box_size_x = 20;
-  float box_size_y = 20;//mAKE CONSTANT LATER
+  float box_size_x = global::kBoxDimensions.x;
+  float box_size_y = global::kBoxDimensions.y;//mAKE CONSTANT LATER
   dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(box_size_x),
                        conversions::ToBox2DCoordinates(box_size_y));
   b2FixtureDef fixture_def;

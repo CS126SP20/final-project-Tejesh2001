@@ -15,9 +15,7 @@ class Bullet {
   Bullet();
   b2Body* getBody() const;
   void SetBody(b2Body* body);
- public:
   void draw();
-
  private:
   b2Body* body_;
 };

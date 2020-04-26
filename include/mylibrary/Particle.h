@@ -24,10 +24,9 @@ class Particle {
                 b2Body* GetBody() const;
                 void SetBody(b2Body* body);
                 bool IsDead() const;
+                void SetIsDead(bool is_dead);
 
                private:
                 bool is_dead_;
-                int age_;
-                cinder::Timer timer;
 
     };
