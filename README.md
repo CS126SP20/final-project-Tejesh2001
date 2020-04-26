@@ -6,7 +6,7 @@ Author: [Tejesh Bhaumik]
 
 **Desciption**
 
-My project will be a modified tower defense game where the tower is replaced by a movable player (Within a certain space). Incoming enemies come in from every direction. You can either dodge them or attack them with bullets. But there's a catch. The bullets will get kill the enemies but might ricochet and hit you.
+My project will be a modified shooter/tower defense game with a movable player/tower (Within a certain space). The player is Avatar Aang from the Avatar : The last Airbender TV show. Incoming enemies come in from the top. You can either dodge them or attack them with bullets. But there's a catch. The bullets will make them ricochet off of each other and they might hit the walls and then hit you again The objective of the game is to last the longest you can without getting hit.
 
 **Background knowledge and motivation**
 
@@ -31,7 +31,7 @@ WEEK | Game Engine | UI | Graphics
 -----|--------|----|--------
 1    |Implement tracking of incoming enemies.Implement shooting bullets for player |Game Screen displays moving circles for enemies|No interaction available                 
 2    |Implement different types of enemies with differences in skill level. Implement player movement| Game screen displays  circles for enemies and a movable player | The player can be moved using WASD keys.  
-3    |Implement richocheting of bullets on colliding with the enemy once and then vanishing if it hits the walls | Game screen displayes player, enemies and bullets | The player can be moved using WASD keys and bullets can be fired using the Enter key
+3    |Implement richocheting of bullets on colliding with the enemy once and then vanishing if it hits the walls | Game screen displayes player, enemies and bullets | The player can be moved using WASD keys and bullets can be fired using the Enter key/Right mouse button
 
 I will be following graybox testing throughout this project.
 
