@@ -1,15 +1,15 @@
 # Development
 
 ---
-Week 1 :
+**Week 1** 
 
-April 20th 
+April 20th :
 
 1) Integrated Box2D library 
 2) Set up Box2D world
 3) Created a Box2D box
 
-April 21st 
+April 21st :
 
 1) Added moving enemies as enemies
 2) Added mouse functionality
@@ -21,12 +21,10 @@ Week 1 deliverables completed
 
 **Week 2**
 
-Week 2 :
-
  Updates for ReadMe and DevelopmentMd have not been included in this sequence.
 They will be updated seperately in the end with the dates
 
-April 23rd
+April 23rd :
 
 1) Added working implementation of player which dies on getting hit by Box2D object
 
