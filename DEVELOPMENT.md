@@ -3,89 +3,77 @@
 ---
 Week 1 :
 
-Commit 1 : 
+April 20th 
 
 1) Integrated Box2D library 
 2) Set up Box2D world
 3) Created a Box2D box
 
-Commit 2 :
+April 21st 
 
 1) Added moving enemies as enemies
 2) Added mouse functionality
-
-Commit 3 :
-
 1) Added Box2D graphics for enemies
 2) Implemented firing system
+
+
 Week 1 deliverables completed
 
-Commit 4 :
-
-1) Committed unversioned files
+**Week 2**
 
 Week 2 :
 
-Commits for Updating ReadMe and DevelopmentMd have not been included in this sequence.
+ Updates for ReadMe and DevelopmentMd have not been included in this sequence.
 They will be updated seperately in the end with the dates
 
-Commit 5 :
-
-1) Added player but was buggy (Player kept on freezing and lagging)
-
-Commit 6 :
+April 23rd
 
 1) Added working implementation of player which dies on getting hit by Box2D object
 
-Commit 7 :
+April 24th :
 
-1) Added removal of block from screen to reduce lag
+1) Reduced lag
+2) Added removal of blocks and destruction of box
 
-Commit 8 :
+April 25th :
 
-1)Added body destruction
+1) Updated background image and removed the lag
+2) Updated ReadMe
+3) Added bullet and graphics on screen.
 
-Commit 9 :
+April 26th :
 
-1) Added background image and removed the lag
+1) Refactored classes
+2) Normalised gravity vector. Added a ceiling and walls
+3) Added bouncing airballs/bullets
+4) Added a player score implementation
+5) Updated ReadMe
+6) Updated DevelopmentMd
 
-Commit 10: 
+April 27th :
 
-1) Added bullets and enemy sprites to screen
+1) Added tests for engine class
+2) Changed project structure
+3) Added player score and player game time implemenation
 
-Commit 11 :
+April 28th :
 
-1) Removed further lag by adding more parameters for destruction
-2) Modularised classes
+1) Added tests for EnemyController class
+2) Added documentation
+3) Added unversioned files
+4) Updated Development Md
 
-Commit 12 :
+Week 2 deliverables completed
+Week 3 delivarable completed
+Added player movement throughout the screen (Extension 1)
+Added new feature such as player score and player game time
 
-1) Adding ceiling
-2) Streamlined game
-3) Normalised gravity vector
+TODO ::
 
-Commit 13 :
-
-1) Changed project structure
-
-Commit 14 :
-
-1) Added bouncing bullets
-
-Commit 15 :
-
-1) Added walls so that enemies bounce off of them
-
-ReadMe was updated on :
-April 25th
-April 26th
-DevelopmentMd was updated on :
-April 26th
-Week 2 and 3 deliverables completed. 1 extension completed.
-
-
-
-
+Add tests for remaining classes
+Add documentation
+Modularise further 
+Maybe add a menu screen function 
 
 
 
