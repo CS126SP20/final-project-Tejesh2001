@@ -27,14 +27,12 @@ class MyApp : public cinder::app::App {
 
  private:
   bool is_mouse_pressed_;
-  cinder::ivec2 mouse_position_;
   cinder::Timer timer_;
   const int kTimeChange = 2;
   const double kDoubleEqualityChecker = 0.001;
   cinder::Timer game_timer;
   bool max_score_check_;
-  const int kMaxNumberOfBullets = 50;
-  int number_of_bullets;
+  const int kMaxNumberOfBullets = 5;
   b2World* world_;
   Player* player_;
   Engine* engine_;

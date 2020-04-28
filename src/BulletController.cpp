@@ -10,12 +10,8 @@
 #include "mylibrary/ProjectWideVariables.h"
 
 b2World *world_;
-using namespace ci;
-using std::list;
-
 
 BulletController::BulletController()= default;
-
 void BulletController::setup(b2World &my_world)
 {
   world_ = &my_world;

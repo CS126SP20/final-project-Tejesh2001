@@ -1,15 +1,9 @@
 #pragma once
 #include "mylibrary/EnemyController.h"
-
 #include <cinder/app/AppBase.h>
-
 #include "cinder/Rand.h"
-#include "cinder/Vector.h"
 #include "mylibrary/CoordinateConversions.h"
-#include "mylibrary/Enemy.h"
-#include "mylibrary/ProjectWideVariables.h"
 
-using namespace ci;
 using std::list;
 
 EnemyController::EnemyController(){
@@ -44,10 +38,9 @@ void EnemyController::draw()
 
 
 void EnemyController::AddEnemies(int amount) {
-/*  float world_width =
-      (conversions::ToBox2DCoordinates(cinder::app::getWindowHeight()));*/
-  float world_width =
-      (conversions::ToBox2DCoordinates(800));
+ float world_width =
+      (conversions::ToBox2DCoordinates(static_cast<float>(
+          cinder::app::getWindowHeight())));
   for (int i = 0; i < amount; i++) {
     b2BodyDef body_def;
     body_def.type = b2_dynamicBody;

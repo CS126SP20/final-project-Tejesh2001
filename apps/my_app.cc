@@ -1,17 +1,12 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Tejesh Bhaumik]. All rights reserved.
 
 #include "my_app.h"
-// TODO RANDOMISE SPACING
-///TODO MAKE CELING AND WALLS HAVE AN INTERNAL SAME FUNCTION
-///Remove the word "using" everywhere
-///Fix Development.md
 int number_of_particles_ = 5;
 namespace myapp {
 using cinder::app::KeyEvent;
 MyApp::MyApp() {
-  b2Vec2 gravity(0, 50.0f);
+  b2Vec2 gravity(0, 10.0f);
   max_score_check_ = false;
-  number_of_bullets = 0;
   world_ = new b2World(gravity);
   player_ = new Player({getWindowCenter().x, getWindowCenter().y});
   engine_ = new Engine(*player_);
@@ -195,7 +190,8 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
 void MyApp::AddBullet() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
-  max_score_check_ = bullet_controller_.GetBullets().size() > 5;
+  max_score_check_ = bullet_controller_.GetBullets().size() >
+                     kMaxNumberOfBullets;
 }
 
   void MyApp::mouseUp(MouseEvent event) {
