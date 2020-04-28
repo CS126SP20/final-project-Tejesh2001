@@ -45,16 +45,16 @@ void Engine::Step(b2World& world, EnemyController&
 enemy_controller, std::vector<Bullet>& bullets) {
   std::list<Enemy> enemy_list = enemy_controller.GetEnemies();
 
-  FindBulletCollision(enemy_controller, bullets);
-  FindPlayerCollision(enemy_list);
-  if (is_game_over_) {
-    return;
-  }
   //Advancing the physics world
   float time_step = 1.0f / 60.0f;
   int velocity_iterations = 6;
   int position_iterations = 2;
   world.Step(time_step, velocity_iterations, position_iterations);
+  FindBulletCollision(enemy_controller, bullets);
+  FindPlayerCollision(enemy_list);
+  if (is_game_over_) {
+    return;
+  }
   is_game_over_ = false;
   return;
 }
@@ -88,7 +88,7 @@ void Engine::FindBulletCollision(EnemyController& enemy_controller,
          //Checks if the edge's fixture is touching the enemy
          if (edge->other == enemy->GetBody() && edge->contact->IsTouching())
          {
-           game_score_++;
+           ++game_score_;
            break;
          } else {
            ++enemy;

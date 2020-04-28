@@ -195,10 +195,7 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
 void MyApp::AddBullet() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
-  number_of_bullets++;
-  if (number_of_bullets > kMaxNumberOfBullets) {
-    max_score_check_ = true;
-  }
+  max_score_check_ = bullet_controller_.GetBullets().size() > 5;
 }
 
   void MyApp::mouseUp(MouseEvent event) {
