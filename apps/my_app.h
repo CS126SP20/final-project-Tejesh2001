@@ -7,6 +7,10 @@
 #include <cinder/Rand.h>
 #include <cinder/app/App.h>
 #include <cinder/gl/gl.h>
+#include "mylibrary/direction.h"
+#include "mylibrary/engine.h"
+#include <mylibrary/BulletController.hpp>
+#include <mylibrary/ProjectWideVariables.h>
 namespace myapp {
 using namespace cinder::app;
 class MyApp : public cinder::app::App {
@@ -15,8 +19,6 @@ class MyApp : public cinder::app::App {
   void setup();
   void mouseDown(MouseEvent event);
   void mouseUp(MouseEvent event);
-  void mouseMove(MouseEvent event);
-  void mouseDrag(MouseEvent event);
   void keyDown(KeyEvent event);
   void update();
   void draw();
@@ -24,15 +26,20 @@ class MyApp : public cinder::app::App {
   void DrawPlayer();
 
  private:
-  float width_;
-  float height_;
   bool is_mouse_pressed_;
   cinder::ivec2 mouse_position_;
   cinder::Timer timer_;
-  cinder:: ivec2 mouse_velocity_;
   const int kTimeChange = 2;
   const double kDoubleEqualityChecker = 0.001;
-  int number_of_particles_ = 5;
+  cinder::Timer game_timer;
+  bool max_score_check_;
+  const int kMaxNumberOfBullets = 50;
+  int number_of_bullets;
+  b2World* world_;
+  Player* player_;
+  Engine* engine_;
+  EnemyController enemy_controller_;
+  BulletController bullet_controller_;
   void DrawBackground();
   template <typename C>
   void PrintText(const std::string& text, const C& color,
@@ -40,6 +47,7 @@ class MyApp : public cinder::app::App {
   void CreateCeiling() const;
   void CreateLeftWall() const;
   void CreateRightWall() const;
+  void AddBullet();
 };
 
 }  // namespace myapp

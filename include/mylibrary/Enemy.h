@@ -4,9 +4,9 @@
 
 #include "cinder/Color.h"
 
-class Particle {
+class Enemy {
 	public:
-		Particle( );
+         Enemy( );
 		// pass in a pointer to the particle
 		void setup(cinder::vec2 boxSize);
 		void update();
@@ -18,7 +18,9 @@ class Particle {
 		b2Body* body_;
 		ci::vec2 size;
 		//const int kLifespan = 50;
-                int lifespan_ = 50;
+                int lifespan_ = 100;
+                int age_ = 0;
+                cinder::Timer timer_;
 
                public:
                 b2Body* GetBody() const;

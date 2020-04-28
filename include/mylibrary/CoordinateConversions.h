@@ -6,7 +6,7 @@
 #include "CoordinateConversions.h"
 #include "cinder/Vector.h"
 #include "cinder/app/AppBase.h"
-#include "mylibrary/ParticleController.h"
+#include "mylibrary/EnemyController.h"
 //Code derived from https://box2d.org/posts/2011/12/pixels/
 using namespace ci;
 namespace conversions {

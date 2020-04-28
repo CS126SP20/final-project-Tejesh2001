@@ -12,14 +12,13 @@
 #include <set>
 #include <stdexcept>
 
-#include "mylibrary/ParticleController.h"
+#include "mylibrary/EnemyController.h"
 #include "mylibrary/ProjectWideVariables.h"
 #include "mylibrary/direction.h"
 
 namespace myapp {
 using namespace global;
-// Converts a direction into a delta location.
-b2Vec2 FromDirection(const Direction direction) {
+b2Vec2 Engine::FromDirection(const Direction direction) {
   switch (direction) {
     case Direction::kUp:
       return {0, -kScalingFactor};
@@ -36,59 +35,69 @@ b2Vec2 FromDirection(const Direction direction) {
 
 Player Engine::GetPlayer() const { return player_; }
 
-void Engine::Reset() {
-   b2Vec2 location(cinder::app::getWindowCenter().x,
-      cinder::app::getWindowHeight());
-//  player_.SetLoc(location);
-}
 
 Engine::Engine(Player player) : player_(player) {
   player_.SetLoc(player.GetLoc());
+  is_game_over_ = false;
+  game_score_ = 0;
 }
+void Engine::Step(b2World& world, EnemyController&
+enemy_controller, std::vector<Bullet>& bullets) {
+  std::list<Enemy> enemy_list = enemy_controller.GetEnemies();
 
-bool Engine::Step(b2World& world, ParticleController&
-particle_controller, std::vector<Bullet>& bullets) {
-  // Move physics world
+  FindBulletCollision(enemy_controller, bullets);
+  FindPlayerCollision(enemy_list);
+  if (is_game_over_) {
+    return;
+  }
+  //Advancing the physics world
   float time_step = 1.0f / 60.0f;
   int velocity_iterations = 6;
   int position_iterations = 2;
   world.Step(time_step, velocity_iterations, position_iterations);
-  /*std::list<particles::Particle> particle_list = particle_controller
-      .GetParticles();*/
-  std::list<Particle> particle_list = particle_controller.GetParticles();
-
-  for (auto& particle : particle_list) {
+  is_game_over_ = false;
+  return;
+}
+void Engine::FindPlayerCollision(const std::list<Enemy>& enemy_list) {
+  for (auto& particle : enemy_list) {
     cinder::vec2 screen_position =
         cinder::vec2(particle.GetBody()->GetPosition().x,
                      particle.GetBody()->GetPosition().y);
-    /*printf("Float value is %f %f \n", GetPlayer().GetLoc().x / kScalingFactor,
-           GetPlayer().GetLoc().y / kScalingFactor);
-    printf("vec2 value is %d %d\n", static_cast<int>(screen_position.x),
-           static_cast<int>(screen_position.y));*/
     if (static_cast<int>(screen_position.x) ==
             static_cast<int>(GetPlayer().GetLoc().x / kScalingFactor) &&
         static_cast<int>(screen_position.y) ==
             static_cast<int>(GetPlayer().GetLoc().y / kScalingFactor)) {
-      // cinder::gl::drawSolidCircle(getWindowCenter(), 20);
-      return true;
-    //  _exit(0);
+      is_game_over_ = true;
     }
   }
-   for (Bullet bullet : bullets) {
-    if (particle_controller.GetParticles().empty()) {
+}
+void Engine::FindBulletCollision(EnemyController& enemy_controller,
+                                 const std::vector<Bullet>& bullets)  {
+
+  //This loop goes through all the bullets
+  for (Bullet bullet : bullets) {
+    if (enemy_controller.GetEnemies().empty()) {
       break;
     }
-    for (b2ContactEdge* edge = bullet.getBody()->GetContactList(); edge;
-         edge = edge->next)
+    //This goes through all the points of contact of each bullet
+     for (b2ContactEdge* edge = bullet.GetBody()->GetContactList(); edge;
+         edge = edge->next) {
+       for (auto enemy = enemy_controller.GetEnemies().begin();
+            enemy != enemy_controller.GetEnemies().end();) {
+         //This iterates through all the enemies
+         //Checks if the edge's fixture is touching the enemy
+         if (edge->other == enemy->GetBody() && edge->contact->IsTouching())
+         {
+           game_score_++;
+           break;
+         } else {
+           ++enemy;
+         }
+       }
 
-    {
-      particle_controller.CheckForCollisionWithBullet(edge);
+     }
     }
-  }
-
-  return false;
 }
-
 
 void Engine::SetDirection(const Direction direction) {
   direction_ = direction;
@@ -100,5 +109,8 @@ void Engine::SetLocation() {
       (player_.GetLoc() + d_loc);
   player_.SetLoc(loc);
 }
+bool Engine::GetIsGameOver() { return is_game_over_; }
 
-}  // namespace snake
+int Engine::GetGameScore() { return game_score_; }
+
+}  // namespace myapp

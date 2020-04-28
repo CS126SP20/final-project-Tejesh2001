@@ -9,50 +9,48 @@
 #include <set>
 
 #include "Bullet.hpp"
-#include "ParticleController.h"
+#include "EnemyController.h"
 #include "direction.h"
 #include "mylibrary/player.h"
 
 namespace myapp {
 
-const int kBoardCoordinate = 5;
-
 // This is the game engine which is primary way to interact with the game.
 class Engine {
  public:
-  // Creates a new snake game of the given size.
-  Engine(size_t width, size_t height);
 
-  // Creates a new snake game of the given size, seeded.
-  Engine(size_t width, size_t height, unsigned seed);
+  explicit Engine(Player player);
 
-  Engine(float x, float y, Player player);
-  Engine(Player player);
-  // Executes a time step: moves the snake, etc.
- // void Step();
-
-  // Start the game over.
-  void Reset();
-
-  // Changes the direction of the snake for the next time step.
+  /** Changes the direction of the player for the next time step*/
   void SetDirection(Direction);
-
-  size_t GetScore() const;
-
-
-  Player GetPlayer() const;
+  auto FromDirection(const Direction direction) -> b2Vec2;
+  auto GetPlayer() const -> Player;
+  /**Sets location of player on Screen*/
   void SetLocation();
-  bool Step(b2World& world, ParticleController& particle_controller,
+  /** Executes a time step: checks for collisions.*/
+  void Step(b2World& world, EnemyController& enemy_controller,
             std::vector<Bullet>& bullets);
- private:
- private:
-  Direction direction_;
-  std::uniform_real_distribution<double> uniform_;
-  Player player_;
+  bool GetIsGameOver();
+  /**Find's if a bullet collided with an enemy. If it did, it updates
+   * the game score */
+  void FindBulletCollision(EnemyController& enemy_controller,
+                           const std::vector<Bullet>& bullets);
+  int Engine::GetGameScore();
 
+ private:
+  /**Sets direction of the player*/
+  Direction direction_;
+  /**Sets player object*/
+  Player player_;
+  /**boolean to check if the game is over*/
+  bool is_game_over_;
+  /**Check if a player collided with an object*/
+  void FindPlayerCollision(const std::list<Enemy>& enemy_list);
+  /**Updates the score of the game*/
+  int game_score_;
 
 };
 
-}  // namespace snake
+}  // namespace myapp
 
 #endif  // SNAKE_ENGINE_H_

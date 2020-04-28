@@ -12,10 +12,14 @@
 #include <vector>
 class Bullet {
  public:
+  /**Bullet constructor*/
   Bullet();
-  b2Body* getBody() const;
+  /**Sets he body for the bullet*/
   void SetBody(b2Body* body);
+  /**Renders bullet on screen*/
   void draw();
+  /**Getter for Body*/
+  b2Body* GetBody();
  private:
   b2Body* body_;
 };

@@ -11,7 +11,7 @@ Commit 1 :
 
 Commit 2 :
 
-1) Added moving particles as enemies
+1) Added moving enemies as enemies
 2) Added mouse functionality
 
 Commit 3 :
