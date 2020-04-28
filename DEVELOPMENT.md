@@ -68,10 +68,10 @@ Added new feature such as player score and player game time
 
 TODO ::
 
-Add tests for remaining classes
-Add documentation
-Modularise further 
-Maybe add a menu screen function 
+1) Add tests for remaining classes
+2) Add documentation
+3) Modularise further 
+4) Maybe add a menu screen function 
 
 
 
