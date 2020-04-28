@@ -71,8 +71,8 @@ TODO ::
 1) Add tests for remaining classes
 2) Add documentation
 3) Modularise further 
-4) Maybe add a menu screen function 
-
+4) implement my second extension
+5) Maybe add a menu screen
 
 
 
