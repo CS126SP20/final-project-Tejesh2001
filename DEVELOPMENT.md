@@ -46,7 +46,7 @@ April 26th :
 3) Added bouncing airballs/bullets
 4) Added a player score implementation
 5) Updated ReadMe
-6) Updated DevelopmentMd
+6) Updated Development.md
 
 April 27th :
 
@@ -60,6 +60,11 @@ April 28th :
 2) Added documentation
 3) Added unversioned files
 4) Updated Development Md
+
+April 29th :
+
+1) Added project proposal as a separate file 
+2) Updated ReadMe to reflect how to build the game and play it
 
 Week 2 deliverables completed
 Week 3 delivarable completed
