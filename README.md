@@ -16,7 +16,7 @@ The aim of the game is to last the longest and score the highest points
 **Dependencies**
 
 * CMake
-* MSVC
+* MSVC 2015
 * clang/clang++
 
 **Libraries used**
@@ -25,6 +25,10 @@ The aim of the game is to last the longest and score the highest points
 * Box2D
 * Cinder :: OpenGL
 
+To Build It :
+Download Cinder and set it up 
+https://libcinder.org/docs/guides/windows-setup/index.html
+Add Box2D to your blocks under src/cMake
 
 Control | Actions
 -----|--------------------
