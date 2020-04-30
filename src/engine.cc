@@ -32,7 +32,6 @@ b2Vec2 Engine::FromDirection(const Direction direction) {
   throw std::out_of_range("switch statement not matched");
 }
 
-
 Player Engine::GetPlayer() const { return player_; }
 
 
@@ -40,6 +39,7 @@ Engine::Engine(Player player) : player_(player) {
   player_.SetLoc(player.GetLoc());
   is_game_over_ = false;
   game_score_ = 0;
+  lives_ = 3;
 }
 void Engine::Step(b2World& world, EnemyController&
 enemy_controller, std::vector<Bullet>& bullets) {
@@ -59,6 +59,8 @@ enemy_controller, std::vector<Bullet>& bullets) {
   return;
 }
 void Engine::FindPlayerCollision(const std::list<Enemy>& enemy_list) {
+
+  //Correlates player position with enemy position. If found, it is game over
   for (auto& particle : enemy_list) {
     cinder::vec2 screen_position =
         cinder::vec2(particle.GetBody()->GetPosition().x,
@@ -67,7 +69,10 @@ void Engine::FindPlayerCollision(const std::list<Enemy>& enemy_list) {
             static_cast<int>(GetPlayer().GetLoc().x / kScalingFactor) &&
         static_cast<int>(screen_position.y) ==
             static_cast<int>(GetPlayer().GetLoc().y / kScalingFactor)) {
-      is_game_over_ = true;
+      lives_--;
+      if (lives_ == 0) {
+        is_game_over_ = true;
+      }
     }
   }
 }
@@ -112,5 +117,7 @@ void Engine::SetLocation() {
 bool Engine::GetIsGameOver() { return is_game_over_; }
 
 int Engine::GetGameScore() { return game_score_; }
+
+int Engine::GetLives() { return lives_; }
 
 }  // namespace myapp

@@ -22,7 +22,6 @@ class MyApp : public cinder::app::App {
   void keyDown(KeyEvent event);
   void update();
   void draw();
-
   void DrawPlayer();
 
  private:
@@ -32,7 +31,8 @@ class MyApp : public cinder::app::App {
   const double kDoubleEqualityChecker = 0.001;
   cinder::Timer game_timer;
   bool max_score_check_;
-  const int kMaxNumberOfBullets = 5;
+  const int kMaxNumberOfBullets = 2;
+  int number_of_particles_ = 5;
   b2World* world_;
   Player* player_;
   Engine* engine_;
@@ -42,10 +42,8 @@ class MyApp : public cinder::app::App {
   template <typename C>
   void PrintText(const std::string& text, const C& color,
                  const glm::ivec2& size, const glm::vec2& loc);
-  void CreateCeiling() const;
-  void CreateLeftWall() const;
-  void CreateRightWall() const;
   void AddBullet();
+  void PlayBackGroundMusic();
 };
 
 }  // namespace myapp

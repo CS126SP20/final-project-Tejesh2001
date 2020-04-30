@@ -1,14 +1,16 @@
 // Copyright (c) 2020 [Tejesh Bhaumik]. All rights reserved.
 
 #include "my_app.h"
-int number_of_particles_ = 5;
+#include <mylibrary/WorldCreator.hpp>
+#include <cinder/audio/Voice.h>
 namespace myapp {
 using cinder::app::KeyEvent;
+cinder::audio::VoiceRef background_audio_file;
 MyApp::MyApp() {
-  b2Vec2 gravity(0, 10.0f);
+  b2Vec2 gravity(0, 80.0f);
   max_score_check_ = false;
   world_ = new b2World(gravity);
-  player_ = new Player({getWindowCenter().x, getWindowCenter().y});
+  player_ = new Player({app::getWindowCenter().x, app::getWindowCenter().y});
   engine_ = new Engine(*player_);
 }
 
@@ -16,96 +18,34 @@ void MyApp::setup() {
   is_mouse_pressed_ = false;
   // first define a ground box (no mass)
   // 1. define a body
-  CreateCeiling();
-  CreateLeftWall();
-  CreateRightWall();
-
+  WorldCreator world_creator;
+  world_creator.CreateCeiling(*world_);
+  world_creator.CreateLeftWall(*world_);
+  world_creator.CreateRightWall(*world_);
   // pass world to enemy_controller_
   timer_.start(0);
   game_timer.start(0);
   enemy_controller_.setup(*world_);
   bullet_controller_.setup(*world_);
-//  enemy_controller_.AddEnemies(1);
+  PlayBackGroundMusic();
+  //  enemy_controller_.AddEnemies(1);
 
  // player_.SetLoc(getWindowCenter());
   //engine_->SetInitialPosition(getWindowCenter());
-}
-
-
-void MyApp::CreateCeiling() const {
-  b2BodyDef ground_body_def;
-  ground_body_def.position.Set(
-      conversions::ToBox2DCoordinates(static_cast<float>(app::getWindowWidth())),
-     -1.0);
-  // 2. use world to create body
-  b2Body* ground_body = world_->CreateBody(&ground_body_def);
-
-  // 3. define fixture
-  b2PolygonShape ground_box;
-
-  //  printf("No of bullets %f \n", b->GetBody()->GetPosition().y);
-
-  ground_box.SetAsBox(conversions::ToBox2DCoordinates(static_cast<float>
-                                                     (app::getWindowWidth
-                                                     ())),1);
-  // engine_->SetInitialPosition(getWindowCenter());
-  // size the ground
-  // 4. create fixture on body
-  ground_body->CreateFixture(&ground_box, 0.0);
-}
-void MyApp::CreateLeftWall() const {
-
-  b2BodyDef wall_left;
-  float right_most_index =
-      conversions::ToBox2DCoordinates(app::getWindowWidth());
-  float upper_most_index =
-      conversions::ToBox2DCoordinates(app::getWindowHeight() -
-                                      global::kScalingFactor);
-
-  wall_left.position.Set(0.0, upper_most_index);
-  b2Body* wall_body = world_->CreateBody(&wall_left);
-  // 3. define fixture
-  b2PolygonShape wall_box;
-  wall_box.SetAsBox(1, right_most_index);
-  // engine_->SetInitialPosition(getWindowCenter());
-  // size the ground
-  // 4. create fixture on body
-  wall_body->CreateFixture(&wall_box, 0.0);
-}
-void MyApp::CreateRightWall() const {
-
-  b2BodyDef wall_right;
-  float right_most_index =
-      conversions::ToBox2DCoordinates(app::getWindowWidth());
-  float upper_most_index =
-      conversions::ToBox2DCoordinates(app::getWindowHeight() - 50);
-
-  wall_right.position.Set(right_most_index, upper_most_index);
-  // pos of ground
-
-  // 2. use world to create body
-  b2Body* wall_body = world_->CreateBody(&wall_right);
-
-  // 3. define fixture
-  b2PolygonShape wall_box;
-
-  //  printf("No of bullets %f \n", b->GetBody()->GetPosition().y);
-
-  wall_box.SetAsBox(1, right_most_index);
-  // engine_->SetInitialPosition(getWindowCenter());
-  // size the ground
-  // 4. create fixture on body
-  wall_body->CreateFixture(&wall_box, 0.0);
 }
 int c = 0;
 void MyApp::update() {
   if (game_timer.isStopped()) {
     return;
   }
+  max_score_check_ = bullet_controller_.GetBullets().size() >=
+                     kMaxNumberOfBullets;
   //There is a wave of enemies every two seconds. Each wave has one enemy
   // more than the previous one
   if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
-    number_of_particles_ += 1;
+
+    if (number_of_particles_ < 10)
+    number_of_particles_ += 1; //Increasing number of enemies every wave by 1
     enemy_controller_.AddEnemies(number_of_particles_);
     timer_.start(0.0);
   }
@@ -124,22 +64,33 @@ void MyApp::draw() {
   DrawPlayer();
   bullet_controller_.draw();
   enemy_controller_.draw();
-  const cinder::vec2 center = getWindowCenter();
+  const cinder::vec2 center = app::getWindowCenter();
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
+  PrintText("You have " + std::to_string(engine_->GetLives()) + " lives", color,
+            size, vec2 (app::getWindowWidth() - global::kScalingFactor * 2,
+                       static_cast<float>
+                                                  (app::getWindowHeight
+                                                   ()) -
+                                             global::kScalingFactor));
+
   if (max_score_check_) {
         PrintText("You have finished your airballs!", color, size,
-        vec2(getWindowWidth()/2, getWindowHeight() - global::kScalingFactor));
+        vec2(app::getWindowWidth()/2, static_cast<float>(app::getWindowHeight
+                                                                 ()) -
+                                             global::kScalingFactor));
   }
   if (engine_->GetIsGameOver()) {
     size_t row = 0;
     PrintText("Game Over :(", color, size, center);
     PrintText("Your time was " + std::to_string((game_timer.getSeconds())) +
               " seconds",
-              color, size, ivec2(getWindowCenter().x, getWindowCenter().y +
+              color, size, ivec2(app::getWindowCenter().x,
+                                 app::getWindowCenter().y +
                                  + global::kScalingFactor));
     PrintText("Your score was " + std::to_string(engine_->GetGameScore()),
-              color, size, ivec2(getWindowCenter().x, getWindowCenter().y +
+              color, size, ivec2(app::getWindowCenter().x,
+                                 app::getWindowCenter().y +
                                  2 * global::kScalingFactor));
     game_timer.stop();
   }
@@ -190,8 +141,8 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
 void MyApp::AddBullet() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
-  max_score_check_ = bullet_controller_.GetBullets().size() >
-                     kMaxNumberOfBullets;
+  printf("No of bullets %u \n ", static_cast<int>(bullet_controller_
+                                                      .GetBullets().size()));
 }
 
   void MyApp::mouseUp(MouseEvent event) {
@@ -212,11 +163,15 @@ void MyApp::AddBullet() {
         loadImage(cinder::app::loadAsset(path)));
     cinder::gl::draw(texture, Rectf(getWindowBounds()));
   }
-
+  void MyApp::PlayBackGroundMusic() {
+    auto source_file = cinder::audio::load
+        (cinder::app::loadAsset("music.mp3"));
+    background_audio_file = cinder::audio::Voice::create(source_file);
+    background_audio_file->start();
+  }
 template <typename C>
 void MyApp::PrintText(const std::string& text, const C& color, const
                          cinder::ivec2&size, const cinder::vec2& loc) {
-  cinder::gl::pushMatrices();
   cinder::gl::color(color);
   auto box = TextBox()
       .alignment(TextBox::CENTER)
@@ -231,6 +186,5 @@ void MyApp::PrintText(const std::string& text, const C& color, const
   const auto surface = box.render();
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);
-  cinder::gl::pushMatrices();
 }
 }  // namespace myapp

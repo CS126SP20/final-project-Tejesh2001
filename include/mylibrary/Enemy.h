@@ -8,7 +8,7 @@ class Enemy {
 	public:
          Enemy( );
 		// pass in a pointer to the particle
-		void setup(cinder::vec2 boxSize);
+		void setup(const cinder::vec2& boxSize);
 		void update();
 		void draw();
 
@@ -18,9 +18,9 @@ class Enemy {
 		b2Body* body_;
 		ci::vec2 size;
 		//const int kLifespan = 50;
-                int lifespan_ = 100;
+                int lifespan_ = 50;
                 int age_ = 0;
-                cinder::Timer timer_;
+                cinder::Timer timer_ = true;
 
                public:
                 b2Body* GetBody() const;

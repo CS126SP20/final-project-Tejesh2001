@@ -14,15 +14,18 @@ Enemy::Enemy() {
   timer_.start(0);
 }
 
-void Enemy::setup(vec2 boxSize) {
+void Enemy::setup(const vec2& boxSize) {
   size = boxSize;
 }
 void Enemy::update() {
    age_++;
    if (timer_.getSeconds() > 15 && lifespan_ > 10) {
    lifespan_ -= 10;
+   timer_.start(0);
    }
-  if (body_->GetPosition().y > 16 || age_ > lifespan_) {
+  if (body_->GetPosition().y > conversions::ToBox2DCoordinates
+           (static_cast<float>(app::getWindowHeight()))
+       || age_ > lifespan_) {
        is_dead_ = true;
   }
 }
@@ -39,14 +42,14 @@ void Enemy::draw() {
   cinder::gl::draw(image, rect);
   gl::popMatrices();
 }
-b2Body* Enemy::GetBody() const {
+auto Enemy::GetBody() const -> b2Body* {
   return body_;
 }
 void Enemy::SetBody(b2Body* body) {
   body_ = body;
 }
 
-bool Enemy::IsDead() const {
+auto Enemy::IsDead() const -> bool {
   return is_dead_;
 }
 

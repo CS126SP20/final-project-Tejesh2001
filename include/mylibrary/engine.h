@@ -15,7 +15,7 @@
 
 namespace myapp {
 
-// This is the game engine which is primary way to interact with the game.
+// This is the game engine which is the primary way to interact with the game.
 class Engine {
  public:
 
@@ -37,6 +37,7 @@ class Engine {
                            const std::vector<Bullet>& bullets);
   int Engine::GetGameScore();
 
+  int GetLives();
  private:
   /**Sets direction of the player*/
   Direction direction_;
@@ -48,7 +49,8 @@ class Engine {
   void FindPlayerCollision(const std::list<Enemy>& enemy_list);
   /**Updates the score of the game*/
   int game_score_;
-
+  /**Number of lives**/
+  int lives_;
 };
 
 }  // namespace myapp
