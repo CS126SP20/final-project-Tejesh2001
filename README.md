@@ -4,11 +4,6 @@
 
 Author: [Tejesh Bhaumik]
 
-
-
-
-
-
 **Desciption**
 
 Based loosely on the TV show Avatar : The Last Airbender. 
@@ -38,7 +33,7 @@ To Build It :
 
 2) Here is a basic tutorial on how to develop Cinder projects: https://libcinder.org/docs/guides/tour/hello_cinder_chapter1.html.
 
-3)Extract the downloaded Cinder zip folder into a folder. We’ll call this folder ~/Cinder throughout the instructions
+3) Extract the downloaded Cinder zip folder into a folder. We’ll call this folder ~/Cinder throughout the instructions
 
 4) Open the ~/Cinder folder in CLion and click the green build button. This will build libcinder. You only need to do this once per          machine. This build might take a while.
 
@@ -52,6 +47,18 @@ To use the CinderBlock Box2D
 * Reload CMakeLists.
 
 You're done setting up!
+
+**About Cinder**
+
+Cinder is a free and open source library which allows creative coding.If you want to know more, here is a link to the official website :
+
+https://libcinder.org/
+
+**About Box2D**
+
+Box2D is a physics library which allows us to simulate Newtonian mechanics with objects that follow Newtownian physics in a world that we set up. It allows for realistic action in my game. If you want to know more, here is a link to the official website :
+
+https://box2d.org/
 
 
 Control | Actions
