@@ -16,9 +16,8 @@ class Enemy {
 		// in the physics world from the main app
                private:
 		b2Body* body_;
-		ci::vec2 size;
-		//const int kLifespan = 50;
-                int lifespan_ = 50;
+                ci::vec2 size;
+                int lifespan_ = 60;
                 int age_ = 0;
                 cinder::Timer timer_ = true;
 

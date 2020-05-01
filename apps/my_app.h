@@ -28,7 +28,7 @@ class MyApp : public cinder::app::App {
   bool is_mouse_pressed_;
   cinder::Timer timer_;
   const int kTimeChange = 2;
-  const double kDoubleEqualityChecker = 0.001;
+  const double kEpsilon = 0.001;
   cinder::Timer game_timer;
   bool max_score_check_;
   const int kMaxNumberOfBullets = 2;
@@ -36,6 +36,7 @@ class MyApp : public cinder::app::App {
   b2World* world_;
   Player* player_;
   Engine* engine_;
+  static const int kMaxNumberOfEnemies = 10;
   EnemyController enemy_controller_;
   BulletController bullet_controller_;
   void DrawBackground();

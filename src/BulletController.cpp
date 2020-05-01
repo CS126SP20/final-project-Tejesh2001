@@ -19,14 +19,12 @@ void BulletController::setup(b2World &my_world)
 void BulletController::update() {
   for (auto b = bullets.begin();
        b != bullets.end();) {
-    if (!bullets.empty() && b->GetBody()->GetPosition().y >=
-                                conversions::ToBox2DCoordinates
-                                (static_cast<float>
-                                 (app::getWindowHeight()))) {
-      //printf("No of bullets %f \n", b->GetBody()->GetPosition().y);
+    if (!bullets.empty() && b->GetIsDead()) {
+      // printf("No of bullets %f \n", b->GetBody()->GetPosition().y);
       world_->DestroyBody(b->GetBody());
       b = bullets.erase(b);
     } else {
+      b->update();
       ++b;
     }
   }
@@ -73,7 +71,7 @@ b2BodyDef &BulletController::CreateBody(b2BodyDef &bodyDef) {
   fixture_def.friction = 0.3f;
   fixture_def.restitution = 10.0f;  // bounce
   //  fixture_def.isSensor = true;
-  bullet.GetBody()->SetLinearVelocity(b2Vec2(0, -70));
+  bullet.GetBody()->SetLinearVelocity(b2Vec2(0, kBulletVelocity));
   //  printf("Bullet linear velocity %f \n", body_->GetLinearVelocity().y);
   bullet.GetBody()->CreateFixture(&fixture_def);
   bullets.push_back(bullet);

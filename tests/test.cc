@@ -8,11 +8,11 @@
 
 #include <catch2/catch.hpp>
 #include <mylibrary/BulletController.hpp>
+#include <mylibrary/WorldCreator.hpp>
 
-#include "../apps/my_app.h"
-
-TEST_CASE("engine step function", "[random]") {
-  
+#include "cinder/app/App.h"
+#include "mylibrary/ProjectWideVariables.h"
+TEST_CASE("engine class", "[step function]") {
   SECTION("Check for no collision") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
@@ -124,9 +124,73 @@ REQUIRE(enemy_controller.GetEnemies().front().GetBody()->GetPosition().y == 0);
 }
 }
 
+/**********************EnemyControllertests over*********************/
 
+/**********************WorldCreator Test*********************/
 
+TEST_CASE("WorldCreator class", "[random]") {
+  SECTION("Check") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    WorldCreator world_creator;
+    world_creator.CreateCeiling(world_);
+    REQUIRE(world_.GetBodyList()->GetPosition().y == -1.0f);
+  }
+  SECTION("Check for collision of player and enemy") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    WorldCreator world_creator;
+    world_creator.CreateLeftWall(world_);
+    REQUIRE(world_.GetBodyList()->GetPosition().x == 0.0f);
+  }
+  SECTION("Check for collision of bullet and enemy") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    WorldCreator world_creator;
+    world_creator.CreateLeftWall(world_);
+    REQUIRE(world_.GetBodyList()->GetPosition().x ==
+            conversions::ToBox2DCoordinates(800));
+  }
+}
 
+/**********************WorldCreator tests over*********************/
 
+/**********************BulletController Tests*********************/
 
+TEST_CASE("Bullet Controller", "[]") {
+  SECTION("Add enemy / Get enemy") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    int check = 0;
+    EnemyController enemy_controller;
+    BulletController bullet_controller_;
+    enemy_controller.setup(world_);
+    bullet_controller_.setup(world_);
+    bullet_controller_.addBullet(b2Vec2(0, 0));
+    REQUIRE(bullet_controller_.GetBullets().size() == 1);
+    REQUIRE(
+        bullet_controller_.GetBullets().front().GetBody()->GetPosition().x ==
+        1);
 
+    bullet_controller_.addBullet(b2Vec2(1, 0));
+    for (Bullet b : bullet_controller_.GetBullets()) {
+      if (b.GetBody()->GetPosition().y == -1) {
+        check++;
+      }
+    }
+    REQUIRE(check == 2);
+  }
+
+  SECTION("Update function") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    EnemyController enemy_controller;
+    BulletController bullet_controller_;
+    enemy_controller.setup(world_);
+    bullet_controller_.setup(world_);
+    bullet_controller_.addBullet(b2Vec2(0, 0));
+    bullet_controller_.GetBullets().front().SetIsDead(true);
+    bullet_controller_.update();
+    REQUIRE(enemy_controller.GetEnemies().size() == 0);
+  }
+}

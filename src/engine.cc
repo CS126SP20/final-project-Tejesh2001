@@ -12,6 +12,7 @@
 #include <set>
 #include <stdexcept>
 
+#include "cinder/app/AppBase.h"
 #include "mylibrary/EnemyController.h"
 #include "mylibrary/ProjectWideVariables.h"
 #include "mylibrary/direction.h"

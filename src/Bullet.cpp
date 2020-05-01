@@ -8,7 +8,7 @@
 
 #include "mylibrary/ProjectWideVariables.h"
 
-Bullet::Bullet() {}
+Bullet::Bullet() { is_dead_ = false; }
 
 void Bullet::draw() {
   //This gives the onscreen position(in pixels)
@@ -19,19 +19,22 @@ void Bullet::draw() {
   gl::translate( pos );
   gl::rotate(t);
   //vec2 size = vec2(box_size_x, box_size_y);
-  Rectf rect(-global::kBoxDimensions.x,
-             -global::kBoxDimensions.y,
+  Rectf rect(-global::kBoxDimensions.x, -global::kBoxDimensions.y,
              global::kBoxDimensions.x, global::kBoxDimensions.y);
   auto load = loadImage(cinder::app::loadAsset("air.png"));
-  cinder::gl::Texture2dRef image =
-      cinder::gl::Texture2d::create(load);
+  cinder::gl::Texture2dRef image = cinder::gl::Texture2d::create(load);
   cinder::gl::draw(image, rect);
   gl::popMatrices();
 }
 
-
-b2Body *Bullet::GetBody(){ return body_; }
-void Bullet::SetBody(b2Body *body) {
-  body_ = body;
+void ::Bullet::update() {
+  if (body_->GetPosition().y >=
+      conversions::ToBox2DCoordinates(app::getWindowHeight())) {
+    is_dead_ = true;
+  }
 }
 
+b2Body *Bullet::GetBody() { return body_; }
+void Bullet::SetBody(b2Body *body) { body_ = body; }
+bool Bullet::GetIsDead() const { return is_dead_; }
+void Bullet::SetIsDead(bool isDead) { is_dead_ = isDead; }

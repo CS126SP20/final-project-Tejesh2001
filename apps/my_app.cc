@@ -42,10 +42,11 @@ void MyApp::update() {
                      kMaxNumberOfBullets;
   //There is a wave of enemies every two seconds. Each wave has one enemy
   // more than the previous one
-  if (timer_.getSeconds() - kTimeChange >= kDoubleEqualityChecker) {
+  if (timer_.getSeconds() - kTimeChange >= kEpsilon) {
+    if (number_of_particles_ < kMaxNumberOfEnemies) {
+      number_of_particles_ += 1;
+    }  // Increasing number of enemies every wave by 1
 
-    if (number_of_particles_ < 10)
-    number_of_particles_ += 1; //Increasing number of enemies every wave by 1
     enemy_controller_.AddEnemies(number_of_particles_);
     timer_.start(0.0);
   }

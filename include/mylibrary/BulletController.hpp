@@ -5,6 +5,7 @@
 #ifndef FINALPROJECT_BULLETCONTROLLER_HPP
 #define FINALPROJECT_BULLETCONTROLLER_HPP
 
+static const int kBulletVelocity = -70;
 #include <Box2D/Dynamics/b2World.h>
 
 #include "Bullet.hpp"
