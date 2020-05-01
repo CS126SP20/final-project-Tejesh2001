@@ -4,6 +4,11 @@
 
 Author: [Tejesh Bhaumik]
 
+
+
+
+
+
 **Desciption**
 
 Based loosely on the TV show Avatar : The Last Airbender. 
@@ -26,9 +31,28 @@ The aim of the game is to last the longest and score the highest points
 * Cinder :: OpenGL
 
 To Build It :
-Download Cinder and set it up 
-https://libcinder.org/docs/guides/windows-setup/index.html
-Add Box2D to your blocks under src/cMake
+
+* Download Cinder and set it up 
+
+1) You can download the latest version Cinder for your platform at https://libcinder.org/download. The latest version is v0.9.2.
+
+2) Here is a basic tutorial on how to develop Cinder projects: https://libcinder.org/docs/guides/tour/hello_cinder_chapter1.html.
+
+3)Extract the downloaded Cinder zip folder into a folder. We’ll call this folder ~/Cinder throughout the instructions
+
+4) Open the ~/Cinder folder in CLion and click the green build button. This will build libcinder. You only need to do this once per          machine. This build might take a while.
+
+You're done setting up Cinder! 
+
+To use the CinderBlock Box2D
+
+* Open your CMakeLists.txt/src
+* Under ci_make_library, there is a heading named BLOCKS.
+* Write Box2D next to that heading.
+* Reload CMakeLists.
+
+You're done setting up!
+
 
 Control | Actions
 -----|--------------------
