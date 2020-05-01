@@ -21,9 +21,6 @@ Week 1 deliverables completed
 
 **Week 2**
 
- Updates for ReadMe and DevelopmentMd have not been included in this sequence.
-They will be updated seperately in the end with the dates
-
 April 23rd :
 
 1) Added working implementation of player which dies on getting hit by Box2D object
@@ -74,12 +71,27 @@ Added new feature such as player score and player game time
 TODO ::
 
 1) Add tests for remaining classes
-2) Add documentation
+2) Add further documentation
 3) Modularise further 
 4) implement my second extension
 5) Maybe add a menu screen
 
+**Week 3**
 
+May 1st:
+
+Added player lives implementation
+Added tests for BulletController and WorldCreator Class
+Added background music
+Refactored BulletController and bullet class
+Added conditions for testing in World Creator class
+
+*Second extension implemented*
+
+TODO ::
+
+1) Add tests for remaining classes
+2) Add further documentation
 
 
 
