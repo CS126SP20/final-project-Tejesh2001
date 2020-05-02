@@ -5,7 +5,6 @@
 #ifndef FINALPROJECT_BULLETCONTROLLER_HPP
 #define FINALPROJECT_BULLETCONTROLLER_HPP
 
-static const int kBulletVelocity = -70;
 #include <Box2D/Dynamics/b2World.h>
 
 #include "Bullet.hpp"
@@ -20,6 +19,7 @@ class BulletController {
  private:
   std::vector<Bullet> bullets;
   b2BodyDef& CreateBody(b2BodyDef& bodyDef);
+  static const int kBulletVelocity = -70;
 };
 
 #endif  // FINALPROJECT_BULLETCONTROLLER_HPP

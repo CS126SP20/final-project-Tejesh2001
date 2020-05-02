@@ -8,10 +8,6 @@
 #include "cinder/app/AppBase.h"
 
 namespace global {
-const int kPlayerHeight = 15;
-const int kPlayerWidth = 15;
 const float kScalingFactor = 50;
-const cinder::vec2 kBoxDimensions = cinder::vec2(30, 30);
-//TODO NAMING CONVENTION
-static int color_change = 0;
+const cinder::vec2 kBoxDimensions = cinder::vec2(25, 25);
 }
