@@ -86,7 +86,7 @@ Added background music
 Refactored BulletController and bullet class
 Added conditions for testing in World Creator class
 
-*Second extension implemented*
+**Second extension implemented**
 
 TODO ::
 
