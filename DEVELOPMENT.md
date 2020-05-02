@@ -93,7 +93,11 @@ TODO ::
 1) Add tests for remaining classes
 2) Add further documentation
 
+May 2nd :
 
+1) Added a start screen and a start button
+2) Added an end screen
+3) Changed the background
 
 
 
