@@ -20,7 +20,13 @@ class WorldCreator {
  private:
   float right_most_index_;
   float upper_most_index_;
+  float left_most_index_;
+  const double density = 0.0;
+  /**This function initiliases indexes to 800 for testing, and otherwise to
+   * window characterestics **/
   void TestCheck(b2World &world);
+  /**Gets Wall thickness**/
+  auto GetWallDimension() const -> float;
 };
 
 #endif  // FINALPROJECT_WORLDCREATOR_HPP

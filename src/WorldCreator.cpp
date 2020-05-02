@@ -3,7 +3,6 @@
 //
 
 #include "mylibrary/WorldCreator.hpp"
-
 void WorldCreator::CreateCeiling(b2World& world) {
   TestCheck(world);
   b2BodyDef ground_body_def;
@@ -15,21 +14,21 @@ void WorldCreator::CreateCeiling(b2World& world) {
   ground_box.SetAsBox(right_most_index_, 1);
   // size the ground
   // 4. create fixture on body
-  ground_body->CreateFixture(&ground_box, 0.0);
+  ground_body->CreateFixture(&ground_box, density);
 }
 
 void WorldCreator::CreateLeftWall(b2World& world) {
   TestCheck(world);
   b2BodyDef wall_left;
-  wall_left.position.Set(0.0, upper_most_index_);
+  wall_left.position.Set(left_most_index_, upper_most_index_);
   b2Body* wall_body = world.CreateBody(&wall_left);
   // 3. define fixture
   b2PolygonShape wall_box;
-  wall_box.SetAsBox(1, right_most_index_);
+  wall_box.SetAsBox(GetWallDimension(), right_most_index_);
   // engine_->SetInitialPosition(getWindowCenter());
   // size the ground
   // 4. create fixture on body
-  wall_body->CreateFixture(&wall_box, 0.0);
+  wall_body->CreateFixture(&wall_box, density);
 }
 void WorldCreator::CreateRightWall(b2World& world) {
   TestCheck(world);
@@ -42,21 +41,25 @@ void WorldCreator::CreateRightWall(b2World& world) {
 
   // 3. define fixture
   b2PolygonShape wall_box;
-  wall_box.SetAsBox(1, right_most_index_);
+  wall_box.SetAsBox(GetWallDimension(), right_most_index_);
   // size the ground
   // 4. create fixture on body
-  wall_body->CreateFixture(&wall_box, 0.0);
+  wall_body->CreateFixture(&wall_box, density);
+}
+float WorldCreator::GetWallDimension() const {
+  return conversions::ToBox2DCoordinates(global::kScalingFactor);
 }
 void WorldCreator::TestCheck(b2World& world) {
   if (world.GetGravity().y == 0.0f) {
     right_most_index_ = conversions::ToBox2DCoordinates(
-        static_cast<float>(global::kBoundsOfWindow));
+        static_cast<float>(global::kBoundsOfWindow - global::kScalingFactor));
     upper_most_index_ = conversions::ToBox2DCoordinates(
         static_cast<float>(global::kBoundsOfWindow));
   } else {
     right_most_index_ = conversions::ToBox2DCoordinates(
         static_cast<float>(app::getWindowWidth()));
     upper_most_index_ = conversions::ToBox2DCoordinates(
-        static_cast<float>(app::getWindowHeight()));
+        static_cast<float>(app::getWindowHeight()) - global::kScalingFactor);
   }
+  left_most_index_ = 0.0;
 }

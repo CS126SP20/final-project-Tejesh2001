@@ -146,8 +146,6 @@ TEST_CASE("WorldCreator class", "[random]") {
 
 /**********************BulletController Tests*********************/
 
-/**This tests the bullet class's update method too**/
-
 TEST_CASE("Bullet Controller", "[]") {
   SECTION("Add enemy / Get enemy") {
     b2Vec2 gravity(0, 100.0f);
@@ -185,6 +183,10 @@ TEST_CASE("Bullet Controller", "[]") {
   }
 }
 
+/**********************BulletController Tests over*********************/
+
+/**********************Bullet tests*********************/
+
 TEST_CASE("Bullet", "[]") {
   b2BodyDef body_def;
   SECTION("Update function") {
@@ -199,6 +201,10 @@ TEST_CASE("Bullet", "[]") {
     REQUIRE(bullet.GetIsDead());
   }
 }
+
+/**********************Bullet tests over*********************/
+
+/**********************Enemy tests*********************/
 TEST_CASE("Enemy", "[]") {
   b2BodyDef body_def;
   SECTION("Update function") {

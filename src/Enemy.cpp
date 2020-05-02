@@ -12,6 +12,8 @@
 Enemy::Enemy() {
   is_dead_ = false;
   timer_.start(0);
+  age_ = 0;
+  lifespan_ = 60;
 }
 
 void Enemy::setup(const vec2& boxSize) {
@@ -19,18 +21,11 @@ void Enemy::setup(const vec2& boxSize) {
 }
 void Enemy::update() {
   age_++;
-  if (timer_.getSeconds() > 15 && lifespan_ > 10) {
-    lifespan_ -= 10;
-    timer_.start(0);
-  }
-  if (age_ == 1) {  // Condition for testing purposes
-    is_dead_ = true;
-    return;
-  }
-
-  if (body_->GetPosition().y >
-          conversions::ToBox2DCoordinates(
-              static_cast<float>(app::getWindowHeight())) ||
+  if ((body_->GetPosition().y >=
+       conversions::ToBox2DCoordinates(global::kBoundsOfWindow)) ||
+      (age_ != 1 && body_->GetPosition().y >=
+                        conversions::ToBox2DCoordinates(
+                            static_cast<float>(app::getWindowHeight()))) ||
       age_ > lifespan_) {
     is_dead_ = true;
   }
