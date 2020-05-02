@@ -18,7 +18,7 @@ class BulletController {
   void draw();
  private:
   std::vector<Bullet> bullets;
-  b2BodyDef& CreateBody(b2BodyDef& bodyDef);
+  b2BodyDef& CreateBody(b2BodyDef& body_def);
   static const int kBulletVelocity = -70;
 };
 

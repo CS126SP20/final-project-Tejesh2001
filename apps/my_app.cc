@@ -32,7 +32,7 @@ void MyApp::setup() {
   game_timer.start(0);
   enemy_controller_.setup(*world_);
   bullet_controller_.setup(*world_);
-  PlayBackGroundMusic();
+  LoadBackGroundMusic();
 }
 int c = 0;
 void MyApp::update() {
@@ -87,7 +87,7 @@ void MyApp::draw() {
                                              global::kScalingFactor));
   }
   if (engine_->GetIsGameOver()) {
-    DrawBackground("start.png");
+    DrawBackground("end.png");
     PrintText("Game Over :(", color, size, center);
     PrintText("Your time was " +
                   std::to_string(static_cast<int>(game_timer.getSeconds())) +
@@ -142,16 +142,17 @@ void MyApp::keyDown(KeyEvent event) {
     }
     case KeyEvent::KEY_m: {
       if (!mute_) {
-        background_audio_file->pause();
+        PauseBackGroundMusic();
         mute_ = true;
       } else {
         mute_ = false;
-        background_audio_file->start();
+        PlayBackGroundMusic();
       }
       break;
     }
   }
 }
+void MyApp::PauseBackGroundMusic() const { background_audio_file->pause(); }
 
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
   is_mouse_pressed_ = true;
@@ -162,35 +163,42 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
 void MyApp::AddBullet() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
-  printf("No of bullets %u \n ", static_cast<int>(bullet_controller_
-                                                      .GetBullets().size()));
+  printf("No of bullets %u \n ",
+         static_cast<int>(bullet_controller_.GetBullets().size()));
 }
 
-  void MyApp::mouseUp(MouseEvent event) {
-    is_mouse_pressed_ = false; }
-void MyApp::DrawPlayer() {
-  const b2Vec2 loc = engine_->GetPlayer().GetLoc();
+void MyApp::mouseUp(MouseEvent event) { is_mouse_pressed_ = false; }
+
+auto MyApp::LoadPlayer() {
   cinder::fs::path path = cinder::fs::path("avatar.gif");
   cinder::gl::Texture2dRef texture =
       cinder::gl::Texture2d::create(loadImage(cinder::app::loadAsset(path)));
+  return texture;
+}
+
+void MyApp::DrawPlayer() {
+  const b2Vec2 loc = engine_->GetPlayer().GetLoc();
+  cinder::gl::Texture2dRef texture = LoadPlayer();
   cinder::gl::draw(texture,
                    Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
                          loc.y + 2 * global::kScalingFactor));
 }
+
 void MyApp::DrawBackground(const std::string& relative_path) {
   cinder::fs::path path = cinder::fs::path(relative_path);
   cinder::gl::Texture2dRef texture =
       cinder::gl::Texture2d::create(loadImage(cinder::app::loadAsset(path)));
   cinder::gl::draw(texture, Rectf(getWindowBounds()));
 }
-void MyApp::PlayBackGroundMusic() {
+void MyApp::LoadBackGroundMusic() {
   auto source_file = cinder::audio::load(cinder::app::loadAsset("mus.mp3"));
   background_audio_file = cinder::audio::Voice::create(source_file);
-  background_audio_file->start();
+  PlayBackGroundMusic();
 }
+void MyApp::PlayBackGroundMusic() const { background_audio_file->start(); }
 template <typename C>
-void MyApp::PrintText(const std::string& text, const C& color, const
-                         cinder::ivec2&size, const cinder::vec2& loc) {
+void MyApp::PrintText(const std::string& text, const C& color,
+                      const cinder::ivec2& size, const cinder::vec2& loc) {
   auto box = TextBox()
                  .alignment(TextBox::CENTER)
                  .font(cinder::Font("Ariel", 30))

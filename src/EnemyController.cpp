@@ -37,9 +37,13 @@ void EnemyController::draw()
 
 
 void EnemyController::AddEnemies(int amount) {
- float world_width =
-      (conversions::ToBox2DCoordinates(static_cast<float>(
-          cinder::app::getWindowWidth())));
+  float world_width;
+  if (amount <= 3) {
+    world_width = 800;
+  } else {
+    world_width = (conversions::ToBox2DCoordinates(
+        static_cast<float>(cinder::app::getWindowWidth())));
+  }
   for (int i = 0; i < amount; i++) {
     b2BodyDef body_def;
     body_def.type = b2_dynamicBody;

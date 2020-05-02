@@ -16,11 +16,11 @@ file(GLOB SOURCE_LIST CONFIGURE_DEPENDS
 
 ci_make_library(
         LIBRARY_NAME mylibrary
-        CINDER_PATH  ${CINDER_PATH}
-        SOURCES      ${SOURCE_LIST}
-        INCLUDES     "${FinalProject_SOURCE_DIR}/include"
+        CINDER_PATH ${CINDER_PATH}
+        SOURCES ${SOURCE_LIST}
+        INCLUDES "${FinalProject_SOURCE_DIR}/include"
         LIBRARIES
-        BLOCKS Box2D 
+        BLOCKS Box2D
 )
 # All users of this library will need at least C++14
 target_compile_features(mylibrary PUBLIC cxx_std_14)

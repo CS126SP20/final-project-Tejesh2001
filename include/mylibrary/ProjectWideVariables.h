@@ -10,4 +10,5 @@
 namespace global {
 const float kScalingFactor = 50;
 const cinder::vec2 kBoxDimensions = cinder::vec2(25, 25);
+static const int kBoundsOfWindow = 800;
 }

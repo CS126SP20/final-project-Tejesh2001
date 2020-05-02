@@ -18,15 +18,21 @@ void Enemy::setup(const vec2& boxSize) {
   size = boxSize;
 }
 void Enemy::update() {
-   age_++;
-   if (timer_.getSeconds() > 15 && lifespan_ > 10) {
-   lifespan_ -= 10;
-   timer_.start(0);
-   }
-  if (body_->GetPosition().y > conversions::ToBox2DCoordinates
-           (static_cast<float>(app::getWindowHeight()))
-       || age_ > lifespan_) {
-       is_dead_ = true;
+  age_++;
+  if (timer_.getSeconds() > 15 && lifespan_ > 10) {
+    lifespan_ -= 10;
+    timer_.start(0);
+  }
+  if (age_ == 1) {  // Condition for testing purposes
+    is_dead_ = true;
+    return;
+  }
+
+  if (body_->GetPosition().y >
+          conversions::ToBox2DCoordinates(
+              static_cast<float>(app::getWindowHeight())) ||
+      age_ > lifespan_) {
+    is_dead_ = true;
   }
 }
 

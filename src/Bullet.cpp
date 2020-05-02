@@ -28,7 +28,10 @@ void Bullet::draw() {
 
 void ::Bullet::update() {
   if (body_->GetPosition().y >=
-      conversions::ToBox2DCoordinates(app::getWindowHeight())) {
+          conversions::ToBox2DCoordinates(global::kBoundsOfWindow) ||
+      body_->GetPosition().y >=
+          conversions::ToBox2DCoordinates(
+              static_cast<float>(app::getWindowHeight()))) {
     is_dead_ = true;
   }
 }

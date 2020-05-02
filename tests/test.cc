@@ -9,9 +9,6 @@
 #include <catch2/catch.hpp>
 #include <mylibrary/BulletController.hpp>
 #include <mylibrary/WorldCreator.hpp>
-
-#include "cinder/app/App.h"
-#include "mylibrary/ProjectWideVariables.h"
 TEST_CASE("engine class", "[step function]") {
   SECTION("Check for no collision") {
     b2Vec2 gravity(0, 100.0f);
@@ -31,18 +28,16 @@ TEST_CASE("engine class", "[step function]") {
   SECTION("Check for collision of player and enemy") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    int check = 0;
     EnemyController enemy_controller;
     BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
-    myapp::Player player_(b2Vec2(0,0));
+    myapp::Player player_(b2Vec2(0, 0));
     myapp::Engine engine_(player_);
     bullet_controller_.addBullet(player_.GetLoc());
-        engine_.Step(world_, enemy_controller,
-                   bullet_controller_.GetBullets());
-    REQUIRE(engine_.GetIsGameOver());
+    engine_.Step(world_, enemy_controller, bullet_controller_.GetBullets());
+    REQUIRE(engine_.GetLives() == 2);
   }
   SECTION("Check for collision of bullet and enemy") {
     b2Vec2 gravity(0, 100.0f);
@@ -129,25 +124,19 @@ REQUIRE(enemy_controller.GetEnemies().front().GetBody()->GetPosition().y == 0);
 /**********************WorldCreator Test*********************/
 
 TEST_CASE("WorldCreator class", "[random]") {
-  SECTION("Check") {
-    b2Vec2 gravity(0, 100.0f);
-    b2World world_(gravity);
-    WorldCreator world_creator;
+  b2Vec2 gravity(0, 0.0f);
+  b2World world_(gravity);
+  WorldCreator world_creator;
+  SECTION("Check for ceiling made") {
     world_creator.CreateCeiling(world_);
     REQUIRE(world_.GetBodyList()->GetPosition().y == -1.0f);
   }
   SECTION("Check for collision of player and enemy") {
-    b2Vec2 gravity(0, 100.0f);
-    b2World world_(gravity);
-    WorldCreator world_creator;
     world_creator.CreateLeftWall(world_);
     REQUIRE(world_.GetBodyList()->GetPosition().x == 0.0f);
   }
   SECTION("Check for collision of bullet and enemy") {
-    b2Vec2 gravity(0, 100.0f);
-    b2World world_(gravity);
-    WorldCreator world_creator;
-    world_creator.CreateLeftWall(world_);
+    world_creator.CreateRightWall(world_);
     REQUIRE(world_.GetBodyList()->GetPosition().x ==
             conversions::ToBox2DCoordinates(800));
   }
@@ -156,6 +145,8 @@ TEST_CASE("WorldCreator class", "[random]") {
 /**********************WorldCreator tests over*********************/
 
 /**********************BulletController Tests*********************/
+
+/**This tests the bullet class's update method too**/
 
 TEST_CASE("Bullet Controller", "[]") {
   SECTION("Add enemy / Get enemy") {
@@ -180,7 +171,6 @@ TEST_CASE("Bullet Controller", "[]") {
     }
     REQUIRE(check == 2);
   }
-
   SECTION("Update function") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
@@ -192,5 +182,34 @@ TEST_CASE("Bullet Controller", "[]") {
     bullet_controller_.GetBullets().front().SetIsDead(true);
     bullet_controller_.update();
     REQUIRE(enemy_controller.GetEnemies().size() == 0);
+  }
+}
+
+TEST_CASE("Bullet", "[]") {
+  b2BodyDef body_def;
+  SECTION("Update function") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    body_def.type = b2_dynamicBody;
+    body_def.position.Set(conversions::ToBox2DCoordinates(-1),
+                          conversions::ToBox2DCoordinates(900));
+    Bullet bullet;
+    bullet.SetBody(world_.CreateBody(&body_def));
+    bullet.update();
+    REQUIRE(bullet.GetIsDead());
+  }
+}
+TEST_CASE("Enemy", "[]") {
+  b2BodyDef body_def;
+  SECTION("Update function") {
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    body_def.type = b2_dynamicBody;
+    body_def.position.Set(conversions::ToBox2DCoordinates(-1),
+                          conversions::ToBox2DCoordinates(900));
+    Enemy enemy;
+    enemy.SetBody(world_.CreateBody(&body_def));
+    enemy.update();
+    REQUIRE(enemy.IsDead());
   }
 }

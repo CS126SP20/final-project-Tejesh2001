@@ -52,31 +52,25 @@ void BulletController::addBullet(const b2Vec2 player_pos) {
   CreateBody(body_def);
 }
 
-b2BodyDef &BulletController::CreateBody(b2BodyDef &bodyDef) {
+b2BodyDef &BulletController::CreateBody(b2BodyDef &body_def) {
   Bullet bullet;
-  bullet.SetBody(world_->CreateBody(&bodyDef));
+  bullet.SetBody(world_->CreateBody(&body_def));
   bullet.GetBody()->SetBullet(true);
-  bodyDef.userData = &bullet;
+  body_def.userData = &bullet;
   b2PolygonShape dynamic_box;
- // float box_size_x = global::kBoxDimensions.x;
-//  float box_size_y = global::kBoxDimensions.y;//mAKE CONSTANT LATER
-  dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(global::kBoxDimensions
-                                                           .x),
-                       conversions::ToBox2DCoordinates(global::kBoxDimensions
-                                                           .y));
-  //Assigning properties to fixtures
+  dynamic_box.SetAsBox(
+      conversions::ToBox2DCoordinates(global::kBoxDimensions.x),
+      conversions::ToBox2DCoordinates(global::kBoxDimensions.y));
+  // Assigning properties to fixtures
   b2FixtureDef fixture_def;
   fixture_def.shape = &dynamic_box;
   fixture_def.density = 0.2f;
   fixture_def.friction = 0.3f;
   fixture_def.restitution = 10.0f;  // bounce
-  //  fixture_def.isSensor = true;
   bullet.GetBody()->SetLinearVelocity(b2Vec2(0, kBulletVelocity));
-  //  printf("Bullet linear velocity %f \n", body_->GetLinearVelocity().y);
   bullet.GetBody()->CreateFixture(&fixture_def);
   bullets.push_back(bullet);
-  return bodyDef;
-
+  return body_def;
 }
 std::vector<Bullet> &BulletController::GetBullets() {
   return bullets;

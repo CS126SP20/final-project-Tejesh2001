@@ -46,7 +46,10 @@ class MyApp : public cinder::app::App {
   void PrintText(const std::string& text, const C& color,
                  const glm::ivec2& size, const glm::vec2& loc);
   void AddBullet();
-  void PlayBackGroundMusic();
+  void LoadBackGroundMusic();
+  void PlayBackGroundMusic() const;
+  void PauseBackGroundMusic() const;
+  auto LoadPlayer();
 };
 
 }  // namespace myapp
