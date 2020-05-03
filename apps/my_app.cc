@@ -17,7 +17,7 @@ MyApp::MyApp() {
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
-  is_mouse_pressed_ = false;
+  key_press_1 = false;
 }
 
 void MyApp::setup() {
@@ -69,8 +69,11 @@ void MyApp::draw() {
   ci::Color color = ci::Color::white();
   if (!game_start_) {
     DrawBackground("world.jpg");
-    PrintText("Press spacebar to start", ci::Color::black(), size, center);
-    return;
+    PrintText("Choose your character first. \n Press 1 for Aang, 2 for Katara",
+              ci::Color::black(), size, center);
+    PrintText("Press the spacebar to start", ci::Color::black(), size,
+              ivec2(ci::app::getWindowCenter().x,
+                    ci::app::getWindowCenter().y + +global::kScalingFactor));
   }
   DrawBackground("background.png");
   DrawPlayer();
@@ -90,7 +93,6 @@ void MyApp::draw() {
   }
   if (engine_->GetIsGameOver()) {
     DrawBackground("start.jpg");
-    // color = ci::Color::black();
     PrintText("Game Over :(", color, size, center);
     PrintText("Your time was " +
                   std::to_string(static_cast<int>(game_timer.getSeconds())) +
@@ -153,35 +155,41 @@ void MyApp::keyDown(KeyEvent event) {
       }
       break;
     }
+    case KeyEvent::KEY_1: {
+      key_press_1 = true;
+      break;
+    }
+    case KeyEvent::KEY_2: {
+      key_press_1 = false;
+      break;
+    }
   }
 }
 void MyApp::PauseBackGroundMusic() const { background_audio_file->pause(); }
 
-void MyApp::mouseDown(cinder::app::MouseEvent event) {
-  is_mouse_pressed_ = true;
-  if (is_mouse_pressed_ && !max_score_check_) {
+void MyApp::mouseDown(cinder::app::MouseEvent /*event*/) {
+  if (!max_score_check_) {
     AddBullet();
-    }
+  }
 }
 void MyApp::AddBullet() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
-  printf("No of bullets %u \n ",
-         static_cast<int>(bullet_controller_.GetBullets().size()));
 }
-
-void MyApp::mouseUp(MouseEvent event) { is_mouse_pressed_ = false; }
-
-auto MyApp::LoadPlayer() {
-  cinder::fs::path path = cinder::fs::path("avatar.gif");
-  cinder::gl::Texture2dRef texture =
-      cinder::gl::Texture2d::create(loadImage(cinder::app::loadAsset(path)));
+cinder::gl::Texture2dRef MyApp::LoadPlayer(std::string relative_path) {
+  cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
+      loadImage(cinder::app::loadAsset(relative_path)));
   return texture;
 }
 
 void MyApp::DrawPlayer() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
-  cinder::gl::Texture2dRef texture = LoadPlayer();
+  cinder::gl::Texture2dRef texture;
+  if (key_press_1) {
+    texture = LoadPlayer("avatar.gif");
+  } else {
+    texture = LoadPlayer("katara.png");
+  }
   cinder::gl::draw(texture,
                    ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
                              loc.y + 2 * global::kScalingFactor));

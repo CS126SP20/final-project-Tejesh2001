@@ -17,17 +17,21 @@ namespace myapp {
 using namespace cinder::app;
 class MyApp : public cinder::app::App {
  public:
+  /**Constructor initialises the data variables**/
   MyApp();
+  /**Sets up the game**/
   void setup();
+  /**Checks if the mouse is pressed**/
   void mouseDown(MouseEvent event);
-  void mouseUp(MouseEvent event);
+  /**Checks which key is pressed and performs the respective action**/
   void keyDown(KeyEvent event);
+  /**Updates the game state**/
   void update();
+  /**Draws the game**/
   void draw();
-  void DrawPlayer();
 
  private:
-  bool is_mouse_pressed_;
+  bool key_press_1;
   cinder::Timer timer_;
   const int kTimeChange = 2;
   const double kEpsilon = 0.001;
@@ -43,15 +47,22 @@ class MyApp : public cinder::app::App {
   static const int kMaxNumberOfEnemies = 12;
   EnemyController enemy_controller_;
   BulletController bullet_controller_;
+  /**Draws background**/
   void DrawBackground(const std::string&);
+  /**Prints text onto the screen**/
   template <typename C>
   void PrintText(const std::string& text, const C& color,
                  const glm::ivec2& size, const glm::vec2& loc);
+  /**Adds bullet to bullet vector and creates the body**/
   void AddBullet();
+  /**Loads backgroundMusic to be played**/
   void LoadBackGroundMusic();
+  /**Plays background music**/
   void PlayBackGroundMusic() const;
+  /**Pauses background music**/
   void PauseBackGroundMusic() const;
-  auto LoadPlayer();
+  cinder::gl::Texture2dRef LoadPlayer(std::string relative_path);
+  void DrawPlayer();
 };
 
 }  // namespace myapp
