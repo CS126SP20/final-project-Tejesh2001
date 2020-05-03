@@ -6,7 +6,7 @@
 #include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 #include "mylibrary/CoordinateConversions.h"
-#include "mylibrary/ProjectWideVariables.h"
+#include "mylibrary/ProjectWideConstants.h"
 
 //bool is_dead_ = false;
 Enemy::Enemy() {

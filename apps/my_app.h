@@ -2,15 +2,17 @@
 
 #ifndef FINALPROJECT_APPS_MYAPP_H_
 #define FINALPROJECT_APPS_MYAPP_H_
-#include "my_app.h"
 #include <Box2D/Box2D.h>
 #include <cinder/Rand.h>
 #include <cinder/app/App.h>
 #include <cinder/gl/gl.h>
+#include <mylibrary/ProjectWideConstants.h>
+
+#include <mylibrary/BulletController.hpp>
+
+#include "my_app.h"
 #include "mylibrary/direction.h"
 #include "mylibrary/engine.h"
-#include <mylibrary/BulletController.hpp>
-#include <mylibrary/ProjectWideVariables.h>
 namespace myapp {
 using namespace cinder::app;
 class MyApp : public cinder::app::App {
@@ -38,7 +40,7 @@ class MyApp : public cinder::app::App {
   b2World* world_;
   Player* player_;
   Engine* engine_;
-  static const int kMaxNumberOfEnemies = 10;
+  static const int kMaxNumberOfEnemies = 12;
   EnemyController enemy_controller_;
   BulletController bullet_controller_;
   void DrawBackground(const std::string&);

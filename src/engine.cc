@@ -14,21 +14,20 @@
 
 #include "cinder/app/AppBase.h"
 #include "mylibrary/EnemyController.h"
-#include "mylibrary/ProjectWideVariables.h"
+#include "mylibrary/ProjectWideConstants.h"
 #include "mylibrary/direction.h"
 
 namespace myapp {
-using namespace global;
 b2Vec2 Engine::FromDirection(const Direction direction) {
   switch (direction) {
     case Direction::kUp:
-      return {0, -kScalingFactor};
+      return {0, -global::kScalingFactor};
     case Direction::kDown:
-      return {0, kScalingFactor};
+      return {0, global::kScalingFactor};
     case Direction::kLeft:
-      return {-kScalingFactor, 0};
+      return {-global::kScalingFactor, 0};
     case Direction::kRight:
-      return {kScalingFactor, 0};
+      return {global::kScalingFactor, 0};
   }
   throw std::out_of_range("switch statement not matched");
 }
@@ -67,9 +66,9 @@ void Engine::FindPlayerCollision(const std::list<Enemy>& enemy_list) {
         cinder::vec2(particle.GetBody()->GetPosition().x,
                      particle.GetBody()->GetPosition().y);
     if (static_cast<int>(screen_position.x) ==
-            static_cast<int>(GetPlayer().GetLoc().x / kScalingFactor) &&
+            static_cast<int>(GetPlayer().GetLoc().x / global::kScalingFactor) &&
         static_cast<int>(screen_position.y) ==
-            static_cast<int>(GetPlayer().GetLoc().y / kScalingFactor)) {
+            static_cast<int>(GetPlayer().GetLoc().y / global::kScalingFactor)) {
       lives_--;
       if (lives_ == 0) {
         is_game_over_ = true;

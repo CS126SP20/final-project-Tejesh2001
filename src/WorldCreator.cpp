@@ -20,7 +20,7 @@ void WorldCreator::CreateCeiling(b2World& world) {
 void WorldCreator::CreateLeftWall(b2World& world) {
   TestCheck(world);
   b2BodyDef wall_left;
-  wall_left.position.Set(left_most_index_, upper_most_index_);
+  wall_left.position.Set(global::kLeftMostIndex, upper_most_index_);
   b2Body* wall_body = world.CreateBody(&wall_left);
   // 3. define fixture
   b2PolygonShape wall_box;
@@ -61,5 +61,4 @@ void WorldCreator::TestCheck(b2World& world) {
     upper_most_index_ = conversions::ToBox2DCoordinates(
         static_cast<float>(app::getWindowHeight()) - global::kScalingFactor);
   }
-  left_most_index_ = 0.0;
 }

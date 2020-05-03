@@ -4,13 +4,16 @@
 #include <mylibrary/WorldCreator.hpp>
 #include <cinder/audio/Voice.h>
 namespace myapp {
+using cinder::ivec2;
+using cinder::vec2;
 using cinder::app::KeyEvent;
 cinder::audio::VoiceRef background_audio_file;
 MyApp::MyApp() {
   b2Vec2 gravity(0, 100.0f);
   max_score_check_ = false;
   world_ = new b2World(gravity);
-  player_ = new Player({app::getWindowCenter().x, app::getWindowCenter().y});
+  player_ =
+      new Player({ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
@@ -39,8 +42,8 @@ void MyApp::update() {
   if (game_timer.isStopped()) {
     return;
   }
-  max_score_check_ = bullet_controller_.GetBullets().size() >=
-                     kMaxNumberOfBullets;
+  max_score_check_ =
+      bullet_controller_.GetBullets().size() > kMaxNumberOfBullets;
   //There is a wave of enemies every two seconds. Each wave has one enemy
   // more than the previous one
   if (timer_.getSeconds() - kTimeChange >= kEpsilon) {
@@ -61,44 +64,44 @@ void MyApp::update() {
 void MyApp::draw() {
   cinder::gl::clear(cinder::Color(0, 0, 0));
   cinder::gl::enableAlphaBlending();
-  const cinder::vec2 center = app::getWindowCenter();
+  const cinder::vec2 center = ci::app::getWindowCenter();
   const cinder::ivec2 size = {500, 50};
-  const Color color = Color::white();
+  ci::Color color = ci::Color::white();
   if (!game_start_) {
-    DrawBackground("start.jpg");
-    PrintText("Press spacebar to start", color, size, center);
+    DrawBackground("world.jpg");
+    PrintText("Press spacebar to start", ci::Color::black(), size, center);
     return;
   }
-
-  DrawBackground("world.jpg");
+  DrawBackground("background.png");
   DrawPlayer();
   bullet_controller_.draw();
   enemy_controller_.draw();
   PrintText("You have " + std::to_string(engine_->GetLives()) + " lives", color,
             size,
-            vec2(app::getWindowWidth() - global::kScalingFactor * 2,
-                 static_cast<float>(app::getWindowHeight()) -
+            vec2(ci::app::getWindowWidth() - global::kScalingFactor * 2,
+                 static_cast<float>(ci::app::getWindowHeight()) -
                      global::kScalingFactor));
 
   if (max_score_check_) {
-        PrintText("You have finished your airballs!", color, size,
-        vec2(app::getWindowWidth()/2, static_cast<float>(app::getWindowHeight
-                                                                 ()) -
-                                             global::kScalingFactor));
+    PrintText("You have finished your airballs!", color, size,
+              vec2(ci::app::getWindowWidth() / 2,
+                   static_cast<float>(ci::app::getWindowHeight()) -
+                       global::kScalingFactor));
   }
   if (engine_->GetIsGameOver()) {
-    DrawBackground("end.png");
+    DrawBackground("start.jpg");
+    // color = ci::Color::black();
     PrintText("Game Over :(", color, size, center);
     PrintText("Your time was " +
                   std::to_string(static_cast<int>(game_timer.getSeconds())) +
                   " seconds",
               color, size,
-              ivec2(app::getWindowCenter().x,
-                    app::getWindowCenter().y + +global::kScalingFactor));
+              ivec2(ci::app::getWindowCenter().x,
+                    ci::app::getWindowCenter().y + +global::kScalingFactor));
     PrintText("Your score was " + std::to_string(engine_->GetGameScore()),
               color, size,
-              ivec2(app::getWindowCenter().x,
-                    app::getWindowCenter().y + 2 * global::kScalingFactor));
+              ivec2(ci::app::getWindowCenter().x,
+                    ci::app::getWindowCenter().y + 2 * global::kScalingFactor));
     game_timer.stop();
   }
 }
@@ -180,15 +183,15 @@ void MyApp::DrawPlayer() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   cinder::gl::Texture2dRef texture = LoadPlayer();
   cinder::gl::draw(texture,
-                   Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
-                         loc.y + 2 * global::kScalingFactor));
+                   ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
+                             loc.y + 2 * global::kScalingFactor));
 }
 
 void MyApp::DrawBackground(const std::string& relative_path) {
   cinder::fs::path path = cinder::fs::path(relative_path);
   cinder::gl::Texture2dRef texture =
       cinder::gl::Texture2d::create(loadImage(cinder::app::loadAsset(path)));
-  cinder::gl::draw(texture, Rectf(getWindowBounds()));
+  cinder::gl::draw(texture, ci::Rectf(getWindowBounds()));
 }
 void MyApp::LoadBackGroundMusic() {
   auto source_file = cinder::audio::load(cinder::app::loadAsset("mus.mp3"));
@@ -199,16 +202,15 @@ void MyApp::PlayBackGroundMusic() const { background_audio_file->start(); }
 template <typename C>
 void MyApp::PrintText(const std::string& text, const C& color,
                       const cinder::ivec2& size, const cinder::vec2& loc) {
-  auto box = TextBox()
-                 .alignment(TextBox::CENTER)
+  auto box = ci::TextBox()
+                 .alignment(ci::TextBox::CENTER)
                  .font(cinder::Font("Ariel", 30))
                  .size(size)
                  .color(color)
-                 .backgroundColor(ColorA(1, 1, 1, 0))
+                 .backgroundColor(ci::ColorA(1, 1, 1, 0))
                  .text(text);
   const auto box_size = box.getSize();
-  const cinder::vec2 locp = {loc.x - box_size.x / 2,
-                             loc.y - box_size.y / 2};
+  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
   const auto surface = box.render();
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);

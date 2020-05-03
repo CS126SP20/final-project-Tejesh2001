@@ -7,9 +7,7 @@
 #include "cinder/Vector.h"
 #include "mylibrary/CoordinateConversions.h"
 #include "mylibrary/Enemy.h"
-#include "mylibrary/ProjectWideVariables.h"
-
-b2World *world_;
+#include "mylibrary/ProjectWideConstants.h"
 
 BulletController::BulletController()= default;
 void BulletController::setup(b2World &my_world)
@@ -64,9 +62,9 @@ b2BodyDef &BulletController::CreateBody(b2BodyDef &body_def) {
   // Assigning properties to fixtures
   b2FixtureDef fixture_def;
   fixture_def.shape = &dynamic_box;
-  fixture_def.density = 0.2f;
-  fixture_def.friction = 0.3f;
-  fixture_def.restitution = 10.0f;  // bounce
+  fixture_def.density = global::kDensity;
+  fixture_def.friction = global::kFriction;
+  fixture_def.restitution = global::kRestitution;  // bounce
   bullet.GetBody()->SetLinearVelocity(b2Vec2(0, kBulletVelocity));
   bullet.GetBody()->CreateFixture(&fixture_def);
   bullets.push_back(bullet);

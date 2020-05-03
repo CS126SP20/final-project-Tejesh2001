@@ -20,10 +20,8 @@ class EnemyController {
 		// store a pointer to the physics world fro the main app
 		b2World *world_;
                 std::list<Enemy> enemies;
-               private:
-                b2Vec2* location_for_test;
-
-               private:
+                b2Vec2 *location_for_test;
+                const float kEnemyLimiter = 20.0f;
                 b2BodyDef &CreateBody(b2BodyDef &bodyDef);
 
 };

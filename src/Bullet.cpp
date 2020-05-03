@@ -6,7 +6,7 @@
 
 #include <Box2D/Box2D.h>
 
-#include "mylibrary/ProjectWideVariables.h"
+#include "mylibrary/ProjectWideConstants.h"
 
 Bullet::Bullet() { is_dead_ = false; }
 
@@ -20,13 +20,14 @@ void Bullet::draw() {
   gl::rotate(t);
   Rectf rect(-global::kBoxDimensions.x, -global::kBoxDimensions.y,
              global::kBoxDimensions.x, global::kBoxDimensions.y);
-  auto load = loadImage(cinder::app::loadAsset("airball.jpg"));
+  auto load = loadImage(cinder::app::loadAsset("airball.png"));
   cinder::gl::Texture2dRef image = cinder::gl::Texture2d::create(load);
   cinder::gl::draw(image, rect);
   gl::popMatrices();
 }
 
 void ::Bullet::update() {
+  // The first part of the if condition is for testing
   if (body_->GetPosition().y >=
           conversions::ToBox2DCoordinates(global::kBoundsOfWindow) ||
       body_->GetPosition().y >=

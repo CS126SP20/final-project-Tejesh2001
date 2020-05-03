@@ -38,8 +38,9 @@ void EnemyController::draw()
 
 void EnemyController::AddEnemies(int amount) {
   float world_width;
-  if (amount <= 3) {
-    world_width = 800;
+  int kTestAmount = 3;
+  if (amount <= kTestAmount) {
+    world_width = global::kLeftMostIndex;
   } else {
     world_width = (conversions::ToBox2DCoordinates(
         static_cast<float>(cinder::app::getWindowWidth())));
@@ -47,8 +48,8 @@ void EnemyController::AddEnemies(int amount) {
   for (int i = 0; i < amount; i++) {
     b2BodyDef body_def;
     body_def.type = b2_dynamicBody;
-    if (location_for_test->y != 0) {
-      body_def.position.Set(randFloat(world_width), 0.0f);
+    if (location_for_test->y != global::kLowerMostIndex) {
+      body_def.position.Set(randFloat(world_width), global::kLowerMostIndex);
     } else {
       body_def.position.Set(location_for_test->x, location_for_test->x);
       location_for_test->y = -1;
@@ -63,21 +64,20 @@ b2BodyDef &EnemyController::CreateBody(b2BodyDef &body_def) {
   body_def.bullet = true;
   enemy.SetBody(world_->CreateBody(&body_def));
   b2PolygonShape dynamic_box;
-  dynamic_box.SetAsBox(conversions::ToBox2DCoordinates(global::kBoxDimensions
-                                                           .x),
-                      conversions::ToBox2DCoordinates(global::kBoxDimensions
-                                                           .y));
+  dynamic_box.SetAsBox(
+      conversions::ToBox2DCoordinates(global::kBoxDimensions.x),
+      conversions::ToBox2DCoordinates(global::kBoxDimensions.y));
   b2FixtureDef fixture_def;
   fixture_def.shape = &dynamic_box;
-  fixture_def.density = 0.3f;
-  fixture_def.friction = 0.3f;
-  fixture_def.restitution = 0.5f;  // bounce
+  fixture_def.density = global::kDensity;
+  fixture_def.friction = global::kFriction;
+  fixture_def.restitution = global::kRestitution / kEnemyLimiter;  // bounce
   enemy.GetBody()->CreateFixture(&fixture_def);
   enemy.setup(global::kBoxDimensions);
   enemies.push_back(enemy);
   return body_def;
 }
- std::list<Enemy> &EnemyController::GetEnemies() {
+std::list<Enemy> &EnemyController::GetEnemies() {
   return enemies;
 }
 

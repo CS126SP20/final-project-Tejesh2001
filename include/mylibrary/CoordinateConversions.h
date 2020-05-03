@@ -26,7 +26,5 @@ static float ToBox2DCoordinates( float fin )
 }
 			
 static float RadiansToDegrees( float rad )
-{
-  return rad * 180.0f/M_PI;
-}
+{ return float(rad * 180.0f / M_PI); }
 };

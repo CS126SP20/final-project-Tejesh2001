@@ -16,10 +16,12 @@ class BulletController {
   std::vector<Bullet>& GetBullets();
   void update();
   void draw();
+
  private:
   std::vector<Bullet> bullets;
   b2BodyDef& CreateBody(b2BodyDef& body_def);
-  static const int kBulletVelocity = -70;
+  static const int kBulletVelocity = -50;
+  b2World* world_;
 };
 
 #endif  // FINALPROJECT_BULLETCONTROLLER_HPP

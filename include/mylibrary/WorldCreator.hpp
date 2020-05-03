@@ -2,12 +2,11 @@
 //
 // Created by tejes on 4/30/2020.
 //
-
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
 
 #include "CoordinateConversions.h"
-#include "ProjectWideVariables.h"
+#include "ProjectWideConstants.h"
 #ifndef FINALPROJECT_WORLDCREATOR_HPP
 #define FINALPROJECT_WORLDCREATOR_HPP
 
@@ -20,7 +19,6 @@ class WorldCreator {
  private:
   float right_most_index_;
   float upper_most_index_;
-  float left_most_index_;
   const double density = 0.0;
   /**This function initiliases indexes to 800 for testing, and otherwise to
    * window characterestics **/
