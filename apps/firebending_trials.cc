@@ -25,8 +25,6 @@ void MyApp::setup() {
   if (!game_start_) {
     return;
   }
-  // first define a ground box (no mass)
-  // 1. define a body
   WorldCreator world_creator;
   world_creator.CreateCeiling(*world_);
   world_creator.CreateLeftWall(*world_);
@@ -41,23 +39,23 @@ void MyApp::setup() {
 int c = 0;
 void MyApp::update() {
   if (game_timer.isStopped()) {
+    // If you restart the game, the enemies need to be cleared
+    enemy_controller_.GetEnemies().clear();
     return;
   }
-  //There is a wave of enemies every two seconds. Each wave has one enemy
+  // There is a wave of enemies every two seconds. Each wave has one enemy
   // more than the previous one
 
   if (timer_.getSeconds() - kTimeChange >= kEpsilon) {
     int number_of_enemies_ = randInt(kMinNumberOfEnemies, kMaxNumberOfEnemies);
     enemy_controller_.AddEnemies(number_of_enemies_);
     timer_.start(0.0);
-  }  // Increasing number of enemies every wave by 1
+  }  // Randomising number of enemies every wave
 
   // Move physics world
-  engine_->Step(*world_, enemy_controller_,
-                                    bullet_controller_.GetBullets());
+  engine_->Step(*world_, enemy_controller_, bullet_controller_.GetBullets());
   bullet_controller_.update();
   enemy_controller_.update();
-
 }
 
 void MyApp::draw() {
@@ -66,16 +64,24 @@ void MyApp::draw() {
   const cinder::vec2 center = ci::app::getWindowCenter();
   const cinder::ivec2 size = {500, 50};
   ci::Color color = ci::Color::white();
+  /**Draws menu screen**/
   if (!game_start_) {
     DrawMenuScreen();
     return;
   }
+  /**Draws gameplay **/
   DrawBackground("background.png");
   DrawPlayer();
   bullet_controller_.draw();
   enemy_controller_.draw();
-  PrintText("You have " + std::to_string(engine_->GetLives()) + " lives", color,
-            size,
+  // This contains the heart unicode
+  const std::string heart_unicode = u8"\u2764";
+  std::string lives;
+  for (int i = 0; i < engine_->GetLives(); i++) {
+    lives.append(heart_unicode);
+    lives.append(" ");
+  }
+  PrintText("Lives" + lives, color, size,
             vec2(ci::app::getWindowWidth() - global::kScalingFactor * 2,
                  static_cast<float>(ci::app::getWindowHeight()) -
                      global::kScalingFactor));
@@ -86,6 +92,7 @@ void MyApp::draw() {
                    static_cast<float>(ci::app::getWindowHeight()) -
                        global::kScalingFactor));
   }
+  /**Draws game over**/
   if (engine_->GetIsGameOver()) {
     DrawGameOver(center, color, size);
     game_timer.stop();
@@ -93,7 +100,7 @@ void MyApp::draw() {
 }
 void MyApp::DrawMenuScreen() {
   const cinder::vec2 center = ci::app::getWindowCenter();
-  const cinder::ivec2 size = {200, 500};
+  const cinder::ivec2 size = {500, 500};
   DrawBackground("world.jpg");
   PrintText("Choose your character first. \n Press 1 for Aang, 2 for Katara",
             ci::Color::black(), size, center);
@@ -148,6 +155,11 @@ void MyApp::keyDown(KeyEvent event) {
     case KeyEvent::KEY_SPACE: {
       game_start_ = true;
       setup();
+      break;
+    }
+    case KeyEvent::KEY_RSHIFT: {
+      setup();
+      Reset();
       break;
     }
     case KeyEvent::KEY_m: {
@@ -238,5 +250,21 @@ void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
             size,
             ivec2(ci::app::getWindowCenter().x,
                   ci::app::getWindowCenter().y + 2 * global::kScalingFactor));
+
+  PrintText("Press shift to play again ", color, size,
+            ivec2(ci::app::getWindowCenter().x,
+                  ci::app::getWindowCenter().y + 3 * global::kScalingFactor));
 }
+
+void MyApp::Reset() {
+  b2Vec2 gravity(0, 100.0f);
+  world_ = new b2World(gravity);
+  player_ =
+      new Player({ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
+  engine_ = new Engine(*player_);
+  mute_ = false;
+  game_start_ = false;
+  character_string = "avatar.gif";
+}
+
 }  // namespace trials

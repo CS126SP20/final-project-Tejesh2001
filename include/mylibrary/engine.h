@@ -19,7 +19,6 @@ namespace trials {
 class Engine {
  public:
   explicit Engine(Player player);
-
   /** Changes the direction of the player for the next time step*/
   void SetDirection(Direction);
   auto FromDirection(const Direction direction) -> b2Vec2;

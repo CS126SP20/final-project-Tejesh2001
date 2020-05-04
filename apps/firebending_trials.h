@@ -89,6 +89,7 @@ class MyApp : public cinder::app::App {
   /**Draws game over**/
   void DrawGameOver(const ci::vec2 center, const ci::Color color,
                     const ci::ivec2 size);
+  void Reset();
 };
 
 }  // namespace trials

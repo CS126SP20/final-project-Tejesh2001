@@ -40,4 +40,3 @@ void ::Bullet::update() {
 b2Body *Bullet::GetBody() { return body_; }
 void Bullet::SetBody(b2Body *body) { body_ = body; }
 bool Bullet::GetIsDead() const { return is_dead_; }
-void Bullet::SetIsDead(bool isDead) { is_dead_ = isDead; }

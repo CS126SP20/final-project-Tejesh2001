@@ -20,15 +20,16 @@ class Bullet {
   void draw();
   /**Getter for Body*/
   b2Body* GetBody();
+  /**Updates bullet state**/
   void update();
+  /**Getter for is_dead_**/
+  bool GetIsDead() const;
 
  private:
+  /**Body of the bullet**/
   b2Body* body_;
+  /**Checks if the bullet is dead or not**/
   bool is_dead_;
-
- public:
-  bool GetIsDead() const;
-  void SetIsDead(bool isDead);
 };
 
 #endif  // FINALPROJECT_BULLET_HPP
