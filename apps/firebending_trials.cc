@@ -12,14 +12,13 @@ using cinder::app::KeyEvent;
 cinder::audio::VoiceRef background_audio_file;
 MyApp::MyApp() {
   b2Vec2 gravity(0, 100.0f);
-  max_score_check_ = false;
   world_ = new b2World(gravity);
   player_ =
       new Player({ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
-  key_press_1 = false;
+  character_string = "avatar.gif";
 }
 
 void MyApp::setup() {
@@ -44,17 +43,15 @@ void MyApp::update() {
   if (game_timer.isStopped()) {
     return;
   }
-  max_score_check_ =
-      bullet_controller_.GetBullets().size() > kMaxNumberOfBullets;
   //There is a wave of enemies every two seconds. Each wave has one enemy
   // more than the previous one
+
   if (timer_.getSeconds() - kTimeChange >= kEpsilon) {
-    if (number_of_particles_ <= kMaxNumberOfEnemies) {
-      number_of_particles_++;
-    }  // Increasing number of enemies every wave by 1
-    enemy_controller_.AddEnemies(number_of_particles_);
+    int number_of_enemies_ = randInt(kMinNumberOfEnemies, kMaxNumberOfEnemies);
+    enemy_controller_.AddEnemies(number_of_enemies_);
     timer_.start(0.0);
-  }
+  }  // Increasing number of enemies every wave by 1
+
   // Move physics world
   engine_->Step(*world_, enemy_controller_,
                                     bullet_controller_.GetBullets());
@@ -83,31 +80,20 @@ void MyApp::draw() {
                  static_cast<float>(ci::app::getWindowHeight()) -
                      global::kScalingFactor));
 
-  if (max_score_check_) {
+  if (bullet_controller_.GetBullets().size() > kMaxNumberOfBullets) {
     PrintText("You have finished your airballs!", color, size,
               vec2(ci::app::getWindowWidth() / 2,
                    static_cast<float>(ci::app::getWindowHeight()) -
                        global::kScalingFactor));
   }
   if (engine_->GetIsGameOver()) {
-    DrawBackground("start.jpg");
-    PrintText("Game Over :(", color, size, center);
-    PrintText("Your time was " +
-                  std::to_string(static_cast<int>(game_timer.getSeconds())) +
-                  " seconds",
-              color, size,
-              ivec2(ci::app::getWindowCenter().x,
-                    ci::app::getWindowCenter().y + +global::kScalingFactor));
-    PrintText("Your score was " + std::to_string(engine_->GetGameScore()),
-              color, size,
-              ivec2(ci::app::getWindowCenter().x,
-                    ci::app::getWindowCenter().y + 2 * global::kScalingFactor));
+    DrawGameOver(center, color, size);
     game_timer.stop();
   }
 }
 void MyApp::DrawMenuScreen() {
   const cinder::vec2 center = ci::app::getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
+  const cinder::ivec2 size = {200, 500};
   DrawBackground("world.jpg");
   PrintText("Choose your character first. \n Press 1 for Aang, 2 for Katara",
             ci::Color::black(), size, center);
@@ -115,15 +101,17 @@ void MyApp::DrawMenuScreen() {
             ivec2(app::getWindowCenter().x,
                   app::getWindowCenter().y + +global::kScalingFactor));
   gl::Texture2dRef texture = LoadPlayer("aang1.png");
-  gl::draw(texture, Rectf(center.x - 4 * global::kScalingFactor,
-                          center.y + global::kScalingFactor,
-                          center.x - 6 + global::kScalingFactor,
-                          center.y + 5 * global::kScalingFactor));
+  gl::draw(texture,
+           Rectf(center.x - kMenuSpriteIndexLarge * global::kScalingFactor,
+                 center.y + global::kScalingFactor,
+                 center.x - kMenuSpriteIndexSmall * global::kScalingFactor,
+                 center.y + kMenuSpriteHeight * global::kScalingFactor));
   texture = LoadPlayer("katara.png");
-  gl::draw(texture, Rectf(center.x + 4 * global::kScalingFactor,
-                          center.y + global::kScalingFactor,
-                          center.x + 6 * global::kScalingFactor,
-                          center.y + 5 * global::kScalingFactor));
+  gl::draw(texture,
+           Rectf(center.x + kMenuSpriteIndexSmall * global::kScalingFactor,
+                 center.y + global::kScalingFactor,
+                 center.x + kMenuSpriteIndexLarge * global::kScalingFactor,
+                 center.y + kMenuSpriteHeight * global::kScalingFactor));
 }
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
@@ -152,7 +140,7 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_RETURN: {
-      if (!max_score_check_) {
+      if (bullet_controller_.GetBullets().size() <= kMaxNumberOfBullets) {
         AddBullet();
       }
       break;
@@ -185,7 +173,7 @@ void MyApp::keyDown(KeyEvent event) {
 void MyApp::PauseBackGroundMusic() const { background_audio_file->pause(); }
 
 void MyApp::mouseDown(cinder::app::MouseEvent /*event*/) {
-  if (!max_score_check_) {
+  if (bullet_controller_.GetBullets().size() <= kMaxNumberOfBullets) {
     AddBullet();
   }
 }
@@ -235,5 +223,20 @@ void MyApp::PrintText(const std::string& text, const C& color,
   const auto surface = box.render();
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);
+}
+void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
+                         const ci::ivec2 size) {
+  DrawBackground("start.jpg");
+  PrintText("Game Over :(", color, size, center);
+  PrintText("Your time was " +
+                std::to_string(static_cast<int>(game_timer.getSeconds())) +
+                " seconds",
+            color, size,
+            ivec2(ci::app::getWindowCenter().x,
+                  ci::app::getWindowCenter().y + +global::kScalingFactor));
+  PrintText("Your score was " + std::to_string(engine_->GetGameScore()), color,
+            size,
+            ivec2(ci::app::getWindowCenter().x,
+                  ci::app::getWindowCenter().y + 2 * global::kScalingFactor));
 }
 }  // namespace trials

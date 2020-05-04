@@ -18,7 +18,7 @@ void BulletController::update() {
   for (auto b = bullets.begin();
        b != bullets.end();) {
     if (!bullets.empty() && b->GetIsDead()) {
-      // printf("No of bullets %f \n", b->GetBody()->GetPosition().y);
+      // Destroys bullet once it goes offscreen
       world_->DestroyBody(b->GetBody());
       b = bullets.erase(b);
     } else {
