@@ -99,6 +99,17 @@ May 2nd :
 2) Added an end screen
 3) Changed the background
 
+May 3rd :
+
+1) Added player options
+2) Added documentation
+
+May 4th :
+
+1) Added restart button
+2) Added documentation for remainining classes. Removed magic numbers.
+
+
 
 
 
