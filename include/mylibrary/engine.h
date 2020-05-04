@@ -13,12 +13,11 @@
 #include "direction.h"
 #include "mylibrary/player.h"
 
-namespace myapp {
+namespace trials {
 
 // This is the game engine which is the primary way to interact with the game.
 class Engine {
  public:
-
   explicit Engine(Player player);
 
   /** Changes the direction of the player for the next time step*/
@@ -53,6 +52,6 @@ class Engine {
   int lives_;
 };
 
-}  // namespace myapp
+}  // namespace trials
 
 #endif  // SNAKE_ENGINE_H_

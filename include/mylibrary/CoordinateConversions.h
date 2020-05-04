@@ -1,7 +1,7 @@
 #pragma once
 #include <cinder/gl/gl.h>
 
-#include "../../apps/my_app.h"
+#include "../../apps/firebending_trials.h"
 #include "Box2D/Box2D.h"
 #include "CoordinateConversions.h"
 #include "cinder/Vector.h"

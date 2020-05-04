@@ -2,7 +2,7 @@
 #include <Box2D/Box2D.h>
 #include <cinder/gl/gl.h>
 
-#include "../../apps/my_app.h"
+#include "../../apps/firebending_trials.h"
 #include "CoordinateConversions.h"
 #include "EnemyController.h"
 #include "cinder/app/AppBase.h"

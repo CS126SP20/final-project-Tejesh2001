@@ -10,10 +10,10 @@
 
 #include <mylibrary/BulletController.hpp>
 
-#include "my_app.h"
+#include "firebending_trials.h"
 #include "mylibrary/direction.h"
 #include "mylibrary/engine.h"
-namespace myapp {
+namespace trials {
 using namespace cinder::app;
 class MyApp : public cinder::app::App {
  public:
@@ -31,7 +31,9 @@ class MyApp : public cinder::app::App {
   void draw();
 
  private:
-  bool key_press_1;
+  const int kMenuSpriteHeight = 8;
+  const int kMenuSpriteLeftWidth1 = 5;
+  std::string character_string;
   cinder::Timer timer_;
   const int kTimeChange = 2;
   const double kEpsilon = 0.001;
@@ -63,8 +65,9 @@ class MyApp : public cinder::app::App {
   void PauseBackGroundMusic() const;
   cinder::gl::Texture2dRef LoadPlayer(std::string relative_path);
   void DrawPlayer();
+  void DrawMenuScreen();
 };
 
-}  // namespace myapp
+}  // namespace trials
 
 #endif  // FINALPROJECT_APPS_MYAPP_H_

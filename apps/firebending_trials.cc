@@ -1,9 +1,11 @@
 // Copyright (c) 2020 [Tejesh Bhaumik]. All rights reserved.
 
-#include "my_app.h"
-#include <mylibrary/WorldCreator.hpp>
+#include "firebending_trials.h"
+
 #include <cinder/audio/Voice.h>
-namespace myapp {
+
+#include <mylibrary/WorldCreator.hpp>
+namespace trials {
 using cinder::ivec2;
 using cinder::vec2;
 using cinder::app::KeyEvent;
@@ -68,12 +70,8 @@ void MyApp::draw() {
   const cinder::ivec2 size = {500, 50};
   ci::Color color = ci::Color::white();
   if (!game_start_) {
-    DrawBackground("world.jpg");
-    PrintText("Choose your character first. \n Press 1 for Aang, 2 for Katara",
-              ci::Color::black(), size, center);
-    PrintText("Press the spacebar to start", ci::Color::black(), size,
-              ivec2(ci::app::getWindowCenter().x,
-                    ci::app::getWindowCenter().y + +global::kScalingFactor));
+    DrawMenuScreen();
+    return;
   }
   DrawBackground("background.png");
   DrawPlayer();
@@ -107,7 +105,26 @@ void MyApp::draw() {
     game_timer.stop();
   }
 }
-
+void MyApp::DrawMenuScreen() {
+  const cinder::vec2 center = ci::app::getWindowCenter();
+  const cinder::ivec2 size = {500, 50};
+  DrawBackground("world.jpg");
+  PrintText("Choose your character first. \n Press 1 for Aang, 2 for Katara",
+            ci::Color::black(), size, center);
+  PrintText("Press the spacebar to start", ci::Color::black(), size,
+            ivec2(app::getWindowCenter().x,
+                  app::getWindowCenter().y + +global::kScalingFactor));
+  gl::Texture2dRef texture = LoadPlayer("aang1.png");
+  gl::draw(texture, Rectf(center.x - 4 * global::kScalingFactor,
+                          center.y + global::kScalingFactor,
+                          center.x - 6 + global::kScalingFactor,
+                          center.y + 5 * global::kScalingFactor));
+  texture = LoadPlayer("katara.png");
+  gl::draw(texture, Rectf(center.x + 4 * global::kScalingFactor,
+                          center.y + global::kScalingFactor,
+                          center.x + 6 * global::kScalingFactor,
+                          center.y + 5 * global::kScalingFactor));
+}
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_UP:
@@ -156,11 +173,11 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_1: {
-      key_press_1 = true;
+      character_string = "avatar.gif";
       break;
     }
     case KeyEvent::KEY_2: {
-      key_press_1 = false;
+      character_string = "katara.png";
       break;
     }
   }
@@ -185,11 +202,7 @@ cinder::gl::Texture2dRef MyApp::LoadPlayer(std::string relative_path) {
 void MyApp::DrawPlayer() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   cinder::gl::Texture2dRef texture;
-  if (key_press_1) {
-    texture = LoadPlayer("avatar.gif");
-  } else {
-    texture = LoadPlayer("katara.png");
-  }
+  texture = LoadPlayer(character_string);
   cinder::gl::draw(texture,
                    ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
                              loc.y + 2 * global::kScalingFactor));
@@ -223,4 +236,4 @@ void MyApp::PrintText(const std::string& text, const C& color,
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);
 }
-}  // namespace myapp
+}  // namespace trials

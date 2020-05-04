@@ -13,9 +13,9 @@ TEST_CASE("engine class", "[step function]") {
   SECTION("Check for no collision") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    myapp::Player player_(b2Vec2(400, 400));
-    // myapp::MyApp game_player;
-    myapp::Engine engine_(player_);
+    trials::Player player_(b2Vec2(400, 400));
+    // trials::MyApp game_player;
+    trials::Engine engine_(player_);
     EnemyController enemy_controller;
     BulletController bullet_controller_;
     enemy_controller.setup(world_);
@@ -33,8 +33,8 @@ TEST_CASE("engine class", "[step function]") {
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
-    myapp::Player player_(b2Vec2(0, 0));
-    myapp::Engine engine_(player_);
+    trials::Player player_(b2Vec2(0, 0));
+    trials::Engine engine_(player_);
     bullet_controller_.addBullet(player_.GetLoc());
     engine_.Step(world_, enemy_controller, bullet_controller_.GetBullets());
     REQUIRE(engine_.GetLives() == 2);
@@ -47,8 +47,8 @@ TEST_CASE("engine class", "[step function]") {
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
-    myapp::Player player_(b2Vec2(-50,0));
-    myapp::Engine engine_(player_);
+    trials::Player player_(b2Vec2(-50, 0));
+    trials::Engine engine_(player_);
     bullet_controller_.addBullet((b2Vec2(0, 0)));
     engine_.FindBulletCollision(enemy_controller,
                                 bullet_controller_.GetBullets());
@@ -60,8 +60,8 @@ TEST_CASE("engine direction function", "[direction]") {
   SECTION("Check for no collision") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    myapp::Player player_(b2Vec2(400, 400));
-    myapp::Engine engine_(player_);
+    trials::Player player_(b2Vec2(400, 400));
+    trials::Engine engine_(player_);
     engine_.SetDirection(Direction::kUp);
     b2Vec2 direction = engine_.FromDirection(Direction::kUp);
     REQUIRE(direction.x == 0);

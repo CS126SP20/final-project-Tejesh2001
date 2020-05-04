@@ -87,7 +87,7 @@ function( ci_make_library )
     endif()
 
     if( CINDER_MAC )
-        # set icon. TODO: make this overridable
+        # set icon.
         set( ICON_NAME "CinderApp.icns" )
         set( ICON_PATH "${ARG_CINDER_PATH}/samples/data/${ICON_NAME}" )
 

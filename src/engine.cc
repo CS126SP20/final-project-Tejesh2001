@@ -17,7 +17,7 @@
 #include "mylibrary/ProjectWideConstants.h"
 #include "mylibrary/direction.h"
 
-namespace myapp {
+namespace trials {
 b2Vec2 Engine::FromDirection(const Direction direction) {
   switch (direction) {
     case Direction::kUp:
@@ -110,8 +110,7 @@ void Engine::SetDirection(const Direction direction) {
 
 void Engine::SetLocation() {
   b2Vec2 d_loc = FromDirection(direction_);
-  b2Vec2 loc =
-      (player_.GetLoc() + d_loc);
+  b2Vec2 loc = (player_.GetLoc() + d_loc);
   player_.SetLoc(loc);
 }
 bool Engine::GetIsGameOver() { return is_game_over_; }
@@ -120,4 +119,4 @@ int Engine::GetGameScore() { return game_score_; }
 
 int Engine::GetLives() { return lives_; }
 
-}  // namespace myapp
+}  // namespace trials
