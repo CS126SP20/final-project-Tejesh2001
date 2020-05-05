@@ -18,7 +18,7 @@ MyApp::MyApp() {
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
-  character_string = "avatar.gif";
+  character_string = "aang1.png";
 }
 
 void MyApp::setup() {
@@ -26,17 +26,17 @@ void MyApp::setup() {
     return;
   }
   WorldCreator world_creator;
+  // The functions for creating walls for separated for generalization
   world_creator.CreateCeiling(*world_);
   world_creator.CreateLeftWall(*world_);
   world_creator.CreateRightWall(*world_);
-  // pass world to enemy_controller_
+  // pass *world to objects
   timer_.start(0);
   game_timer.start(0);
   enemy_controller_.setup(*world_);
   bullet_controller_.setup(*world_);
   LoadBackGroundMusic();
 }
-int c = 0;
 void MyApp::update() {
   if (game_timer.isStopped()) {
     // If you restart the game, the enemies need to be cleared
@@ -59,10 +59,13 @@ void MyApp::update() {
 }
 
 void MyApp::draw() {
+  // Clears the screen with a white color
   cinder::gl::clear(cinder::Color(0, 0, 0));
   cinder::gl::enableAlphaBlending();
   const cinder::vec2 center = ci::app::getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
+  // Size of font
+  const cinder::ivec2 size = {500, 45};
+  // Color of font
   ci::Color color = ci::Color::white();
   /**Draws menu screen**/
   if (!game_start_) {
@@ -81,16 +84,20 @@ void MyApp::draw() {
     lives.append(heart_unicode);
     lives.append(" ");
   }
-  PrintText("Lives" + lives, color, size,
+  // Enables alpha blending by making the last parameter 0
+  ci::ColorA box_transparent_color = cinder::ColorA(1, 1, 1, 0);
+  PrintText("Lives " + lives, color, size,
             vec2(ci::app::getWindowWidth() - global::kScalingFactor * 2,
                  static_cast<float>(ci::app::getWindowHeight()) -
-                     global::kScalingFactor));
+                     global::kScalingFactor),
+            box_transparent_color);
 
   if (bullet_controller_.GetBullets().size() > kMaxNumberOfBullets) {
     PrintText("You have finished your airballs!", color, size,
               vec2(ci::app::getWindowWidth() / 2,
                    static_cast<float>(ci::app::getWindowHeight()) -
-                       global::kScalingFactor));
+                       global::kScalingFactor),
+              box_transparent_color);
   }
   /**Draws game over**/
   if (engine_->GetIsGameOver()) {
@@ -100,27 +107,32 @@ void MyApp::draw() {
 }
 void MyApp::DrawMenuScreen() {
   const cinder::vec2 center = ci::app::getWindowCenter();
-  const cinder::ivec2 size = {500, 500};
+  // Sets the size of the writing
+  const cinder::ivec2 size = {500, 45};
+  const ci::ColorA box_opaque_color = cinder::ColorA(1, 1, 1, 1);
   DrawBackground("world.jpg");
-  PrintText("Choose your character first. \n Press 1 for Aang, 2 for Katara",
-            ci::Color::black(), size, center);
+  PrintText("Click on the character you want", ci::Color::black(), size, center,
+            box_opaque_color);
   PrintText("Press the spacebar to start", ci::Color::black(), size,
             ivec2(app::getWindowCenter().x,
-                  app::getWindowCenter().y + +global::kScalingFactor));
-  gl::Texture2dRef texture = LoadPlayer("aang1.png");
+                  app::getWindowCenter().y + global::kScalingFactor),
+            box_opaque_color);
+  gl::Texture2dRef texture = LoadPlayer(kCharacter1Name);
+  // Draws the menu sprites on the tiles present on the world map
   gl::draw(texture,
            Rectf(center.x - kMenuSpriteIndexLarge * global::kScalingFactor,
                  center.y + global::kScalingFactor,
                  center.x - kMenuSpriteIndexSmall * global::kScalingFactor,
                  center.y + kMenuSpriteHeight * global::kScalingFactor));
-  texture = LoadPlayer("katara.png");
+  texture = LoadPlayer(kCharacter2Name);
   gl::draw(texture,
-           Rectf(center.x + kMenuSpriteIndexSmall * global::kScalingFactor,
+           Rectf(center.x + (kMenuSpriteIndexSmall)*global::kScalingFactor,
                  center.y + global::kScalingFactor,
-                 center.x + kMenuSpriteIndexLarge * global::kScalingFactor,
+                 center.x + (kMenuSpriteIndexLarge)*global::kScalingFactor,
                  center.y + kMenuSpriteHeight * global::kScalingFactor));
 }
 void MyApp::keyDown(KeyEvent event) {
+  // The first four cases are responsible for player movement
   switch (event.getCode()) {
     case KeyEvent::KEY_UP:
     case KeyEvent::KEY_w: {
@@ -146,6 +158,7 @@ void MyApp::keyDown(KeyEvent event) {
       engine_->SetLocation();
       break;
     }
+    // Fires bullets
     case KeyEvent::KEY_RETURN: {
       if (bullet_controller_.GetBullets().size() <= kMaxNumberOfBullets) {
         AddBullet();
@@ -153,15 +166,19 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_SPACE: {
+      // Starts the game
       game_start_ = true;
       setup();
       break;
     }
     case KeyEvent::KEY_RSHIFT: {
-      setup();
+      // Starts the game
+      game_start_ = true;
       Reset();
+      setup();
       break;
     }
+      // Mutes the music
     case KeyEvent::KEY_m: {
       if (!mute_) {
         PauseBackGroundMusic();
@@ -172,24 +189,49 @@ void MyApp::keyDown(KeyEvent event) {
       }
       break;
     }
-    case KeyEvent::KEY_1: {
-      character_string = "avatar.gif";
-      break;
-    }
-    case KeyEvent::KEY_2: {
-      character_string = "katara.png";
-      break;
-    }
   }
 }
 void MyApp::PauseBackGroundMusic() const { background_audio_file->pause(); }
 
-void MyApp::mouseDown(cinder::app::MouseEvent /*event*/) {
-  if (bullet_controller_.GetBullets().size() <= kMaxNumberOfBullets) {
-    AddBullet();
+void MyApp::mouseDown(cinder::app::MouseEvent event) {
+  if (!game_start_) {
+    CheckIfMenuSpriteIsSelected(event);
+  } else {
+    if (bullet_controller_.GetBullets().size() <= kMaxNumberOfBullets) {
+      AddBullet();
+    }
+  }
+}
+void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
+  // This checks if the mouse position when clicked matches with the position
+  // at which the menu sprite is drawn
+  int left_dimension_of_sprite =
+      app::getWindowCenter().x - kMenuSpriteIndexLarge * global::kScalingFactor;
+  int right_dimension_of_sprite =
+      app::getWindowCenter().x - kMenuSpriteIndexSmall * global::kScalingFactor;
+
+  // It goes through all the the rows that the sprite is drawn on
+  for (int y = left_dimension_of_sprite; y <= right_dimension_of_sprite;
+       y += global::kScalingFactor) {
+    if ((int)(event.getPos().x / global::kScalingFactor) ==
+        (int)(y / global::kScalingFactor)) {
+      character_string = kCharacter1Name;
+    }
+  }
+  left_dimension_of_sprite =
+      app::getWindowCenter().x + (kMenuSpriteIndexSmall)*global::kScalingFactor;
+  right_dimension_of_sprite =
+      app::getWindowCenter().x + kMenuSpriteIndexLarge * global::kScalingFactor;
+  for (int y = left_dimension_of_sprite; y <= right_dimension_of_sprite;
+       y += global::kScalingFactor) {
+    if ((int)(event.getPos().x / global::kScalingFactor) ==
+        (int)(y / global::kScalingFactor)) {
+      character_string = kCharacter2Name;
+    }
   }
 }
 void MyApp::AddBullet() {
+  // Adds bullet to vector at position where player has drawn
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
 }
@@ -204,7 +246,7 @@ void MyApp::DrawPlayer() {
   cinder::gl::Texture2dRef texture;
   texture = LoadPlayer(character_string);
   cinder::gl::draw(texture,
-                   ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
+                   ci::Rectf(loc.x, loc.y, loc.x + 3 * global::kScalingFactor,
                              loc.y + 2 * global::kScalingFactor));
 }
 
@@ -222,13 +264,14 @@ void MyApp::LoadBackGroundMusic() {
 void MyApp::PlayBackGroundMusic() const { background_audio_file->start(); }
 template <typename C>
 void MyApp::PrintText(const std::string& text, const C& color,
-                      const cinder::ivec2& size, const cinder::vec2& loc) {
+                      const cinder::ivec2& size, const cinder::vec2& loc,
+                      const ci::ColorA box_color) {
   auto box = ci::TextBox()
                  .alignment(ci::TextBox::CENTER)
-                 .font(cinder::Font("Ariel", 30))
+                 .font(cinder::Font("Garamond", 45))
                  .size(size)
                  .color(color)
-                 .backgroundColor(ci::ColorA(1, 1, 1, 0))
+                 .backgroundColor(box_color)
                  .text(text);
   const auto box_size = box.getSize();
   const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
@@ -239,32 +282,35 @@ void MyApp::PrintText(const std::string& text, const C& color,
 void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
                          const ci::ivec2 size) {
   DrawBackground("start.jpg");
-  PrintText("Game Over :(", color, size, center);
+  ci::ColorA box_transparent_color = cinder::ColorA(1, 1, 1, 0);
+  PrintText("Game Over :(", color, size, center, box_transparent_color);
   PrintText("Your time was " +
                 std::to_string(static_cast<int>(game_timer.getSeconds())) +
                 " seconds",
             color, size,
             ivec2(ci::app::getWindowCenter().x,
-                  ci::app::getWindowCenter().y + +global::kScalingFactor));
+                  ci::app::getWindowCenter().y + +global::kScalingFactor),
+            box_transparent_color);
+  // The magic numbers are present for printing each line below each other
   PrintText("Your score was " + std::to_string(engine_->GetGameScore()), color,
             size,
             ivec2(ci::app::getWindowCenter().x,
-                  ci::app::getWindowCenter().y + 2 * global::kScalingFactor));
+                  ci::app::getWindowCenter().y + 2 * global::kScalingFactor),
+            box_transparent_color);
 
   PrintText("Press shift to play again ", color, size,
             ivec2(ci::app::getWindowCenter().x,
-                  ci::app::getWindowCenter().y + 3 * global::kScalingFactor));
+                  ci::app::getWindowCenter().y + 3 * global::kScalingFactor),
+            box_transparent_color);
 }
 
 void MyApp::Reset() {
-  b2Vec2 gravity(0, 100.0f);
-  world_ = new b2World(gravity);
   player_ =
       new Player({ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
-  character_string = "avatar.gif";
+  character_string = kCharacter1Name;
 }
 
 }  // namespace trials

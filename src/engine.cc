@@ -104,9 +104,7 @@ void Engine::FindBulletCollision(EnemyController& enemy_controller,
     }
 }
 
-void Engine::SetDirection(const Direction direction) {
-  direction_ = direction;
-}
+void Engine::SetDirection(const Direction direction) { direction_ = direction; }
 
 void Engine::SetLocation() {
   b2Vec2 d_loc = FromDirection(direction_);

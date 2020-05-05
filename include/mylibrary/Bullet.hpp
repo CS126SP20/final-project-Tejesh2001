@@ -25,6 +25,9 @@ class Bullet {
   /**Getter for is_dead_**/
   bool GetIsDead() const;
 
+  /**Required for testing purposes**/
+  void SetIsDead(bool is_dead);
+
  private:
   /**Body of the bullet**/
   b2Body* body_;
