@@ -63,12 +63,15 @@ April 29th :
 1) Added project proposal as a separate file 
 2) Updated ReadMe to reflect how to build the game and play it
 
-Week 2 deliverables completed
-Week 3 delivarable completed
-Added player movement throughout the screen (Extension 1)
-Added new feature such as player score and player game time
+**Week 2 deliverables completed**
 
-TODO ::
+**Week 3 delivarable completed**
+
+**Added player movement throughout the screen (Extension 1)**
+
+**Added new feature such as player score and player game time**
+
+**TODO ::**
 
 1) Add tests for remaining classes
 2) Add further documentation
@@ -88,7 +91,7 @@ May 1st:
 
 **Second extension implemented**
 
-TODO ::
+**TODO ::**
 
 1) Add tests for remaining classes
 2) Add further documentation
@@ -123,10 +126,12 @@ May 6th :
 5) Refactored classes in my library under the mylibrary namespace
 
 **ALL DELIVERABLES MET**
+
 **ALL EXTENSIONS COMPLETED**
+
 **FINAL PROJECT OVER**
 
-
+****************************************************************************************************************************************
 
 
 
