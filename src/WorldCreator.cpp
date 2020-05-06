@@ -3,6 +3,9 @@
 //
 
 #include "mylibrary/WorldCreator.hpp"
+
+namespace mylibrary {
+
 void WorldCreator::CreateCeiling(b2World& world) {
   TestCheck(world);
   b2BodyDef ground_body_def;
@@ -55,8 +58,10 @@ void WorldCreator::TestCheck(b2World& world) {
         static_cast<float>(global::kBoundsOfWindow));
   } else {
     right_most_index_ = conversions::ToBox2DCoordinates(
-        static_cast<float>(app::getWindowWidth()));
+        static_cast<float>(ci::app::getWindowWidth()));
     upper_most_index_ = conversions::ToBox2DCoordinates(
-        static_cast<float>(app::getWindowHeight()) - global::kScalingFactor);
+        static_cast<float>(ci::app::getWindowHeight()) -
+        global::kScalingFactor);
   }
 }
+}  // namespace mylibrary

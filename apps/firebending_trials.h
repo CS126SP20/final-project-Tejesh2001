@@ -8,9 +8,7 @@
 #include <cinder/audio/Voice.h>
 #include <cinder/gl/gl.h>
 #include <mylibrary/ProjectWideConstants.h>
-
 #include <mylibrary/BulletController.hpp>
-
 #include "firebending_trials.h"
 #include "mylibrary/direction.h"
 #include "mylibrary/engine.h"
@@ -75,19 +73,19 @@ class MyApp : public cinder::app::App {
   b2World* world_;
 
   /**The player**/
-  Player* player_;
+  mylibrary::Player* player_;
 
   /**The engine pointer**/
-  Engine* engine_;
+  mylibrary::Engine* engine_;
 
   /**Maximum number of enemies in a wave**/
   const int kMaxNumberOfEnemies = 14;
 
   /** The enemy controller object**/
-  EnemyController enemy_controller_;
+  mylibrary::EnemyController enemy_controller_;
 
   /**The bullet controller object**/
-  BulletController bullet_controller_;
+  mylibrary::BulletController bullet_controller_;
 
   /**Player 1 string path**/
   const char* const kCharacter1Name = "aang.png";

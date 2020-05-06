@@ -10,28 +10,37 @@
 #ifndef FINALPROJECT_WORLDCREATOR_HPP
 #define FINALPROJECT_WORLDCREATOR_HPP
 
+namespace mylibrary {
+
 class WorldCreator {
  public:
   /**Creates the ceiling of the world**/
   void CreateCeiling(b2World &world);
+
   /**Creates the left wall of the world**/
   void CreateLeftWall(b2World &world);
+
   /**Creates the right wall of the world**/
   void CreateRightWall(b2World &world);
 
  private:
   /**The right most index of the walls and ceilings**/
   float right_most_index_;
+
   /**Upper most index of the walls and ceilings**/
   float upper_most_index_;
+
   /**Density of wall**/
   const double density = 0.0;
+
   /**Gets Wall thickness**/
   const float kWallThickness =
       conversions::ToBox2DCoordinates(global::kScalingFactor);
+
   /**This function initiliases indexes to 800 for testing, and otherwise to
    * window characterestics **/
   void TestCheck(b2World &world);
 };
+}  // namespace mylibrary
 
 #endif  // FINALPROJECT_WORLDCREATOR_HPP

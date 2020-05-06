@@ -9,9 +9,11 @@ using cinder::app::KeyEvent;
 MyApp::MyApp() {
   b2Vec2 gravity(0, 100.0f);
   world_ = new b2World(gravity);
-  player_ =
-      new Player({ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
-  engine_ = new Engine(*player_);
+  // Assigns player pointer
+  player_ = new mylibrary::Player(
+      {ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
+  // Assigns engine pointer
+  engine_ = new mylibrary::Engine(*player_);
   mute_ = false;
   game_start_ = false;
   character_string_ = kCharacter1Name;
@@ -21,7 +23,7 @@ void MyApp::setup() {
   if (!game_start_) {
     return;
   }
-  WorldCreator world_creator;
+  mylibrary::WorldCreator world_creator;
   // The functions for creating walls for separated for generalization
   world_creator.CreateCeiling(*world_);
   world_creator.CreateLeftWall(*world_);
@@ -43,7 +45,8 @@ void MyApp::update() {
   // more than the previous one
 
   if (timer_.getSeconds() - kTimeChange >= kEpsilon) {
-    int number_of_enemies_ = randInt(kMinNumberOfEnemies, kMaxNumberOfEnemies);
+    int number_of_enemies_ =
+        ci::randInt(kMinNumberOfEnemies, kMaxNumberOfEnemies);
     enemy_controller_.AddEnemies(number_of_enemies_);
     timer_.start(0.0);
   }  // Randomising number of enemies every wave
@@ -56,11 +59,11 @@ void MyApp::update() {
 
 void MyApp::draw() {
   // Clears the screen with a white color
-  cinder::gl::clear(cinder::Color(0, 0, 0));
-  cinder::gl::enableAlphaBlending();
-  const cinder::vec2 center = ci::app::getWindowCenter();
+  ci::gl::clear(ci::Color(0, 0, 0));
+  ci::gl::enableAlphaBlending();
+  const ci::vec2 center = ci::app::getWindowCenter();
   // Size of font
-  const cinder::ivec2 size = {500, 45};
+  const ci::ivec2 size = {500, 45};
   // Color of font
   ci::Color color = ci::Color::white();
   /**Draws menu screen**/
@@ -81,7 +84,7 @@ void MyApp::draw() {
     lives.append(" ");
   }
   // Enables alpha blending by making the last parameter 0
-  ci::ColorA box_transparent_color = cinder::ColorA(1, 1, 1, 0);
+  ci::ColorA box_transparent_color = ci::ColorA(1, 1, 1, 0);
   PrintText("Lives " + lives, color, size,
             vec2(ci::app::getWindowWidth() - global::kScalingFactor * 2,
                  static_cast<float>(ci::app::getWindowHeight()) -
@@ -102,31 +105,33 @@ void MyApp::draw() {
   }
 }
 void MyApp::DrawMenuScreen() {
-  const cinder::vec2 center = ci::app::getWindowCenter();
+  const ci::vec2 center = ci::app::getWindowCenter();
   // Sets the size of the writing
-  const cinder::ivec2 size = {500, 45};
+  const ci::ivec2 size = {500, 45};
   // The 1 enables alpha blending
-  const ci::ColorA box_opaque_color = cinder::ColorA(1, 1, 1, 1);
+  const ci::ColorA box_opaque_color = ci::ColorA(1, 1, 1, 1);
   DrawBackground("world.jpg");
   PrintText("Click on the character you want", ci::Color::black(), size, center,
             box_opaque_color);
   PrintText("Press the spacebar to start", ci::Color::black(), size,
-            ivec2(app::getWindowCenter().x,
-                  app::getWindowCenter().y + global::kScalingFactor),
+            ivec2(ci::app::getWindowCenter().x,
+                  ci::app::getWindowCenter().y + global::kScalingFactor),
             box_opaque_color);
-  gl::Texture2dRef texture = LoadPlayer(kCharacter1Name);
+  ci::gl::Texture2dRef texture = LoadPlayer(kCharacter1Name);
   // Draws the menu sprites on the tiles present on the world map
-  gl::draw(texture,
-           Rectf(center.x - kMenuSpriteIndexLarge * global::kScalingFactor,
-                 center.y + global::kScalingFactor,
-                 center.x - kMenuSpriteIndexSmall * global::kScalingFactor,
-                 center.y + kMenuSpriteHeight * global::kScalingFactor));
+  ci::gl::draw(
+      texture,
+      ci::Rectf(center.x - kMenuSpriteIndexLarge * global::kScalingFactor,
+                center.y + global::kScalingFactor,
+                center.x - kMenuSpriteIndexSmall * global::kScalingFactor,
+                center.y + kMenuSpriteHeight * global::kScalingFactor));
   texture = LoadPlayer(kCharacter2Name);
-  gl::draw(texture,
-           Rectf(center.x + (kMenuSpriteIndexSmall)*global::kScalingFactor,
-                 center.y + global::kScalingFactor,
-                 center.x + (kMenuSpriteIndexLarge)*global::kScalingFactor,
-                 center.y + kMenuSpriteHeight * global::kScalingFactor));
+  ci::gl::draw(
+      texture,
+      ci::Rectf(center.x + (kMenuSpriteIndexSmall)*global::kScalingFactor,
+                center.y + global::kScalingFactor,
+                center.x + (kMenuSpriteIndexLarge)*global::kScalingFactor,
+                center.y + kMenuSpriteHeight * global::kScalingFactor));
 }
 void MyApp::keyDown(KeyEvent event) {
   // The first four cases are responsible for player movement
@@ -190,10 +195,12 @@ void MyApp::keyDown(KeyEvent event) {
 }
 void MyApp::PauseBackGroundMusic() const { background_audio_file_->pause(); }
 
-void MyApp::mouseDown(cinder::app::MouseEvent event) {
+void MyApp::mouseDown(ci::app::MouseEvent event) {
+  // Chooses the character which is clicked on
   if (!game_start_) {
     CheckIfMenuSpriteIsSelected(event);
   } else {
+    // Shoots bullets
     if (bullet_controller_.GetBullets().size() <= kMaxNumberOfBullets) {
       AddBullet();
     }
@@ -202,27 +209,29 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
 void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
   // This checks if the mouse position when clicked matches with the position
   // at which the menu sprite is drawn
-  int left_dimension_of_sprite =
-      app::getWindowCenter().x - kMenuSpriteIndexLarge * global::kScalingFactor;
-  int right_dimension_of_sprite =
-      app::getWindowCenter().x - kMenuSpriteIndexSmall * global::kScalingFactor;
+  float left_dimension_of_sprite =
+      ci::app::getWindowCenter().x -
+      kMenuSpriteIndexLarge * global::kScalingFactor;
+  float right_dimension_of_sprite =
+      ci::app::getWindowCenter().x -
+      kMenuSpriteIndexSmall * global::kScalingFactor;
 
   // It goes through all the the rows that the sprite is drawn on
-  for (int y = left_dimension_of_sprite; y <= right_dimension_of_sprite;
-       y += global::kScalingFactor) {
+  for (float x = left_dimension_of_sprite; x <= right_dimension_of_sprite;
+       x += global::kScalingFactor) {
     if ((int)(event.getPos().x / global::kScalingFactor) ==
-        (int)(y / global::kScalingFactor)) {
+        (int)(x / global::kScalingFactor)) {
       character_string_ = kCharacter1Name;
     }
   }
-  left_dimension_of_sprite =
-      app::getWindowCenter().x + (kMenuSpriteIndexSmall)*global::kScalingFactor;
-  right_dimension_of_sprite =
-      app::getWindowCenter().x + kMenuSpriteIndexLarge * global::kScalingFactor;
-  for (int y = left_dimension_of_sprite; y <= right_dimension_of_sprite;
-       y += global::kScalingFactor) {
+  left_dimension_of_sprite = ci::app::getWindowCenter().x +
+                             (kMenuSpriteIndexSmall)*global::kScalingFactor;
+  right_dimension_of_sprite = ci::app::getWindowCenter().x +
+                              kMenuSpriteIndexLarge * global::kScalingFactor;
+  for (float x = left_dimension_of_sprite; x <= right_dimension_of_sprite;
+       x += global::kScalingFactor) {
     if ((int)(event.getPos().x / global::kScalingFactor) ==
-        (int)(y / global::kScalingFactor)) {
+        (int)(x / global::kScalingFactor)) {
       character_string_ = kCharacter2Name;
     }
   }
@@ -232,55 +241,56 @@ void MyApp::AddBullet() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   bullet_controller_.addBullet(loc);
 }
-cinder::gl::Texture2dRef MyApp::LoadPlayer(std::string relative_path) {
+ci::gl::Texture2dRef MyApp::LoadPlayer(std::string relative_path) {
   // Loads the player path from the string
-  cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
-      loadImage(cinder::app::loadAsset(relative_path)));
+  ci::gl::Texture2dRef texture =
+      ci::gl::Texture2d::create(loadImage(ci::app::loadAsset(relative_path)));
   return texture;
 }
 
 void MyApp::DrawPlayer() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
-  cinder::gl::Texture2dRef texture;
+  ci::gl::Texture2dRef texture;
   texture = LoadPlayer(character_string_);
-  cinder::gl::draw(texture,
-                   ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
-                             loc.y + 2 * global::kScalingFactor));
+  ci::gl::draw(texture,
+               ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
+                         loc.y + 2 * global::kScalingFactor));
 }
 
 void MyApp::DrawBackground(const std::string& relative_path) {
-  cinder::fs::path path = cinder::fs::path(relative_path);
-  cinder::gl::Texture2dRef texture =
-      cinder::gl::Texture2d::create(loadImage(cinder::app::loadAsset(path)));
-  cinder::gl::draw(texture, ci::Rectf(getWindowBounds()));
+  // Loads path of background
+  ci::fs::path path = ci::fs::path(relative_path);
+  ci::gl::Texture2dRef texture =
+      ci::gl::Texture2d::create(loadImage(ci::app::loadAsset(path)));
+  ci::gl::draw(texture, ci::Rectf(getWindowBounds()));
 }
 void MyApp::LoadBackGroundMusic() {
-  auto source_file = cinder::audio::load(cinder::app::loadAsset("mus.mp3"));
-  background_audio_file_ = cinder::audio::Voice::create(source_file);
+  auto source_file = ci::audio::load(ci::app::loadAsset("mus.mp3"));
+  background_audio_file_ = ci::audio::Voice::create(source_file);
   PlayBackGroundMusic();
 }
 void MyApp::PlayBackGroundMusic() const { background_audio_file_->start(); }
 template <typename C>
 void MyApp::PrintText(const std::string& text, const C& color,
-                      const cinder::ivec2& size, const cinder::vec2& loc,
+                      const ci::ivec2& size, const ci::vec2& loc,
                       const ci::ColorA box_color) {
   auto box = ci::TextBox()
                  .alignment(ci::TextBox::CENTER)
-                 .font(cinder::Font("Garamond", 45))
+                 .font(ci::Font("Garamond", 45))
                  .size(size)
                  .color(color)
                  .backgroundColor(box_color)
                  .text(text);
   const auto box_size = box.getSize();
-  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
+  const ci::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
   const auto surface = box.render();
-  const auto texture = cinder::gl::Texture::create(surface);
-  cinder::gl::draw(texture, locp);
+  const auto texture = ci::gl::Texture::create(surface);
+  ci::gl::draw(texture, locp);
 }
 void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
                          const ci::ivec2 size) {
   DrawBackground("start.jpg");
-  ci::ColorA box_transparent_color = cinder::ColorA(1, 1, 1, 0);
+  ci::ColorA box_transparent_color = ci::ColorA(1, 1, 1, 0);
   PrintText("Game Over :(", color, size, center, box_transparent_color);
   PrintText("Your time was " +
                 std::to_string(static_cast<int>(game_timer.getSeconds())) +
@@ -303,9 +313,10 @@ void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
 }
 
 void MyApp::Reset() {
-  player_ =
-      new Player({ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
-  engine_ = new Engine(*player_);
+  // Used to restart the game with same parameters as before
+  player_ = new mylibrary::Player(
+      {ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
+  engine_ = new mylibrary::Engine(*player_);
   mute_ = false;
   game_start_ = false;
   character_string_ = kCharacter1Name;

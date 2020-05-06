@@ -1,42 +1,39 @@
 #pragma once
 #include "mylibrary/EnemyController.h"
+
 #include <cinder/app/AppBase.h>
+
 #include "cinder/Rand.h"
 #include "mylibrary/CoordinateConversions.h"
+#include "mylibrary/ProjectWideConstants.h"
 
+namespace mylibrary {
 using std::list;
+EnemyController::EnemyController() = default;
 
-EnemyController::EnemyController()= default;
-
-void EnemyController::setup(b2World &my_world)
-{
+void EnemyController::setup(b2World &my_world) {
   // Setting up world and location for test
   world_ = &my_world;
-  location_for_test = new b2Vec2(0,0);
+  location_for_test = new b2Vec2(0, 0);
 }
-void EnemyController::update()
-{
-  for (auto p = enemies.begin();
-  p != enemies.end();) {
+void EnemyController::update() {
+  for (auto p = enemies.begin(); p != enemies.end();) {
     // if the enemy is dead, it removes the body
     if (!enemies.empty() && p->IsDead()) {
-     world_->DestroyBody(p->GetBody());
-     p = enemies.erase(p);
+      world_->DestroyBody(p->GetBody());
+      p = enemies.erase(p);
     } else {
       p->update();
       ++p;
     }
-
-    }
-}
-
-void EnemyController::draw()
-{
-  for(auto &particle : enemies){
-    particle.draw();
   }
 }
 
+void EnemyController::draw() {
+  for (auto &particle : enemies) {
+    particle.draw();
+  }
+}
 
 void EnemyController::AddEnemies(int amount) {
   float world_width;
@@ -53,7 +50,8 @@ void EnemyController::AddEnemies(int amount) {
     body_def.type = b2_dynamicBody;
     // Sets the position of the enemy on top of the screen somewhere
     if (location_for_test->y != global::kLowerMostIndex) {
-      body_def.position.Set(randFloat(world_width), global::kLowerMostIndex);
+      body_def.position.Set(ci::randFloat(world_width),
+                            global::kLowerMostIndex);
     } else {
       body_def.position.Set(location_for_test->x, location_for_test->x);
       location_for_test->y = -1;
@@ -63,7 +61,7 @@ void EnemyController::AddEnemies(int amount) {
 }
 b2BodyDef &EnemyController::CreateBody(b2BodyDef &body_def) {
   Enemy enemy;
-  //Creating enemy and its corresponding properties
+  // Creating enemy and its corresponding properties
   body_def.userData = &enemy;
   body_def.bullet = true;
   enemy.SetBody(world_->CreateBody(&body_def));
@@ -83,8 +81,5 @@ b2BodyDef &EnemyController::CreateBody(b2BodyDef &body_def) {
   enemies.push_back(enemy);
   return body_def;
 }
-std::list<Enemy> &EnemyController::GetEnemies() {
-  return enemies;
-}
-
-
+std::list<Enemy> &EnemyController::GetEnemies() { return enemies; }
+}  // namespace mylibrary

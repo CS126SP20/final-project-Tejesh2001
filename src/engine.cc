@@ -17,7 +17,7 @@
 #include "mylibrary/ProjectWideConstants.h"
 #include "mylibrary/direction.h"
 
-namespace trials {
+namespace mylibrary {
 b2Vec2 Engine::FromDirection(const Direction direction) {
   switch (direction) {
     case Direction::kUp:
@@ -34,22 +34,21 @@ b2Vec2 Engine::FromDirection(const Direction direction) {
 
 Player Engine::GetPlayer() const { return player_; }
 
-
 Engine::Engine(Player player) : player_(player) {
   player_.SetLoc(player.GetLoc());
   is_game_over_ = false;
   game_score_ = 0;
   lives_ = 3;
 }
-void Engine::Step(b2World& world, EnemyController&
-enemy_controller, std::vector<Bullet>& bullets) {
+void Engine::Step(b2World& world, EnemyController& enemy_controller,
+                  std::vector<Bullet>& bullets) {
   std::list<Enemy> enemy_list = enemy_controller.GetEnemies();
-
-  //Advancing the physics world
-  float time_step = 1.0f / 60.0f;
+  // Advancing the physics world
+  float time_step = 1.0f / 60.0f;  // 1 world second = 60 seconds in real time
   int velocity_iterations = 6;
   int position_iterations = 2;
   world.Step(time_step, velocity_iterations, position_iterations);
+  // Finds collisions
   FindBulletCollision(enemy_controller, bullets);
   FindPlayerCollision(enemy_list);
   if (is_game_over_) {
@@ -59,8 +58,8 @@ enemy_controller, std::vector<Bullet>& bullets) {
   return;
 }
 void Engine::FindPlayerCollision(const std::list<Enemy>& enemy_list) {
-
-  //Correlates player position with enemy position. If found, it is game over
+  // Correlates player position with enemy position. If found, one life is lost
+  // Goes until lives finish
   for (auto& particle : enemy_list) {
     cinder::vec2 screen_position =
         cinder::vec2(particle.GetBody()->GetPosition().x,
@@ -77,36 +76,35 @@ void Engine::FindPlayerCollision(const std::list<Enemy>& enemy_list) {
   }
 }
 void Engine::FindBulletCollision(EnemyController& enemy_controller,
-                                 const std::vector<Bullet>& bullets)  {
-
-  //This loop goes through all the bullets
+                                 const std::vector<Bullet>& bullets) {
+  // This loop goes through all the bullets
   for (Bullet bullet : bullets) {
     if (enemy_controller.GetEnemies().empty()) {
       break;
     }
-    //This goes through all the points of contact of each bullet
-     for (b2ContactEdge* edge = bullet.GetBody()->GetContactList(); edge;
+    // This goes through all the points of contact of each bullet
+    for (b2ContactEdge* edge = bullet.GetBody()->GetContactList(); edge;
          edge = edge->next) {
-       for (auto enemy = enemy_controller.GetEnemies().begin();
-            enemy != enemy_controller.GetEnemies().end();) {
-         //This iterates through all the enemies
-         //Checks if the edge's fixture is touching the enemy
-         if (edge->other == enemy->GetBody() && edge->contact->IsTouching())
-         {
-           ++game_score_;
-           break;
-         } else {
-           ++enemy;
-         }
-       }
-
-     }
+      for (auto enemy = enemy_controller.GetEnemies().begin();
+           enemy != enemy_controller.GetEnemies().end();) {
+        // This iterates through all the enemies
+        // Checks if the edge's fixture is touching the enemy
+        if (edge->other == enemy->GetBody() && edge->contact->IsTouching()) {
+          ++game_score_;
+          break;
+        } else {
+          ++enemy;
+        }
+      }
     }
+  }
 }
 
 void Engine::SetDirection(const Direction direction) { direction_ = direction; }
 
 void Engine::SetLocation() {
+  // Gets the player location and add the units which the direction
+  // enum dictates
   b2Vec2 d_loc = FromDirection(direction_);
   b2Vec2 loc = (player_.GetLoc() + d_loc);
   player_.SetLoc(loc);
