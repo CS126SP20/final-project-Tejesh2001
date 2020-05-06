@@ -63,12 +63,15 @@ April 29th :
 1) Added project proposal as a separate file 
 2) Updated ReadMe to reflect how to build the game and play it
 
-Week 2 deliverables completed
-Week 3 delivarable completed
-Added player movement throughout the screen (Extension 1)
-Added new feature such as player score and player game time
+**Week 2 deliverables completed**
 
-TODO ::
+**Week 3 delivarable completed**
+
+**Added player movement throughout the screen (Extension 1)**
+
+**Added new feature such as player score and player game time**
+
+**TODO ::**
 
 1) Add tests for remaining classes
 2) Add further documentation
@@ -80,15 +83,15 @@ TODO ::
 
 May 1st:
 
-Added player lives implementation
-Added tests for BulletController and WorldCreator Class
-Added background music
-Refactored BulletController and bullet class
-Added conditions for testing in World Creator class
+1) Added player lives implementation
+2) Added tests for BulletController and WorldCreator Class
+3) Added background music
+4) Refactored BulletController and bullet class
+5) Added conditions for testing in World Creator class
 
 **Second extension implemented**
 
-TODO ::
+**TODO ::**
 
 1) Add tests for remaining classes
 2) Add further documentation
@@ -109,6 +112,26 @@ May 4th :
 1) Added restart button
 2) Added documentation for remainining classes. Removed magic numbers.
 
+May 5th :
+
+1) Added clicking on players to choose player
+2) Updated ReadMe
+
+May 6th :
+
+1) Removed non required assets
+2) Added documentation
+3) Fixed spacing
+4) Added images to readme
+5) Refactored classes in my library under the mylibrary namespace
+
+**ALL DELIVERABLES MET**
+
+**ALL EXTENSIONS COMPLETED**
+
+**FINAL PROJECT OVER**
+
+****************************************************************************************************************************************
 
 
 
