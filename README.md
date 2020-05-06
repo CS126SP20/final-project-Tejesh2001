@@ -2,8 +2,8 @@
 
 # [CS126 Final Project - Firebending trials]
 
-Author: [Tejesh Bhaumik]
-
+ **Author: [Tejesh Bhaumik]**
+ 
 **Desciption**
 
 Based loosely on the TV show Avatar : The Last Airbender. 
@@ -13,11 +13,37 @@ If you deflect these fireballs though, they might ricochet off the walls and hit
 You can fire a maximum of five airballs at a time, and each fireball you hit scores you a point
 The aim of the game is to last the longest and score the highest points
 
+**Game Screenshots**
+
+**Start Screen**
+
+
+![ text](https://github.com/CS126SP20/final-project-Tejesh2001/blob/master/assets/StartScreenshot.png?raw=true)
+
+**Game Screen**
+
+
+![play](https://github.com/CS126SP20/final-project-Tejesh2001/blob/master/assets/play.png?raw=true)
+
+**End Screen**
+
+![end](https://github.com/CS126SP20/final-project-Tejesh2001/blob/master/assets/end_screenshot.png?raw=true)
+
+**Project Structure**
+
+Please read this to understand the project structure :
+
+https://cliutils.gitlab.io/modern-cmake/chapters/basics/structure.html
+ 
 **Dependencies**
 
 * CMake
 * MSVC 2015
 * clang/clang++
+
+*For Windows*
+
+You must have MSVC 2015 installed on your device
 
 **Libraries used**
 
@@ -60,6 +86,7 @@ Box2D is a physics library which allows us to simulate Newtonian mechanics with 
 
 https://box2d.org/
 
+**GAMEPLAY**
 
 Control | Actions
 -----|--------------------
@@ -68,4 +95,7 @@ Control | Actions
   A / Left arrow key | Go left one unit                   
   D / Right arrow key | Go right one unit                    
   Return key /Mouse press | Shoot airball
+  M key | Mutes the background music
+  Spacebar | Starts the game
+  Right shift | Restarts the game
   
