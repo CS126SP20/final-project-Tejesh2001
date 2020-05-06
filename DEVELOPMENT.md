@@ -116,14 +116,16 @@ May 5th :
 
 1) Added clicking on players to choose player
 2) Updated ReadMe
+3) Removed non required assets
+4) Added documentation
 
 May 6th :
 
-1) Removed non required assets
-2) Added documentation
-3) Fixed spacing
-4) Added images to readme
-5) Refactored classes in my library under the mylibrary namespace
+1) Fixed spacing
+2) Added images to readme
+3) Refactored classes in my library under the mylibrary namespace
+4) Added notification to notify player when a character hasn't been chosen
+5) Added player hit sound
 
 **ALL DELIVERABLES MET**
 
