@@ -40,7 +40,8 @@ class WorldCreator {
   /**This function initiliases indexes to 800 for testing, and otherwise to
    * window characterestics **/
   void TestCheck(b2World &world);
-};
+}
+
 }  // namespace mylibrary
 
 #endif  // FINALPROJECT_WORLDCREATOR_HPP

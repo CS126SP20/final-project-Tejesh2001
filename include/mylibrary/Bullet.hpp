@@ -7,7 +7,6 @@
 
 #include <Box2D/Dynamics/b2World.h>
 #include <cinder/Cinder.h>
-
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 #include <vector>
@@ -46,4 +45,5 @@ class Bullet {
 };
 
 }  // namespace mylibrary
+
 #endif  // FINALPROJECT_BULLET_HPP

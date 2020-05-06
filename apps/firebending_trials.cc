@@ -2,6 +2,7 @@
 
 #include "firebending_trials.h"
 #include <mylibrary/WorldCreator.hpp>
+
 namespace trials {
 using cinder::ivec2;
 using cinder::vec2;
@@ -15,12 +16,11 @@ MyApp::MyApp() {
   // Assigns engine pointer
   engine_ = new mylibrary::Engine(*player_);
   mute_ = false;
-  game_start_ = false;
-  character_string_ = kCharacter1Name;
+  state_ = GameState::kGameStop;
 }
 
 void MyApp::setup() {
-  if (!game_start_) {
+  if (state_ != GameState::kGameStart) {
     return;
   }
   mylibrary::WorldCreator world_creator;
@@ -43,16 +43,20 @@ void MyApp::update() {
   }
   // There is a wave of enemies every two seconds. Each wave has one enemy
   // more than the previous one
-
   if (timer_.getSeconds() - kTimeChange >= kEpsilon) {
+    // Randomising number of enemies every wave
     int number_of_enemies_ =
         ci::randInt(kMinNumberOfEnemies, kMaxNumberOfEnemies);
     enemy_controller_.AddEnemies(number_of_enemies_);
     timer_.start(0.0);
-  }  // Randomising number of enemies every wave
-
+  }
   // Move physics world
+  int lives_prev = engine_->GetLives();
+  printf("%u\n", engine_->GetLives());
   engine_->Step(*world_, enemy_controller_, bullet_controller_.GetBullets());
+  if (engine_->GetLives() < lives_prev) {
+    PlayHitMusic();
+  }
   bullet_controller_.update();
   enemy_controller_.update();
 }
@@ -65,24 +69,28 @@ void MyApp::draw() {
   // Size of font
   const ci::ivec2 size = {500, 45};
   // Color of font
-  ci::Color color = ci::Color::white();
+  const ci::Color color = ci::Color::white();
   /**Draws menu screen**/
-  if (!game_start_) {
+  if (state_ != GameState::kGameStart) {
     DrawMenuScreen();
     return;
   }
+
   /**Draws gameplay **/
   DrawBackground("background.png");
   DrawPlayer();
   bullet_controller_.draw();
   enemy_controller_.draw();
+
   // This contains the heart unicode
   const std::string heart_unicode = u8"\u2764";
   std::string lives;
+  // This adds the hearts to string that's printed
   for (int i = 0; i < engine_->GetLives(); i++) {
     lives.append(heart_unicode);
     lives.append(" ");
   }
+
   // Enables alpha blending by making the last parameter 0
   ci::ColorA box_transparent_color = ci::ColorA(1, 1, 1, 0);
   PrintText("Lives " + lives, color, size,
@@ -92,18 +100,20 @@ void MyApp::draw() {
             box_transparent_color);
 
   if (bullet_controller_.GetBullets().size() > kMaxNumberOfBullets) {
-    PrintText("You have finished your airballs!", color, size,
+    PrintText("You have finished your waterballs!", color, size,
               vec2(ci::app::getWindowWidth() / 2,
                    static_cast<float>(ci::app::getWindowHeight()) -
                        global::kScalingFactor),
               box_transparent_color);
   }
+
   /**Draws game over**/
   if (engine_->GetIsGameOver()) {
     DrawGameOver(center, color, size);
     game_timer.stop();
   }
 }
+
 void MyApp::DrawMenuScreen() {
   const ci::vec2 center = ci::app::getWindowCenter();
   // Sets the size of the writing
@@ -111,14 +121,17 @@ void MyApp::DrawMenuScreen() {
   // The 1 enables alpha blending
   const ci::ColorA box_opaque_color = ci::ColorA(1, 1, 1, 1);
   DrawBackground("world.jpg");
+  // Prints instructions
   PrintText("Click on the character you want", ci::Color::black(), size, center,
             box_opaque_color);
   PrintText("Press the spacebar to start", ci::Color::black(), size,
             ivec2(ci::app::getWindowCenter().x,
                   ci::app::getWindowCenter().y + global::kScalingFactor),
             box_opaque_color);
-  ci::gl::Texture2dRef texture = LoadPlayer(kCharacter1Name);
+
   // Draws the menu sprites on the tiles present on the world map
+  ci::gl::Texture2dRef texture;
+  texture = LoadPlayer(kCharacter1Name);
   ci::gl::draw(
       texture,
       ci::Rectf(center.x - kMenuSpriteIndexLarge * global::kScalingFactor,
@@ -132,7 +145,18 @@ void MyApp::DrawMenuScreen() {
                 center.y + global::kScalingFactor,
                 center.x + (kMenuSpriteIndexLarge)*global::kScalingFactor,
                 center.y + kMenuSpriteHeight * global::kScalingFactor));
+
+  // If a character isn't selected and the user pressed the spacebar
+  // This prints out and the game isn't started
+  if (!sprite_is_selected) {
+    PrintText("Please choose character first!", ci::Color::black(), size,
+              vec2(ci::app::getWindowWidth() / 2,
+                   static_cast<float>(ci::app::getWindowHeight()) -
+                       global::kScalingFactor),
+              box_opaque_color);
+  }
 }
+
 void MyApp::keyDown(KeyEvent event) {
   // The first four cases are responsible for player movement
   switch (event.getCode()) {
@@ -169,15 +193,18 @@ void MyApp::keyDown(KeyEvent event) {
     }
     case KeyEvent::KEY_SPACE: {
       // Starts the game
-      game_start_ = true;
+      if (character_string_.empty()) {
+        sprite_is_selected = false;
+        break;
+      }
+      state_ = GameState::kGameStart;
       setup();
       break;
     }
     case KeyEvent::KEY_RSHIFT: {
       // Restarts the game
-      game_start_ = true;
+      state_ = GameState::kGameStart;
       Reset();
-      setup();
       break;
     }
       // Mutes the music
@@ -193,11 +220,10 @@ void MyApp::keyDown(KeyEvent event) {
     }
   }
 }
-void MyApp::PauseBackGroundMusic() const { background_audio_file_->pause(); }
 
 void MyApp::mouseDown(ci::app::MouseEvent event) {
   // Chooses the character which is clicked on
-  if (!game_start_) {
+  if (state_ != GameState::kGameStart) {
     CheckIfMenuSpriteIsSelected(event);
   } else {
     // Shoots bullets
@@ -206,6 +232,7 @@ void MyApp::mouseDown(ci::app::MouseEvent event) {
     }
   }
 }
+
 void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
   // This checks if the mouse position when clicked matches with the position
   // at which the menu sprite is drawn
@@ -215,7 +242,6 @@ void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
   float right_dimension_of_sprite =
       ci::app::getWindowCenter().x -
       kMenuSpriteIndexSmall * global::kScalingFactor;
-
   // It goes through all the the rows that the sprite is drawn on
   for (float x = left_dimension_of_sprite; x <= right_dimension_of_sprite;
        x += global::kScalingFactor) {
@@ -224,6 +250,7 @@ void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
       character_string_ = kCharacter1Name;
     }
   }
+
   left_dimension_of_sprite = ci::app::getWindowCenter().x +
                              (kMenuSpriteIndexSmall)*global::kScalingFactor;
   right_dimension_of_sprite = ci::app::getWindowCenter().x +
@@ -236,6 +263,7 @@ void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
     }
   }
 }
+
 void MyApp::AddBullet() {
   // Adds bullet to vector at position where player has drawn
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
@@ -264,12 +292,23 @@ void MyApp::DrawBackground(const std::string& relative_path) {
       ci::gl::Texture2d::create(loadImage(ci::app::loadAsset(path)));
   ci::gl::draw(texture, ci::Rectf(getWindowBounds()));
 }
+
+void MyApp::PlayHitMusic() {
+  auto source_file = ci::audio::load(ci::app::loadAsset("hit.mp3"));
+  hit_audio_file_ = ci::audio::Voice::create(source_file);
+  hit_audio_file_->start();
+}
+
 void MyApp::LoadBackGroundMusic() {
   auto source_file = ci::audio::load(ci::app::loadAsset("mus.mp3"));
   background_audio_file_ = ci::audio::Voice::create(source_file);
   PlayBackGroundMusic();
 }
+
 void MyApp::PlayBackGroundMusic() const { background_audio_file_->start(); }
+
+void MyApp::PauseBackGroundMusic() const { background_audio_file_->pause(); }
+
 template <typename C>
 void MyApp::PrintText(const std::string& text, const C& color,
                       const ci::ivec2& size, const ci::vec2& loc,
@@ -287,6 +326,7 @@ void MyApp::PrintText(const std::string& text, const C& color,
   const auto texture = ci::gl::Texture::create(surface);
   ci::gl::draw(texture, locp);
 }
+
 void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
                          const ci::ivec2 size) {
   DrawBackground("start.jpg");
@@ -305,7 +345,6 @@ void MyApp::DrawGameOver(const ci::vec2 center, const ci::Color color,
             ivec2(ci::app::getWindowCenter().x,
                   ci::app::getWindowCenter().y + 2 * global::kScalingFactor),
             box_transparent_color);
-
   PrintText("Press shift to play again ", color, size,
             ivec2(ci::app::getWindowCenter().x,
                   ci::app::getWindowCenter().y + 3 * global::kScalingFactor),
@@ -318,8 +357,8 @@ void MyApp::Reset() {
       {ci::app::getWindowCenter().x, ci::app::getWindowCenter().y});
   engine_ = new mylibrary::Engine(*player_);
   mute_ = false;
-  game_start_ = false;
-  character_string_ = kCharacter1Name;
+  state_ = GameState::kGameStop;
+  character_string_.clear();
 }
 
 }  // namespace trials

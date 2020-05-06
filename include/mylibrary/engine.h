@@ -2,12 +2,9 @@
 
 #ifndef FINALPROJECT_ENGINE_H_
 #define FINALPROJECT_ENGINE_H_
-
 #include <Box2D/Dynamics/b2World.h>
-
 #include <random>
 #include <set>
-
 #include "Bullet.hpp"
 #include "EnemyController.h"
 #include "direction.h"

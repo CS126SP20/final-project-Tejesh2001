@@ -1,7 +1,6 @@
 #pragma once
 #include <Box2D/Box2D.h>
 #include <cinder/Timer.h>
-
 #include "cinder/Color.h"
 
 namespace mylibrary {
@@ -52,4 +51,5 @@ class Enemy {
   /**Checks if an enemy is dead**/
   bool is_dead_;
 };
+
 }  // namespace mylibrary

@@ -1,9 +1,5 @@
 #include "mylibrary/Enemy.h"
-
-#include <Box2D/Box2D.h>
 #include <cinder/app/AppBase.h>
-
-#include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 #include "mylibrary/CoordinateConversions.h"
 #include "mylibrary/ProjectWideConstants.h"
@@ -45,6 +41,7 @@ void Enemy::draw() {
   cinder::gl::draw(image, rect);
   ci::gl::popMatrices();
 }
+
 auto Enemy::GetBody() const -> b2Body* { return body_; }
 
 void Enemy::SetBody(b2Body* body) { body_ = body; }

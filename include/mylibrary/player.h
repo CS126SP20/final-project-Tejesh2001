@@ -1,6 +1,5 @@
-
-
 #include <Box2D/Common/b2Math.h>
+
 namespace mylibrary {
 
 class Player {
@@ -13,4 +12,5 @@ class Player {
  private:
   b2Vec2 loc;
 };
+
 }  // namespace mylibrary

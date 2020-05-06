@@ -1,11 +1,9 @@
 //
-// Created by tejes on 4/25/2020.
+// Created by tejesh on 4/25/2020.
 //
 
 #include "mylibrary/Bullet.hpp"
-
 #include <Box2D/Box2D.h>
-
 #include "mylibrary/ProjectWideConstants.h"
 
 namespace mylibrary {
@@ -40,8 +38,11 @@ void Bullet::update() {
 }
 
 b2Body *Bullet::GetBody() { return body_; }
+
 void Bullet::SetBody(b2Body *body) { body_ = body; }
+
 bool Bullet::GetIsDead() const { return is_dead_; }
+
 void Bullet::SetIsDead(bool is_dead) { is_dead_ = is_dead; }
 
 }  // namespace mylibrary

@@ -5,19 +5,19 @@
 #include <cinder/Cinder.h>
 #include <cinder/Rand.h>
 #include <mylibrary/engine.h>
-
 #include <catch2/catch.hpp>
 #include <mylibrary/BulletController.hpp>
 #include <mylibrary/WorldCreator.hpp>
+
 TEST_CASE("engine class", "[step function]") {
   SECTION("Check for no collision") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    trials::Player player_(b2Vec2(400, 400));
+    mylibrary::Player player_(b2Vec2(400, 400));
     // trials::MyApp game_player;
-    trials::Engine engine_(player_);
-    EnemyController enemy_controller;
-    BulletController bullet_controller_;
+    mylibrary::Engine engine_(player_);
+    mylibrary::EnemyController enemy_controller;
+    mylibrary::BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
@@ -28,13 +28,13 @@ TEST_CASE("engine class", "[step function]") {
   SECTION("Check for collision of player and enemy") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    EnemyController enemy_controller;
-    BulletController bullet_controller_;
+    mylibrary::EnemyController enemy_controller;
+    mylibrary::BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
-    trials::Player player_(b2Vec2(0, 0));
-    trials::Engine engine_(player_);
+    mylibrary::Player player_(b2Vec2(0, 0));
+    mylibrary::Engine engine_(player_);
     bullet_controller_.addBullet(player_.GetLoc());
     engine_.Step(world_, enemy_controller, bullet_controller_.GetBullets());
     REQUIRE(engine_.GetLives() == 2);
@@ -42,13 +42,13 @@ TEST_CASE("engine class", "[step function]") {
   SECTION("Check for collision of bullet and enemy") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    EnemyController enemy_controller;
-    BulletController bullet_controller_;
+    mylibrary::EnemyController enemy_controller;
+    mylibrary::BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
-    trials::Player player_(b2Vec2(-50, 0));
-    trials::Engine engine_(player_);
+    mylibrary::Player player_(b2Vec2(-50, 0));
+    mylibrary::Engine engine_(player_);
     bullet_controller_.addBullet((b2Vec2(0, 0)));
     engine_.FindBulletCollision(enemy_controller,
                                 bullet_controller_.GetBullets());
@@ -60,8 +60,8 @@ TEST_CASE("engine direction function", "[direction]") {
   SECTION("Check for no collision") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    trials::Player player_(b2Vec2(400, 400));
-    trials::Engine engine_(player_);
+    mylibrary::Player player_(b2Vec2(400, 400));
+    mylibrary::Engine engine_(player_);
     engine_.SetDirection(Direction::kUp);
     b2Vec2 direction = engine_.FromDirection(Direction::kUp);
     REQUIRE(direction.x == 0);
@@ -88,8 +88,8 @@ TEST_CASE("Enemy Controller", "[]") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
     int check = 0;
-    EnemyController enemy_controller;
-    BulletController bullet_controller_;
+    mylibrary::EnemyController enemy_controller;
+    mylibrary::BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     enemy_controller.AddEnemies(1);
@@ -107,16 +107,17 @@ TEST_CASE("Enemy Controller", "[]") {
   }
 
 SECTION("Update function") {
-b2Vec2 gravity(0, 100.0f);
-b2World world_(gravity);
-EnemyController enemy_controller;
-enemy_controller.setup(world_);
-enemy_controller.AddEnemies(2);
-enemy_controller.GetEnemies().front().SetIsDead(true);
-enemy_controller.update();
-REQUIRE(enemy_controller.GetEnemies().size() == 1);
-REQUIRE(enemy_controller.GetEnemies().front().GetBody()->GetPosition().y == 0);
-}
+    b2Vec2 gravity(0, 100.0f);
+    b2World world_(gravity);
+    mylibrary::EnemyController enemy_controller;
+    enemy_controller.setup(world_);
+    enemy_controller.AddEnemies(2);
+    enemy_controller.GetEnemies().front().SetIsDead(true);
+    enemy_controller.update();
+    REQUIRE(enemy_controller.GetEnemies().size() == 1);
+    REQUIRE(enemy_controller.GetEnemies().front().GetBody()->GetPosition().y ==
+            0);
+  }
 }
 
 /**********************EnemyControllertests over*********************/
@@ -126,7 +127,7 @@ REQUIRE(enemy_controller.GetEnemies().front().GetBody()->GetPosition().y == 0);
 TEST_CASE("WorldCreator class", "[random]") {
   b2Vec2 gravity(0, 0.0f);
   b2World world_(gravity);
-  WorldCreator world_creator;
+  mylibrary::WorldCreator world_creator;
   SECTION("Check for ceiling made") {
     world_creator.CreateCeiling(world_);
     REQUIRE(world_.GetBodyList()->GetPosition().y == -1.0f);
@@ -138,7 +139,7 @@ TEST_CASE("WorldCreator class", "[random]") {
   SECTION("Check for collision of bullet and enemy") {
     world_creator.CreateRightWall(world_);
     REQUIRE(world_.GetBodyList()->GetPosition().x ==
-            conversions::ToBox2DCoordinates(800));
+            conversions::ToBox2DCoordinates(750));
   }
 }
 
@@ -146,13 +147,13 @@ TEST_CASE("WorldCreator class", "[random]") {
 
 /**********************BulletController Tests*********************/
 
-TEST_CASE("Bullet Controller", "[]") {
+TEST_CASE("BulletController", "[]") {
   SECTION("Add enemy / Get enemy") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
     int check = 0;
-    EnemyController enemy_controller;
-    BulletController bullet_controller_;
+    mylibrary::EnemyController enemy_controller;
+    mylibrary::BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     bullet_controller_.addBullet(b2Vec2(0, 0));
@@ -162,7 +163,7 @@ TEST_CASE("Bullet Controller", "[]") {
         1);
 
     bullet_controller_.addBullet(b2Vec2(1, 0));
-    for (Bullet b : bullet_controller_.GetBullets()) {
+    for (mylibrary::Bullet b : bullet_controller_.GetBullets()) {
       if (b.GetBody()->GetPosition().y == -1) {
         check++;
       }
@@ -172,8 +173,8 @@ TEST_CASE("Bullet Controller", "[]") {
   SECTION("Update function") {
     b2Vec2 gravity(0, 100.0f);
     b2World world_(gravity);
-    EnemyController enemy_controller;
-    BulletController bullet_controller_;
+    mylibrary::EnemyController enemy_controller;
+    mylibrary::BulletController bullet_controller_;
     enemy_controller.setup(world_);
     bullet_controller_.setup(world_);
     bullet_controller_.addBullet(b2Vec2(0, 0));
@@ -185,7 +186,7 @@ TEST_CASE("Bullet Controller", "[]") {
 
 /**********************BulletController Tests over*********************/
 
-/**********************Bullet tests*********************/
+/********************** Bullet tests*********************/
 
 TEST_CASE("Bullet", "[]") {
   b2BodyDef body_def;
@@ -195,7 +196,7 @@ TEST_CASE("Bullet", "[]") {
     body_def.type = b2_dynamicBody;
     body_def.position.Set(conversions::ToBox2DCoordinates(-1),
                           conversions::ToBox2DCoordinates(900));
-    Bullet bullet;
+    mylibrary::Bullet bullet;
     bullet.SetBody(world_.CreateBody(&body_def));
     bullet.update();
     REQUIRE(bullet.GetIsDead());
@@ -213,7 +214,7 @@ TEST_CASE("Enemy", "[]") {
     body_def.type = b2_dynamicBody;
     body_def.position.Set(conversions::ToBox2DCoordinates(-1),
                           conversions::ToBox2DCoordinates(900));
-    Enemy enemy;
+    mylibrary::Enemy enemy;
     enemy.SetBody(world_.CreateBody(&body_def));
     enemy.update();
     REQUIRE(enemy.IsDead());

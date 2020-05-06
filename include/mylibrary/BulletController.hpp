@@ -44,4 +44,5 @@ class BulletController {
 };
 
 }  // namespace mylibrary
+
 #endif  // FINALPROJECT_BULLETCONTROLLER_HPP

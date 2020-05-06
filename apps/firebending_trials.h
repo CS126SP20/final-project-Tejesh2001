@@ -12,8 +12,15 @@
 #include "firebending_trials.h"
 #include "mylibrary/direction.h"
 #include "mylibrary/engine.h"
+
 namespace trials {
 using namespace cinder::app;
+
+enum class GameState {
+  kGameStart,
+  kGameStop,
+};
+
 class MyApp : public cinder::app::App {
  public:
   /**Constructor initialises the data variables**/
@@ -35,7 +42,7 @@ class MyApp : public cinder::app::App {
   void draw();
 
  private:
-  /**Height of the spirtes in the Box2D world**/
+  /**Height of the sprites in the Box2D world**/
   const int kMenuSpriteHeight = 5;
 
   /**Bounds of sprite indexes in the Box2D world**/
@@ -44,6 +51,9 @@ class MyApp : public cinder::app::App {
 
   /**Stores the image of the character chosen**/
   std::string character_string_;
+
+  /**Stores the GameState enum**/
+  GameState state_;
 
   /** Timer to regulate enemy waves**/
   cinder::Timer timer_;
@@ -64,10 +74,10 @@ class MyApp : public cinder::app::App {
   const int kMaxNumberOfBullets = 2;
 
   /**The starting amount of enemies**/
-  int kMinNumberOfEnemies = 5;
+  int kMinNumberOfEnemies = 8;
 
   /**Checks if game has started**/
-  bool game_start_;
+  bool sprite_is_selected;
 
   /**The Box2D world**/
   b2World* world_;
@@ -93,8 +103,11 @@ class MyApp : public cinder::app::App {
   /**Player 2 string path**/
   const char* const kCharacter2Name = "katara.png";
 
-  /**Plays background audio file**/
+  /**Stores background audio file**/
   ci::audio::VoiceRef background_audio_file_;
+
+  /**Stores hit audio file**/
+  ci::audio::VoiceRef hit_audio_file_;
 
   /**Draws background**/
   void DrawBackground(const std::string&);
@@ -135,6 +148,9 @@ class MyApp : public cinder::app::App {
 
   /**Checks if the sprite on the menu is selected**/
   void CheckIfMenuSpriteIsSelected(const MouseEvent& event);
+
+  /**Plays a sound if the player has been hit**/
+  void PlayHitMusic();
 };
 
 }  // namespace trials

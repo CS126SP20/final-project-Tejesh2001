@@ -1,9 +1,7 @@
 #pragma once
 #include <Box2D/Box2D.h>
-
 #include <list>
 #include <vector>
-
 #include "Bullet.hpp"
 #include "mylibrary/Enemy.h"
 
@@ -41,8 +39,13 @@ class EnemyController {
   /**This limits the bounce compared to the bullet**/
   const float kBounceLimiter = 20.0f;
 
+  /**location for Actual Y index ( for testing purposes, y is initially set
+   * to 0)**/
+  const float kActualY = -1.0f;
+
   /**Creates the body corresponding to the enemy and adds
    * properties**/
   b2BodyDef &CreateBody(b2BodyDef &bodyDef);
 };
+
 }  // namespace mylibrary

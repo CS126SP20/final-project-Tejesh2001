@@ -18,6 +18,7 @@
 #include "mylibrary/direction.h"
 
 namespace mylibrary {
+
 b2Vec2 Engine::FromDirection(const Direction direction) {
   switch (direction) {
     case Direction::kUp:
@@ -109,6 +110,7 @@ void Engine::SetLocation() {
   b2Vec2 loc = (player_.GetLoc() + d_loc);
   player_.SetLoc(loc);
 }
+
 bool Engine::GetIsGameOver() { return is_game_over_; }
 
 int Engine::GetGameScore() { return game_score_; }
