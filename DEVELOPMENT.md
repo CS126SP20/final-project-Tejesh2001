@@ -109,6 +109,24 @@ May 4th :
 1) Added restart button
 2) Added documentation for remainining classes. Removed magic numbers.
 
+May 5th :
+
+1) Added clicking on players to choose player
+2) Updated ReadMe
+
+May 6th :
+
+1) Removed non required assets
+2) Added documentation
+3) Fixed spacing
+4) Added images to readme
+5) Refactored classes in my library under the mylibrary namespace
+
+**ALL DELIVERABLES MET**
+**ALL EXTENSIONS COMPLETED**
+**FINAL PROJECT OVER**
+
+
 
 
 
