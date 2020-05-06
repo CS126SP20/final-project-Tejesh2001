@@ -86,9 +86,9 @@ Box2D is a physics library which allows us to simulate Newtonian mechanics with 
 
 https://box2d.org/
 
-**GAMEPLAY**
+**GAMEPLAY CONTROLS**
 
-Control | Actions
+Key | Actions
 -----|--------------------
   W / Up arrow key   | Go up one unit      
   S / Down arrow key | Go down one unit                
