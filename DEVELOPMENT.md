@@ -80,11 +80,11 @@ TODO ::
 
 May 1st:
 
-Added player lives implementation
-Added tests for BulletController and WorldCreator Class
-Added background music
-Refactored BulletController and bullet class
-Added conditions for testing in World Creator class
+1) Added player lives implementation
+2) Added tests for BulletController and WorldCreator Class
+3) Added background music
+4) Refactored BulletController and bullet class
+5) Added conditions for testing in World Creator class
 
 **Second extension implemented**
 
