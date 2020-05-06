@@ -5,6 +5,7 @@
 #include <Box2D/Box2D.h>
 #include <cinder/Rand.h>
 #include <cinder/app/App.h>
+#include <cinder/audio/Voice.h>
 #include <cinder/gl/gl.h>
 #include <mylibrary/ProjectWideConstants.h>
 
@@ -44,7 +45,7 @@ class MyApp : public cinder::app::App {
   const int kMenuSpriteIndexSmall = 3;
 
   /**Stores the image of the character chosen**/
-  std::string character_string;
+  std::string character_string_;
 
   /** Timer to regulate enemy waves**/
   cinder::Timer timer_;
@@ -89,10 +90,13 @@ class MyApp : public cinder::app::App {
   BulletController bullet_controller_;
 
   /**Player 1 string path**/
-  const char* const kCharacter1Name = "aang1.png";
+  const char* const kCharacter1Name = "aang.png";
 
   /**Player 2 string path**/
   const char* const kCharacter2Name = "katara.png";
+
+  /**Plays background audio file**/
+  ci::audio::VoiceRef background_audio_file_;
 
   /**Draws background**/
   void DrawBackground(const std::string&);

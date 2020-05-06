@@ -1,15 +1,11 @@
 // Copyright (c) 2020 [Tejesh Bhaumik]. All rights reserved.
 
 #include "firebending_trials.h"
-
-#include <cinder/audio/Voice.h>
-
 #include <mylibrary/WorldCreator.hpp>
 namespace trials {
 using cinder::ivec2;
 using cinder::vec2;
 using cinder::app::KeyEvent;
-cinder::audio::VoiceRef background_audio_file;
 MyApp::MyApp() {
   b2Vec2 gravity(0, 100.0f);
   world_ = new b2World(gravity);
@@ -18,7 +14,7 @@ MyApp::MyApp() {
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
-  character_string = "aang1.png";
+  character_string_ = kCharacter1Name;
 }
 
 void MyApp::setup() {
@@ -109,6 +105,7 @@ void MyApp::DrawMenuScreen() {
   const cinder::vec2 center = ci::app::getWindowCenter();
   // Sets the size of the writing
   const cinder::ivec2 size = {500, 45};
+  // The 1 enables alpha blending
   const ci::ColorA box_opaque_color = cinder::ColorA(1, 1, 1, 1);
   DrawBackground("world.jpg");
   PrintText("Click on the character you want", ci::Color::black(), size, center,
@@ -172,7 +169,7 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_RSHIFT: {
-      // Starts the game
+      // Restarts the game
       game_start_ = true;
       Reset();
       setup();
@@ -191,7 +188,7 @@ void MyApp::keyDown(KeyEvent event) {
     }
   }
 }
-void MyApp::PauseBackGroundMusic() const { background_audio_file->pause(); }
+void MyApp::PauseBackGroundMusic() const { background_audio_file_->pause(); }
 
 void MyApp::mouseDown(cinder::app::MouseEvent event) {
   if (!game_start_) {
@@ -215,7 +212,7 @@ void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
        y += global::kScalingFactor) {
     if ((int)(event.getPos().x / global::kScalingFactor) ==
         (int)(y / global::kScalingFactor)) {
-      character_string = kCharacter1Name;
+      character_string_ = kCharacter1Name;
     }
   }
   left_dimension_of_sprite =
@@ -226,7 +223,7 @@ void MyApp::CheckIfMenuSpriteIsSelected(const MouseEvent& event) {
        y += global::kScalingFactor) {
     if ((int)(event.getPos().x / global::kScalingFactor) ==
         (int)(y / global::kScalingFactor)) {
-      character_string = kCharacter2Name;
+      character_string_ = kCharacter2Name;
     }
   }
 }
@@ -236,6 +233,7 @@ void MyApp::AddBullet() {
   bullet_controller_.addBullet(loc);
 }
 cinder::gl::Texture2dRef MyApp::LoadPlayer(std::string relative_path) {
+  // Loads the player path from the string
   cinder::gl::Texture2dRef texture = cinder::gl::Texture2d::create(
       loadImage(cinder::app::loadAsset(relative_path)));
   return texture;
@@ -244,9 +242,9 @@ cinder::gl::Texture2dRef MyApp::LoadPlayer(std::string relative_path) {
 void MyApp::DrawPlayer() {
   const b2Vec2 loc = engine_->GetPlayer().GetLoc();
   cinder::gl::Texture2dRef texture;
-  texture = LoadPlayer(character_string);
+  texture = LoadPlayer(character_string_);
   cinder::gl::draw(texture,
-                   ci::Rectf(loc.x, loc.y, loc.x + 3 * global::kScalingFactor,
+                   ci::Rectf(loc.x, loc.y, loc.x + 2 * global::kScalingFactor,
                              loc.y + 2 * global::kScalingFactor));
 }
 
@@ -258,10 +256,10 @@ void MyApp::DrawBackground(const std::string& relative_path) {
 }
 void MyApp::LoadBackGroundMusic() {
   auto source_file = cinder::audio::load(cinder::app::loadAsset("mus.mp3"));
-  background_audio_file = cinder::audio::Voice::create(source_file);
+  background_audio_file_ = cinder::audio::Voice::create(source_file);
   PlayBackGroundMusic();
 }
-void MyApp::PlayBackGroundMusic() const { background_audio_file->start(); }
+void MyApp::PlayBackGroundMusic() const { background_audio_file_->start(); }
 template <typename C>
 void MyApp::PrintText(const std::string& text, const C& color,
                       const cinder::ivec2& size, const cinder::vec2& loc,
@@ -310,7 +308,7 @@ void MyApp::Reset() {
   engine_ = new Engine(*player_);
   mute_ = false;
   game_start_ = false;
-  character_string = kCharacter1Name;
+  character_string_ = kCharacter1Name;
 }
 
 }  // namespace trials
